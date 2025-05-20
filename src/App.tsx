@@ -15,6 +15,8 @@ import Login from "@/pages/Login";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import StaffManagement from "@/pages/admin/StaffManagement";
 import BrandManagement from "@/pages/admin/BrandManagement";
+import SubscriptionPlans from "@/pages/admin/SubscriptionPlans";
+import AdminSettings from "@/pages/admin/AdminSettings";
 
 // Staff pages
 import StaffDashboard from "@/pages/staff/StaffDashboard";
@@ -51,8 +53,8 @@ const App = () => (
               <Route index element={<AdminDashboard />} />
               <Route path="staff" element={<StaffManagement />} />
               <Route path="brands" element={<BrandManagement />} />
-              <Route path="subscription" element={<h1>Subscription Plans</h1>} />
-              <Route path="settings" element={<h1>Admin Settings</h1>} />
+              <Route path="subscription" element={<SubscriptionPlans />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
             
             {/* Staff routes */}
