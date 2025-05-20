@@ -16,8 +16,8 @@ const DashboardLayout: React.FC = () => {
   // Function to demonstrate showing a toast notification
   const showWelcomeToast = () => {
     toast({
-      title: 'Welcome to the CRM Dashboard',
-      description: 'You have successfully logged in to the system.',
+      title: 'CRM Paneline Hoş Geldiniz',
+      description: 'Sisteme başarıyla giriş yaptınız.',
     });
   };
 
@@ -32,7 +32,7 @@ const DashboardLayout: React.FC = () => {
           <Outlet />
         </main>
         <footer className="border-t p-4 text-center text-sm text-muted-foreground">
-          <p>© 2025 CRM Platform. All rights reserved.</p>
+          <p>© 2025 CRM Platformu. Tüm hakları saklıdır.</p>
         </footer>
       </div>
     </div>

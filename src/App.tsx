@@ -67,8 +67,8 @@ const App = () => (
               }
             >
               <Route index element={<StaffDashboard />} />
-              <Route path="brands" element={<h1>Manage Brands</h1>} />
-              <Route path="settings" element={<h1>Staff Settings</h1>} />
+              <Route path="brands" element={<h1>Marka Yönetimi</h1>} />
+              <Route path="settings" element={<h1>Personel Ayarları</h1>} />
             </Route>
             
             {/* Brand routes */}
@@ -82,7 +82,7 @@ const App = () => (
             >
               <Route index element={<BrandDashboard />} />
               <Route path="campaigns" element={<Campaigns />} />
-              <Route path="settings" element={<h1>Brand Settings</h1>} />
+              <Route path="settings" element={<h1>Marka Ayarları</h1>} />
             </Route>
             
             {/* Redirect root to login */}

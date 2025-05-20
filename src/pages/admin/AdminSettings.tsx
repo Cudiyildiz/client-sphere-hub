@@ -34,8 +34,8 @@ import { Shield, Bell, CreditCard, Building2 } from 'lucide-react';
 
 // Profile form schema
 const profileFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
+  name: z.string().min(2, { message: 'İsim en az 2 karakter olmalıdır' }),
+  email: z.string().email({ message: 'Lütfen geçerli bir e-posta adresi girin' }),
   role: z.string().optional(),
 });
 
@@ -49,19 +49,19 @@ const notificationFormSchema = z.object({
 
 // Company settings schema
 const companyFormSchema = z.object({
-  companyName: z.string().min(2, { message: 'Company name must be at least 2 characters' }),
-  website: z.string().url({ message: 'Please enter a valid URL' }).optional().or(z.literal('')),
-  supportEmail: z.string().email({ message: 'Please enter a valid email address' }),
+  companyName: z.string().min(2, { message: 'Şirket adı en az 2 karakter olmalıdır' }),
+  website: z.string().url({ message: 'Lütfen geçerli bir URL girin' }).optional().or(z.literal('')),
+  supportEmail: z.string().email({ message: 'Lütfen geçerli bir e-posta adresi girin' }),
   phone: z.string().optional(),
 });
 
 // Security settings schema
 const securityFormSchema = z.object({
-  currentPassword: z.string().min(1, { message: 'Current password is required' }),
-  newPassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
-  confirmPassword: z.string().min(8, { message: 'Password must be at least 8 characters' }),
+  currentPassword: z.string().min(1, { message: 'Mevcut şifre gereklidir' }),
+  newPassword: z.string().min(8, { message: 'Şifre en az 8 karakter olmalıdır' }),
+  confirmPassword: z.string().min(8, { message: 'Şifre en az 8 karakter olmalıdır' }),
 }).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
+  message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
 });
 
@@ -100,10 +100,10 @@ const AdminSettings: React.FC = () => {
   const companyForm = useForm<CompanyFormValues>({
     resolver: zodResolver(companyFormSchema),
     defaultValues: {
-      companyName: 'CRM Platform Inc.',
+      companyName: 'CRM Platformu A.Ş.',
       website: 'https://crm-platform.example.com',
-      supportEmail: 'support@crm-platform.example.com',
-      phone: '+1 (555) 123-4567',
+      supportEmail: 'destek@crm-platform.example.com',
+      phone: '+90 (555) 123-4567',
     },
   });
 
@@ -120,37 +120,37 @@ const AdminSettings: React.FC = () => {
   // Handle profile form submission
   const onProfileSubmit = (data: ProfileFormValues) => {
     toast({
-      title: 'Profile updated',
-      description: 'Your profile information has been updated.',
+      title: 'Profil güncellendi',
+      description: 'Profil bilgileriniz güncellendi.',
     });
-    console.log('Profile data:', data);
+    console.log('Profil verileri:', data);
   };
 
   // Handle notification form submission
   const onNotificationSubmit = (data: NotificationFormValues) => {
     toast({
-      title: 'Notification settings updated',
-      description: 'Your notification preferences have been saved.',
+      title: 'Bildirim ayarları güncellendi',
+      description: 'Bildirim tercihleriniz kaydedildi.',
     });
-    console.log('Notification data:', data);
+    console.log('Bildirim verileri:', data);
   };
 
   // Handle company form submission
   const onCompanySubmit = (data: CompanyFormValues) => {
     toast({
-      title: 'Company settings updated',
-      description: 'Your company information has been updated.',
+      title: 'Şirket ayarları güncellendi',
+      description: 'Şirket bilgileriniz güncellendi.',
     });
-    console.log('Company data:', data);
+    console.log('Şirket verileri:', data);
   };
 
   // Handle security form submission
   const onSecuritySubmit = (data: SecurityFormValues) => {
     toast({
-      title: 'Password updated',
-      description: 'Your password has been changed successfully.',
+      title: 'Şifre güncellendi',
+      description: 'Şifreniz başarıyla değiştirildi.',
     });
-    console.log('Security data:', data);
+    console.log('Güvenlik verileri:', data);
     securityForm.reset({
       currentPassword: '',
       newPassword: '',
@@ -161,27 +161,27 @@ const AdminSettings: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Ayarlar</h1>
         <p className="text-muted-foreground">
-          Manage your account settings and preferences.
+          Hesap ayarlarınızı ve tercihlerinizi yönetin.
         </p>
       </div>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid grid-cols-4 gap-4">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="notifications">Notifications</TabsTrigger>
-          <TabsTrigger value="company">Company</TabsTrigger>
-          <TabsTrigger value="security">Security</TabsTrigger>
+          <TabsTrigger value="profile">Profil</TabsTrigger>
+          <TabsTrigger value="notifications">Bildirimler</TabsTrigger>
+          <TabsTrigger value="company">Şirket</TabsTrigger>
+          <TabsTrigger value="security">Güvenlik</TabsTrigger>
         </TabsList>
         
         {/* Profile Settings */}
         <TabsContent value="profile" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Profile</CardTitle>
+              <CardTitle>Profil</CardTitle>
               <CardDescription>
-                Manage your personal information.
+                Kişisel bilgilerinizi yönetin.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -192,9 +192,9 @@ const AdminSettings: React.FC = () => {
                     name="name"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>İsim</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your name" {...field} />
+                          <Input placeholder="İsminiz" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -205,9 +205,9 @@ const AdminSettings: React.FC = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>E-posta</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your email" {...field} />
+                          <Input placeholder="E-posta adresiniz" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -218,18 +218,18 @@ const AdminSettings: React.FC = () => {
                     name="role"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Role</FormLabel>
+                        <FormLabel>Rol</FormLabel>
                         <FormControl>
                           <Input readOnly {...field} />
                         </FormControl>
                         <FormDescription>
-                          Your role cannot be changed.
+                          Rolünüz değiştirilemez.
                         </FormDescription>
                       </FormItem>
                     )}
                   />
                   <div className="flex justify-end">
-                    <Button type="submit">Save Changes</Button>
+                    <Button type="submit">Değişiklikleri Kaydet</Button>
                   </div>
                 </form>
               </Form>
@@ -238,9 +238,9 @@ const AdminSettings: React.FC = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Profile Picture</CardTitle>
+              <CardTitle>Profil Fotoğrafı</CardTitle>
               <CardDescription>
-                Update your profile picture.
+                Profil fotoğrafınızı güncelleyin.
               </CardDescription>
             </CardHeader>
             <CardContent className="flex flex-col items-center space-y-4">
@@ -248,9 +248,9 @@ const AdminSettings: React.FC = () => {
                 {user?.name?.charAt(0)}
               </div>
               <div className="flex flex-col items-center gap-2 sm:flex-row">
-                <Button variant="outline">Upload New</Button>
+                <Button variant="outline">Yeni Yükle</Button>
                 <Button variant="outline" className="text-destructive hover:bg-destructive/10">
-                  Remove
+                  Kaldır
                 </Button>
               </div>
             </CardContent>
@@ -263,10 +263,10 @@ const AdminSettings: React.FC = () => {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Bell className="h-5 w-5" />
-                <CardTitle>Notification Settings</CardTitle>
+                <CardTitle>Bildirim Ayarları</CardTitle>
               </div>
               <CardDescription>
-                Configure how you receive notifications.
+                Bildirimleri nasıl alacağınızı yapılandırın.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -286,9 +286,9 @@ const AdminSettings: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Email Notifications</FormLabel>
+                          <FormLabel>E-posta Bildirimleri</FormLabel>
                           <FormDescription>
-                            Receive notifications via email.
+                            E-posta yoluyla bildirim alın.
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -308,9 +308,9 @@ const AdminSettings: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Push Notifications</FormLabel>
+                          <FormLabel>Anlık Bildirimler</FormLabel>
                           <FormDescription>
-                            Receive push notifications in browser.
+                            Tarayıcıda anlık bildirim alın.
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -330,9 +330,9 @@ const AdminSettings: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Marketing Emails</FormLabel>
+                          <FormLabel>Pazarlama E-postaları</FormLabel>
                           <FormDescription>
-                            Receive marketing and promotional emails.
+                            Pazarlama ve promosyon e-postaları alın.
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -352,16 +352,16 @@ const AdminSettings: React.FC = () => {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel>Activity Summary</FormLabel>
+                          <FormLabel>Etkinlik Özeti</FormLabel>
                           <FormDescription>
-                            Receive weekly activity summary.
+                            Haftalık etkinlik özeti alın.
                           </FormDescription>
                         </div>
                       </FormItem>
                     )}
                   />
                   <div className="flex justify-end">
-                    <Button type="submit">Save Notification Settings</Button>
+                    <Button type="submit">Bildirim Ayarlarını Kaydet</Button>
                   </div>
                 </form>
               </Form>
@@ -375,10 +375,10 @@ const AdminSettings: React.FC = () => {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Building2 className="h-5 w-5" />
-                <CardTitle>Company Information</CardTitle>
+                <CardTitle>Şirket Bilgileri</CardTitle>
               </div>
               <CardDescription>
-                Update your company details and branding.
+                Şirket bilgilerinizi ve marka kimliğinizi güncelleyin.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -389,9 +389,9 @@ const AdminSettings: React.FC = () => {
                     name="companyName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Company Name</FormLabel>
+                        <FormLabel>Şirket Adı</FormLabel>
                         <FormControl>
-                          <Input placeholder="Your company name" {...field} />
+                          <Input placeholder="Şirketinizin adı" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -402,9 +402,9 @@ const AdminSettings: React.FC = () => {
                     name="website"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Website</FormLabel>
+                        <FormLabel>Web Sitesi</FormLabel>
                         <FormControl>
-                          <Input placeholder="https://example.com" {...field} />
+                          <Input placeholder="https://ornek.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -415,9 +415,9 @@ const AdminSettings: React.FC = () => {
                     name="supportEmail"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Support Email</FormLabel>
+                        <FormLabel>Destek E-postası</FormLabel>
                         <FormControl>
-                          <Input placeholder="support@example.com" {...field} />
+                          <Input placeholder="destek@ornek.com" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -428,16 +428,16 @@ const AdminSettings: React.FC = () => {
                     name="phone"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Support Phone</FormLabel>
+                        <FormLabel>Destek Telefonu</FormLabel>
                         <FormControl>
-                          <Input placeholder="+1 (555) 123-4567" {...field} />
+                          <Input placeholder="+90 (555) 123-4567" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="flex justify-end">
-                    <Button type="submit">Save Company Information</Button>
+                    <Button type="submit">Şirket Bilgilerini Kaydet</Button>
                   </div>
                 </form>
               </Form>
@@ -451,10 +451,10 @@ const AdminSettings: React.FC = () => {
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Shield className="h-5 w-5" />
-                <CardTitle>Security Settings</CardTitle>
+                <CardTitle>Güvenlik Ayarları</CardTitle>
               </div>
               <CardDescription>
-                Update your password and security preferences.
+                Şifrenizi ve güvenlik tercihlerinizi güncelleyin.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -465,9 +465,9 @@ const AdminSettings: React.FC = () => {
                     name="currentPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Current Password</FormLabel>
+                        <FormLabel>Mevcut Şifre</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Enter current password" {...field} />
+                          <Input type="password" placeholder="Mevcut şifrenizi girin" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -478,12 +478,12 @@ const AdminSettings: React.FC = () => {
                     name="newPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>New Password</FormLabel>
+                        <FormLabel>Yeni Şifre</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Enter new password" {...field} />
+                          <Input type="password" placeholder="Yeni şifrenizi girin" {...field} />
                         </FormControl>
                         <FormDescription>
-                          Password must be at least 8 characters long.
+                          Şifre en az 8 karakter uzunluğunda olmalıdır.
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -494,16 +494,16 @@ const AdminSettings: React.FC = () => {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Confirm New Password</FormLabel>
+                        <FormLabel>Yeni Şifreyi Onayla</FormLabel>
                         <FormControl>
-                          <Input type="password" placeholder="Confirm new password" {...field} />
+                          <Input type="password" placeholder="Yeni şifrenizi onaylayın" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                   <div className="flex justify-end">
-                    <Button type="submit">Change Password</Button>
+                    <Button type="submit">Şifreyi Değiştir</Button>
                   </div>
                 </form>
               </Form>
@@ -512,23 +512,23 @@ const AdminSettings: React.FC = () => {
           
           <Card>
             <CardHeader>
-              <CardTitle>Two-Factor Authentication</CardTitle>
+              <CardTitle>İki Faktörlü Kimlik Doğrulama</CardTitle>
               <CardDescription>
-                Add an extra layer of security to your account.
+                Hesabınıza ekstra bir güvenlik katmanı ekleyin.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                 <input type="checkbox" className="h-4 w-4 rounded-sm border border-primary" />
                 <div className="space-y-1 leading-none">
-                  <p className="font-medium">Enable Two-Factor Authentication</p>
+                  <p className="font-medium">İki Faktörlü Kimlik Doğrulamayı Etkinleştir</p>
                   <p className="text-sm text-muted-foreground">
-                    Protect your account with an additional authentication step.
+                    Hesabınızı ek bir kimlik doğrulama adımıyla koruyun.
                   </p>
                 </div>
               </div>
               <div className="flex justify-end">
-                <Button variant="outline">Configure 2FA</Button>
+                <Button variant="outline">2FA Yapılandır</Button>
               </div>
             </CardContent>
           </Card>
