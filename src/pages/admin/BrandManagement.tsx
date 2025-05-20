@@ -39,8 +39,18 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/use-toast';
 
+// Define the Brand type
+interface Brand {
+  id: number;
+  name: string;
+  industry: string;
+  plan: 'Basic' | 'Standard' | 'Premium';
+  customers: number;
+  status: 'Active' | 'Inactive';
+}
+
 // Sample brand data
-const initialBrands = [
+const initialBrands: Brand[] = [
   { id: 1, name: 'Acme Inc.', industry: 'Technology', plan: 'Premium', customers: 1240, status: 'Active' },
   { id: 2, name: 'Global Foods', industry: 'Food & Beverage', plan: 'Premium', customers: 856, status: 'Active' },
   { id: 3, name: 'Tech Solutions', industry: 'Software', plan: 'Standard', customers: 614, status: 'Active' },
@@ -59,10 +69,10 @@ const brandFormSchema = z.object({
 type BrandFormValues = z.infer<typeof brandFormSchema>;
 
 const BrandManagement: React.FC = () => {
-  const [brands, setBrands] = useState(initialBrands);
+  const [brands, setBrands] = useState<Brand[]>(initialBrands);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingBrand, setEditingBrand] = useState<any>(null);
+  const [editingBrand, setEditingBrand] = useState<Brand | null>(null);
   const { toast } = useToast();
 
   // Form setup
@@ -90,7 +100,7 @@ const BrandManagement: React.FC = () => {
       setBrands(
         brands.map((b) =>
           b.id === editingBrand.id
-            ? { ...b, ...values }
+            ? { ...b, ...values } as Brand
             : b
         )
       );
@@ -100,14 +110,17 @@ const BrandManagement: React.FC = () => {
       });
     } else {
       // Add new brand
-      setBrands([
-        ...brands,
-        {
-          id: brands.length + 1,
-          ...values,
-          customers: 0,
-        },
-      ]);
+      const newBrand: Brand = {
+        id: brands.length + 1,
+        name: values.name,
+        industry: values.industry,
+        plan: values.plan,
+        status: values.status,
+        customers: 0
+      };
+      
+      setBrands([...brands, newBrand]);
+      
       toast({
         title: 'Brand added',
         description: `${values.name} has been added successfully.`,
@@ -120,7 +133,7 @@ const BrandManagement: React.FC = () => {
   };
 
   // Handle edit brand
-  const handleEdit = (brand: any) => {
+  const handleEdit = (brand: Brand) => {
     setEditingBrand(brand);
     form.reset({
       name: brand.name,

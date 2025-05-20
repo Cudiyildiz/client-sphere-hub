@@ -33,8 +33,20 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/use-toast';
 
+// Define the Campaign type
+interface Campaign {
+  id: number;
+  name: string;
+  description: string;
+  status: 'Draft' | 'Scheduled' | 'Active' | 'Completed';
+  customers: number;
+  messages: number;
+  startDate: string;
+  endDate: string;
+}
+
 // Sample campaign data
-const initialCampaigns = [
+const initialCampaigns: Campaign[] = [
   { 
     id: 1, 
     name: 'Summer Sale 2025', 
@@ -89,9 +101,9 @@ const campaignFormSchema = z.object({
 type CampaignFormValues = z.infer<typeof campaignFormSchema>;
 
 const Campaigns: React.FC = () => {
-  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingCampaign, setEditingCampaign] = useState<any>(null);
+  const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
   const { toast } = useToast();
 
   // Form setup
@@ -113,7 +125,7 @@ const Campaigns: React.FC = () => {
       setCampaigns(
         campaigns.map((c) =>
           c.id === editingCampaign.id
-            ? { ...c, ...values }
+            ? { ...c, ...values } as Campaign
             : c
         )
       );
@@ -123,15 +135,19 @@ const Campaigns: React.FC = () => {
       });
     } else {
       // Add new campaign
-      setCampaigns([
-        ...campaigns,
-        {
-          id: campaigns.length + 1,
-          ...values,
-          customers: 0,
-          messages: 0,
-        },
-      ]);
+      const newCampaign: Campaign = {
+        id: campaigns.length + 1,
+        name: values.name,
+        description: values.description,
+        status: values.status,
+        startDate: values.startDate,
+        endDate: values.endDate,
+        customers: 0,
+        messages: 0,
+      };
+      
+      setCampaigns([...campaigns, newCampaign]);
+      
       toast({
         title: 'Campaign created',
         description: `${values.name} has been created successfully.`,
@@ -144,7 +160,7 @@ const Campaigns: React.FC = () => {
   };
 
   // Handle edit campaign
-  const handleEdit = (campaign: any) => {
+  const handleEdit = (campaign: Campaign) => {
     setEditingCampaign(campaign);
     form.reset({
       name: campaign.name,
@@ -361,8 +377,8 @@ const Campaigns: React.FC = () => {
 };
 
 interface CampaignCardProps {
-  campaign: any;
-  onEdit: (campaign: any) => void;
+  campaign: Campaign;
+  onEdit: (campaign: Campaign) => void;
   onDelete: (id: number) => void;
 }
 

@@ -39,8 +39,18 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useToast } from '@/hooks/use-toast';
 
+// Define the Staff interface
+interface Staff {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  assignedBrands: number;
+  status: 'Active' | 'Inactive';
+}
+
 // Sample staff data
-const initialStaff = [
+const initialStaff: Staff[] = [
   { id: 1, name: 'John Doe', email: 'john@example.com', role: 'Senior Manager', assignedBrands: 8, status: 'Active' },
   { id: 2, name: 'Sarah Smith', email: 'sarah@example.com', role: 'Account Manager', assignedBrands: 5, status: 'Active' },
   { id: 3, name: 'Michael Johnson', email: 'michael@example.com', role: 'Support Specialist', assignedBrands: 12, status: 'Active' },
@@ -59,10 +69,10 @@ const staffFormSchema = z.object({
 type StaffFormValues = z.infer<typeof staffFormSchema>;
 
 const StaffManagement: React.FC = () => {
-  const [staff, setStaff] = useState(initialStaff);
+  const [staff, setStaff] = useState<Staff[]>(initialStaff);
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingStaff, setEditingStaff] = useState<any>(null);
+  const [editingStaff, setEditingStaff] = useState<Staff | null>(null);
   const { toast } = useToast();
 
   // Form setup
@@ -91,7 +101,7 @@ const StaffManagement: React.FC = () => {
       setStaff(
         staff.map((s) =>
           s.id === editingStaff.id
-            ? { ...s, ...values }
+            ? { ...s, ...values } as Staff
             : s
         )
       );
@@ -101,14 +111,17 @@ const StaffManagement: React.FC = () => {
       });
     } else {
       // Add new staff
-      setStaff([
-        ...staff,
-        {
-          id: staff.length + 1,
-          ...values,
-          assignedBrands: 0,
-        },
-      ]);
+      const newStaff: Staff = {
+        id: staff.length + 1,
+        name: values.name,
+        email: values.email,
+        role: values.role,
+        status: values.status,
+        assignedBrands: 0
+      };
+      
+      setStaff([...staff, newStaff]);
+      
       toast({
         title: 'Staff added',
         description: `${values.name} has been added successfully.`,
@@ -121,7 +134,7 @@ const StaffManagement: React.FC = () => {
   };
 
   // Handle edit staff
-  const handleEdit = (staffMember: any) => {
+  const handleEdit = (staffMember: Staff) => {
     setEditingStaff(staffMember);
     form.reset({
       name: staffMember.name,
