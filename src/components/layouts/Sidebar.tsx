@@ -23,23 +23,23 @@ const Sidebar: React.FC = () => {
     switch (user?.role) {
       case 'admin':
         return [
-          { path: '/admin', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { path: '/admin/staff', label: 'Staff Management', icon: <Users size={20} /> },
-          { path: '/admin/brands', label: 'Brand Management', icon: <Building2 size={20} /> },
-          { path: '/admin/subscription', label: 'Subscription Plans', icon: <CreditCard size={20} /> },
-          { path: '/admin/settings', label: 'Settings', icon: <Settings size={20} /> },
+          { path: '/admin', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
+          { path: '/admin/staff', label: 'Personel Yönetimi', icon: <Users size={20} /> },
+          { path: '/admin/brands', label: 'Marka Yönetimi', icon: <Building2 size={20} /> },
+          { path: '/admin/subscription', label: 'Abonelik Planları', icon: <CreditCard size={20} /> },
+          { path: '/admin/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'staff':
         return [
-          { path: '/staff', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { path: '/staff/brands', label: 'Brands', icon: <Building2 size={20} /> },
-          { path: '/staff/settings', label: 'Settings', icon: <Settings size={20} /> },
+          { path: '/staff', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
+          { path: '/staff/brands', label: 'Markalar', icon: <Building2 size={20} /> },
+          { path: '/staff/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'brand':
         return [
-          { path: '/brand', label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-          { path: '/brand/campaigns', label: 'Campaigns', icon: <MessageSquare size={20} /> },
-          { path: '/brand/settings', label: 'Settings', icon: <Settings size={20} /> },
+          { path: '/brand', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
+          { path: '/brand/campaigns', label: 'Kampanyalar', icon: <MessageSquare size={20} /> },
+          { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       default:
         return [];
@@ -91,7 +91,7 @@ const Sidebar: React.FC = () => {
             onClick={() => logout()}
           >
             <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
+            <span>Çıkış Yap</span>
           </Button>
         </div>
       </div>

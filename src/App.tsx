@@ -20,6 +20,9 @@ import AdminSettings from "@/pages/admin/AdminSettings";
 
 // Staff pages
 import StaffDashboard from "@/pages/staff/StaffDashboard";
+import StaffBrands from "@/pages/staff/StaffBrands";
+import BrandDetail from "@/pages/staff/BrandDetail";
+import StaffSettings from "@/pages/staff/StaffSettings";
 
 // Brand pages
 import BrandDashboard from "@/pages/brand/BrandDashboard";
@@ -67,8 +70,9 @@ const App = () => (
               }
             >
               <Route index element={<StaffDashboard />} />
-              <Route path="brands" element={<h1>Marka Yönetimi</h1>} />
-              <Route path="settings" element={<h1>Personel Ayarları</h1>} />
+              <Route path="brands" element={<StaffBrands />} />
+              <Route path="brands/:brandId" element={<BrandDetail />} />
+              <Route path="settings" element={<StaffSettings />} />
             </Route>
             
             {/* Brand routes */}
