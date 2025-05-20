@@ -1,26 +1,97 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+
+// Auth
+import Login from "@/pages/Login";
+
+// Admin pages
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import StaffManagement from "@/pages/admin/StaffManagement";
+import BrandManagement from "@/pages/admin/BrandManagement";
+
+// Staff pages
+import StaffDashboard from "@/pages/staff/StaffDashboard";
+
+// Brand pages
+import BrandDashboard from "@/pages/brand/BrandDashboard";
+import Campaigns from "@/pages/brand/Campaigns";
+
+// 404 page
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            
+            {/* Admin routes */}
+            <Route
+              path="/admin"
+              element={
+                <ProtectedRoute allowedRoles={["admin"]}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<AdminDashboard />} />
+              <Route path="staff" element={<StaffManagement />} />
+              <Route path="brands" element={<BrandManagement />} />
+              <Route path="subscription" element={<h1>Subscription Plans</h1>} />
+              <Route path="settings" element={<h1>Admin Settings</h1>} />
+            </Route>
+            
+            {/* Staff routes */}
+            <Route
+              path="/staff"
+              element={
+                <ProtectedRoute allowedRoles={["staff"]}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<StaffDashboard />} />
+              <Route path="brands" element={<h1>Manage Brands</h1>} />
+              <Route path="settings" element={<h1>Staff Settings</h1>} />
+            </Route>
+            
+            {/* Brand routes */}
+            <Route
+              path="/brand"
+              element={
+                <ProtectedRoute allowedRoles={["brand"]}>
+                  <DashboardLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<BrandDashboard />} />
+              <Route path="campaigns" element={<Campaigns />} />
+              <Route path="settings" element={<h1>Brand Settings</h1>} />
+            </Route>
+            
+            {/* Redirect root to login */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
+            
+            {/* 404 route */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 
