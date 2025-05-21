@@ -58,6 +58,8 @@ const App = () => (
               <Route path="staff" element={<StaffManagement />} />
               <Route path="brands" element={<BrandManagement />} />
               <Route path="subscription" element={<SubscriptionPlans />} />
+              <Route path="analytics" element={<h1>Sistem İstatistikleri</h1>} />
+              <Route path="messages" element={<h1>Marka Mesajları</h1>} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
             
@@ -73,6 +75,9 @@ const App = () => (
               <Route index element={<StaffDashboard />} />
               <Route path="brands" element={<StaffBrands />} />
               <Route path="brands/:brandId" element={<BrandDetail />} />
+              <Route path="campaigns" element={<h1>Kampanyalar</h1>} />
+              <Route path="messages" element={<h1>Müşteri Mesajları</h1>} />
+              <Route path="analytics" element={<h1>İstatistikler</h1>} />
               <Route path="settings" element={<StaffSettings />} />
             </Route>
             
@@ -88,7 +93,9 @@ const App = () => (
               <Route index element={<BrandDashboard />} />
               <Route path="customers" element={<Customers />} />
               <Route path="campaigns" element={<Campaigns />} />
-              <Route path="settings" element={<h1>Marka Ayarları</h1>} />
+              <Route path="messages" element={<h1>Müşteri Mesajları</h1>} />
+              <Route path="tags" element={<h1>Müşteri Etiketleri</h1>} />
+              <Route path="settings" element={<h1>Ayarlar</h1>} />
             </Route>
             
             {/* Redirect root to login */}

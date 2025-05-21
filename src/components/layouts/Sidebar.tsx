@@ -8,7 +8,10 @@ import {
   Building2, 
   MessageSquare,
   Settings,
-  LogOut
+  LogOut,
+  BarChart,
+  Calendar,
+  Tag
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -27,19 +30,26 @@ const Sidebar: React.FC = () => {
           { path: '/admin/staff', label: 'Personel Yönetimi', icon: <Users size={20} /> },
           { path: '/admin/brands', label: 'Marka Yönetimi', icon: <Building2 size={20} /> },
           { path: '/admin/subscription', label: 'Abonelik Planları', icon: <CreditCard size={20} /> },
+          { path: '/admin/analytics', label: 'Sistem İstatistikleri', icon: <BarChart size={20} /> },
+          { path: '/admin/messages', label: 'Marka Mesajları', icon: <MessageSquare size={20} /> },
           { path: '/admin/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'staff':
         return [
           { path: '/staff', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
           { path: '/staff/brands', label: 'Markalar', icon: <Building2 size={20} /> },
+          { path: '/staff/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
+          { path: '/staff/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
+          { path: '/staff/analytics', label: 'İstatistikler', icon: <BarChart size={20} /> },
           { path: '/staff/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'brand':
         return [
           { path: '/brand', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
           { path: '/brand/customers', label: 'Müşteriler', icon: <Users size={20} /> },
-          { path: '/brand/campaigns', label: 'Kampanyalar', icon: <MessageSquare size={20} /> },
+          { path: '/brand/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
+          { path: '/brand/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
+          { path: '/brand/tags', label: 'Müşteri Etiketleri', icon: <Tag size={20} /> },
           { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       default:
