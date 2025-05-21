@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowUpRight, HardDrive, Server, Database, CloudCog, ArrowDownload } from 'lucide-react';
+import { ArrowUpRight, HardDrive, Server, Database, CloudCog, ArrowDown } from 'lucide-react';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell
@@ -94,7 +94,7 @@ const AdminAnalytics: React.FC = () => {
             </SelectContent>
           </Select>
           <Button variant="outline">
-            <ArrowDownload className="mr-2 h-4 w-4" />
+            <ArrowDown className="mr-2 h-4 w-4" />
             Rapor İndir
           </Button>
         </div>

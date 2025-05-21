@@ -109,6 +109,13 @@ const ApiIntegrations: React.FC = () => {
     return apiServices.find(service => service.id === serviceId);
   };
   
+  const navigateToConnectTab = () => {
+    const tabElement = document.querySelector('[data-value="connect"]');
+    if (tabElement) {
+      (tabElement as HTMLElement).click();
+    }
+  };
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -342,7 +349,7 @@ const ApiIntegrations: React.FC = () => {
                   ) : (
                     <div className="flex flex-col items-center justify-center p-6 text-center border rounded-md bg-slate-50">
                       <p className="text-lg mb-2">Bu marka için henüz API bağlantısı bulunmuyor.</p>
-                      <Button onClick={() => document.querySelector('[data-value="connect"]')?.click()}>
+                      <Button onClick={navigateToConnectTab}>
                         <Plus className="h-4 w-4 mr-1" /> Bağlantı Ekle
                       </Button>
                     </div>
