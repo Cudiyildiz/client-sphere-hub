@@ -38,6 +38,7 @@ const Sidebar: React.FC = () => {
       case 'brand':
         return [
           { path: '/brand', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
+          { path: '/brand/customers', label: 'Müşteriler', icon: <Users size={20} /> },
           { path: '/brand/campaigns', label: 'Kampanyalar', icon: <MessageSquare size={20} /> },
           { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];

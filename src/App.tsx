@@ -26,6 +26,7 @@ import StaffSettings from "@/pages/staff/StaffSettings";
 
 // Brand pages
 import BrandDashboard from "@/pages/brand/BrandDashboard";
+import Customers from "@/pages/brand/Customers";
 import Campaigns from "@/pages/brand/Campaigns";
 
 // 404 page
@@ -85,6 +86,7 @@ const App = () => (
               }
             >
               <Route index element={<BrandDashboard />} />
+              <Route path="customers" element={<Customers />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="settings" element={<h1>Marka Ayarları</h1>} />
             </Route>

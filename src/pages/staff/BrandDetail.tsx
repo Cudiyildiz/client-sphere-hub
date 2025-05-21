@@ -61,7 +61,7 @@ const brandData = [
       { month: 'Mayıs', customers: 1190, campaigns: 7, success: 91 },
       { month: 'Haziran', customers: 1245, campaigns: 8, success: 92 }
     ],
-    campaigns: [
+    campaignsList: [
       { id: 1, name: 'Yaz İndirimi 2025', status: 'Aktif', customers: 423, messages: 124, success: 94 },
       { id: 2, name: 'Yeni Ürün Lansmanı', status: 'Aktif', customers: 256, messages: 78, success: 87 },
       { id: 3, name: 'Müşteri Sadakat Programı', status: 'Aktif', customers: 198, messages: 45, success: 95 },
@@ -100,7 +100,7 @@ const brandData = [
       { month: 'Mayıs', customers: 865, campaigns: 5, success: 85 },
       { month: 'Haziran', customers: 876, campaigns: 5, success: 84 }
     ],
-    campaigns: [
+    campaignsList: [
       { id: 1, name: 'Yazılım Güncelleme Kampanyası', status: 'Aktif', customers: 320, messages: 95, success: 88 },
       { id: 2, name: 'Eğitim Webinarları', status: 'Aktif', customers: 210, messages: 65, success: 92 },
       { id: 3, name: 'Müşteri Geri Bildirim', status: 'Aktif', customers: 175, messages: 42, success: 76 },
@@ -139,7 +139,7 @@ const brandData = [
       { month: 'Mayıs', customers: 3480, campaigns: 11, success: 76 },
       { month: 'Haziran', customers: 3542, campaigns: 12, success: 76 }
     ],
-    campaigns: [
+    campaignsList: [
       { id: 1, name: 'Organik Ürünler', status: 'Aktif', customers: 980, messages: 340, success: 78 },
       { id: 2, name: 'Sağlıklı Beslenme Kampanyası', status: 'Aktif', customers: 720, messages: 245, success: 75 },
       { id: 3, name: 'Yaz Menüleri', status: 'Aktif', customers: 850, messages: 320, success: 80 },
@@ -178,7 +178,7 @@ const brandData = [
       { month: 'Mayıs', customers: 2100, campaigns: 9, success: 88 },
       { month: 'Haziran', customers: 2156, campaigns: 10, success: 88 }
     ],
-    campaigns: [
+    campaignsList: [
       { id: 1, name: 'Yaz Koleksiyonu', status: 'Aktif', customers: 780, messages: 320, success: 91 },
       { id: 2, name: 'İndirim Günleri', status: 'Aktif', customers: 650, messages: 240, success: 87 },
       { id: 3, name: 'Özel Üyelik Programı', status: 'Aktif', customers: 420, messages: 180, success: 85 },
@@ -271,8 +271,8 @@ const BrandDetail: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{brand.campaigns.filter(c => c.status === 'Aktif').length}</div>
-            <p className="text-xs text-muted-foreground">{brand.campaigns.length} toplam kampanya</p>
+            <div className="text-2xl font-bold">{brand.campaignsList.filter(c => c.status === 'Aktif').length}</div>
+            <p className="text-xs text-muted-foreground">{brand.campaignsList.length} toplam kampanya</p>
           </CardContent>
         </Card>
         <Card>
@@ -426,7 +426,7 @@ const BrandDetail: React.FC = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {brand.campaigns.map((campaign) => (
+                  {brand.campaignsList.map((campaign) => (
                     <TableRow key={campaign.id}>
                       <TableCell className="font-medium">{campaign.name}</TableCell>
                       <TableCell>
@@ -449,7 +449,7 @@ const BrandDetail: React.FC = () => {
               <div className="mt-6">
                 <ChartContainer className="aspect-[3/2]" config={chartConfig}>
                   <RechartsBarChart 
-                    data={brand.campaigns.filter(c => c.status === 'Aktif')} 
+                    data={brand.campaignsList.filter(c => c.status === 'Aktif')} 
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   >
                     <CartesianGrid strokeDasharray="3 3" />
