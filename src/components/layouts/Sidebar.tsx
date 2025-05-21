@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { 
@@ -11,7 +10,8 @@ import {
   LogOut,
   BarChart,
   Calendar,
-  Tag
+  Tag,
+  Link2
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -39,6 +39,7 @@ const Sidebar: React.FC = () => {
           { path: '/staff', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
           { path: '/staff/brands', label: 'Markalar', icon: <Building2 size={20} /> },
           { path: '/staff/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
+          { path: '/staff/api-integrations', label: 'API Entegrasyonları', icon: <Link2 size={20} /> },
           { path: '/staff/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
           { path: '/staff/analytics', label: 'İstatistikler', icon: <BarChart size={20} /> },
           { path: '/staff/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
@@ -49,7 +50,7 @@ const Sidebar: React.FC = () => {
           { path: '/brand/customers', label: 'Müşteriler', icon: <Users size={20} /> },
           { path: '/brand/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
           { path: '/brand/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
-          { path: '/brand/BrandSettings', label: 'Ayarlar', icon: <Settings size={20} /> },
+          { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       default:
         return [];

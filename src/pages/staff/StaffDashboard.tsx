@@ -1,24 +1,9 @@
 import React from 'react';
-import { Building2, MessageSquare, CheckCircle, Clock, Link2, ArrowRight } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Building2, MessageSquare, CheckCircle, Clock } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useNavigate } from 'react-router-dom';
-
-// API entegrasyonu için örnek veri
-const apiIntegrations = [
-  { id: 1, brand: 'Akme Şirket', api: 'Shopify', status: 'active', icon: '🛒', lastSync: '2 saat önce' },
-  { id: 2, brand: 'Tech Çözümleri', api: 'HubSpot', status: 'active', icon: '🔄', lastSync: '5 saat önce' },
-  { id: 3, brand: 'Global Yiyecek', api: 'Mailchimp', status: 'error', icon: '📧', lastSync: '1 gün önce' }
-];
 
 const StaffDashboard: React.FC = () => {
-  const navigate = useNavigate();
-
-  const handleNavigateToApiIntegrations = () => {
-    navigate('/staff/api-integrations');
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -133,54 +118,6 @@ const StaffDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </div>
-
-      {/* API Entegrasyonları Bölümü */}
-      <Card>
-        <CardHeader className="flex justify-between items-start">
-          <div>
-            <CardTitle>API Entegrasyonları</CardTitle>
-            <CardDescription>Marka API bağlantıları ve durumları</CardDescription>
-          </div>
-          <Button onClick={handleNavigateToApiIntegrations}>
-            Tüm Entegrasyonlar
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {apiIntegrations.map((item) => (
-              <div key={item.id} className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0">
-                <div className="flex items-center">
-                  <div className="mr-3 flex h-10 w-10 items-center justify-center rounded-md bg-slate-100">
-                    <span className="text-xl">{item.icon}</span>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium">{item.brand}</p>
-                      <Badge variant={item.status === 'active' ? 'default' : 'destructive'} className="text-xs">
-                        {item.status === 'active' ? 'Aktif' : 'Hata'}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-muted-foreground flex items-center">
-                      <Link2 className="mr-1 h-3 w-3" />
-                      {item.api} API
-                    </p>
-                    <p className="text-xs text-muted-foreground">Son senkronizasyon: {item.lastSync}</p>
-                  </div>
-                </div>
-                <Button variant="outline" size="sm" onClick={handleNavigateToApiIntegrations}>
-                  Yönet
-                </Button>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-        <CardFooter className="border-t bg-slate-50 px-6 py-3">
-          <p className="text-sm text-muted-foreground">
-            Markaların API entegrasyonlarını yönetmek ve yeni eklemek için API Entegrasyonları sayfasını ziyaret edin.
-          </p>
-        </CardFooter>
-      </Card>
     </div>
   );
 };
