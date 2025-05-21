@@ -17,17 +17,24 @@ import StaffManagement from "@/pages/admin/StaffManagement";
 import BrandManagement from "@/pages/admin/BrandManagement";
 import SubscriptionPlans from "@/pages/admin/SubscriptionPlans";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminAnalytics from "@/pages/admin/Analytics";
+import AdminMessages from "@/pages/admin/Messages";
 
 // Staff pages
 import StaffDashboard from "@/pages/staff/StaffDashboard";
 import StaffBrands from "@/pages/staff/StaffBrands";
 import BrandDetail from "@/pages/staff/BrandDetail";
 import StaffSettings from "@/pages/staff/StaffSettings";
+import StaffCampaigns from "@/pages/staff/Campaigns";
+import StaffMessages from "@/pages/staff/Messages";
+import StaffAnalytics from "@/pages/staff/Analytics";
 
 // Brand pages
 import BrandDashboard from "@/pages/brand/BrandDashboard";
 import Customers from "@/pages/brand/Customers";
 import Campaigns from "@/pages/brand/Campaigns";
+import BrandMessages from "@/pages/brand/Messages";
+import BrandSettings from "@/pages/brand/Settings";
 
 // 404 page
 import NotFound from "./pages/NotFound";
@@ -58,8 +65,8 @@ const App = () => (
               <Route path="staff" element={<StaffManagement />} />
               <Route path="brands" element={<BrandManagement />} />
               <Route path="subscription" element={<SubscriptionPlans />} />
-              <Route path="analytics" element={<h1>Sistem İstatistikleri</h1>} />
-              <Route path="messages" element={<h1>Marka Mesajları</h1>} />
+              <Route path="analytics" element={<AdminAnalytics />} />
+              <Route path="messages" element={<AdminMessages />} />
               <Route path="settings" element={<AdminSettings />} />
             </Route>
             
@@ -75,9 +82,9 @@ const App = () => (
               <Route index element={<StaffDashboard />} />
               <Route path="brands" element={<StaffBrands />} />
               <Route path="brands/:brandId" element={<BrandDetail />} />
-              <Route path="campaigns" element={<h1>Kampanyalar</h1>} />
-              <Route path="messages" element={<h1>Müşteri Mesajları</h1>} />
-              <Route path="analytics" element={<h1>İstatistikler</h1>} />
+              <Route path="campaigns" element={<StaffCampaigns />} />
+              <Route path="messages" element={<StaffMessages />} />
+              <Route path="analytics" element={<StaffAnalytics />} />
               <Route path="settings" element={<StaffSettings />} />
             </Route>
             
@@ -93,9 +100,8 @@ const App = () => (
               <Route index element={<BrandDashboard />} />
               <Route path="customers" element={<Customers />} />
               <Route path="campaigns" element={<Campaigns />} />
-              <Route path="messages" element={<h1>Müşteri Mesajları</h1>} />
-              <Route path="tags" element={<h1>Müşteri Etiketleri</h1>} />
-              <Route path="settings" element={<h1>Ayarlar</h1>} />
+              <Route path="messages" element={<BrandMessages />} />
+              <Route path="settings" element={<BrandSettings />} />
             </Route>
             
             {/* Redirect root to login */}
