@@ -77,15 +77,15 @@ const Login: React.FC = () => {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8">
       <div className="mx-auto w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-primary">CRM Platform</h1>
-          <p className="mt-2 text-muted-foreground">Sign in to your account</p>
+          <h1 className="text-3xl font-bold text-primary">Metricly CRM</h1>
+          <p className="mt-2 text-muted-foreground">Hesabınıza giriş yapın</p>
         </div>
         
         <Card>
           <CardHeader>
             <CardTitle>Login</CardTitle>
             <CardDescription>
-              Access your dashboard based on your role
+              Rolünüze göre panele erişin
             </CardDescription>
           </CardHeader>
           
@@ -111,9 +111,9 @@ const Login: React.FC = () => {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>Şifre</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Enter your password" {...field} />
+                        <Input type="password" placeholder="Şifrenizi girin" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -125,7 +125,7 @@ const Login: React.FC = () => {
                   name="role"
                   render={({ field }) => (
                     <FormItem className="space-y-3">
-                      <FormLabel>Account Type</FormLabel>
+                      <FormLabel>Hesap Tipi</FormLabel>
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
@@ -142,13 +142,13 @@ const Login: React.FC = () => {
                             <FormControl>
                               <RadioGroupItem value="staff" />
                             </FormControl>
-                            <FormLabel className="font-normal">Staff</FormLabel>
+                            <FormLabel className="font-normal">Personel</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-3 space-y-0">
                             <FormControl>
                               <RadioGroupItem value="brand" />
                             </FormControl>
-                            <FormLabel className="font-normal">Brand</FormLabel>
+                            <FormLabel className="font-normal">Marka</FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -160,11 +160,11 @@ const Login: React.FC = () => {
               
               <CardFooter className="flex flex-col">
                 <Button type="submit" className="w-full" disabled={loading}>
-                  {loading ? 'Signing in...' : 'Sign in'}
+                  {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
                 </Button>
                 
                 <div className="mt-4 text-center text-sm text-muted-foreground">
-                  <p>Demo accounts (click to fill):</p>
+                  <p>Demo hesaplar (tıklayarak doldurun):</p>
                   <div className="mt-2 flex justify-center space-x-3">
                     <Button
                       type="button"
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
                       size="sm"
                       onClick={() => fillDemoCredentials('staff')}
                     >
-                      Staff
+                      Personel
                     </Button>
                     <Button
                       type="button"
@@ -188,7 +188,7 @@ const Login: React.FC = () => {
                       size="sm"
                       onClick={() => fillDemoCredentials('brand')}
                     >
-                      Brand
+                      Marka
                     </Button>
                   </div>
                 </div>

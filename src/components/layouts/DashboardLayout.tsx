@@ -4,11 +4,12 @@ import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/layouts/Sidebar';
 import Topbar from '@/components/layouts/Topbar';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { toast } = useToast();
-  
+    
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };

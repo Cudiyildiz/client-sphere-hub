@@ -87,7 +87,7 @@ const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, showWelcomeToast }) =>
               <div className="flex items-center cursor-pointer">
                 <div className="hidden md:block mr-3">
                   <p className="text-sm font-medium">{user?.name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{user?.role} Account</p>
+                  <p className="text-xs text-muted-foreground capitalize">{user?.role} Hesabım</p>
                 </div>
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
                   {user?.name.charAt(0)}
@@ -95,19 +95,19 @@ const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, showWelcomeToast }) =>
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Hesabım</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
+                <span>Profil</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+                <span>Ayarlar</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>
-                <span>Log out</span>
+                <span>Çıkış Yap</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

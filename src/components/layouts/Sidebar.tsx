@@ -49,8 +49,7 @@ const Sidebar: React.FC = () => {
           { path: '/brand/customers', label: 'Müşteriler', icon: <Users size={20} /> },
           { path: '/brand/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
           { path: '/brand/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
-          { path: '/brand/tags', label: 'Müşteri Etiketleri', icon: <Tag size={20} /> },
-          { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
+          { path: '/brand/BrandSettings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       default:
         return [];
@@ -62,7 +61,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="sidebar hidden h-screen w-64 flex-shrink-0 flex-col border-r bg-sidebar md:flex">
       <div className="flex h-16 items-center border-b px-6">
-        <h1 className="text-lg font-bold text-primary">CRM Platform</h1>
+        <h1 className="text-lg font-bold text-primary">DataCrux</h1>
       </div>
 
       <div className="flex flex-1 flex-col justify-between overflow-y-auto py-4">
