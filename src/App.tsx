@@ -28,6 +28,7 @@ import StaffSettings from "@/pages/staff/StaffSettings";
 import StaffCampaigns from "@/pages/staff/Campaigns";
 import StaffMessages from "@/pages/staff/Messages";
 import StaffAnalytics from "@/pages/staff/Analytics";
+import ApiIntegrations from "@/pages/staff/ApiIntegrations";
 
 // Brand pages
 import BrandDashboard from "@/pages/brand/BrandDashboard";
@@ -85,6 +86,7 @@ const App = () => (
               <Route path="campaigns" element={<StaffCampaigns />} />
               <Route path="messages" element={<StaffMessages />} />
               <Route path="analytics" element={<StaffAnalytics />} />
+              <Route path="api-integrations" element={<ApiIntegrations />} />
               <Route path="settings" element={<StaffSettings />} />
             </Route>
             
