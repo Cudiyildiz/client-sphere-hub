@@ -41,7 +41,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 
 // API kategorileri
@@ -952,17 +951,7 @@ const ApiIntegrations: React.FC = () => {
               İptal
             </Button>
             <Button 
-              onClick={() => {
-                console.log('API Bağlantısı kurma işlemi başlatılıyor:', {
-                  selectedBrand,
-                  selectedService,
-                  apiKey: apiKey ? '*****' : '',
-                  hasWebhookUrl: !!webhookUrl,
-                  autoSync,
-                  syncInterval
-                });
-                handleConnect();
-              }} 
+              onClick={handleConnect} 
               disabled={isConnecting || !apiKey || !selectedBrand || !selectedService}
             >
               {isConnecting ? 'Bağlanıyor...' : 'API Bağlantısı Kur'}

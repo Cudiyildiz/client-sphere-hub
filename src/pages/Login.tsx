@@ -7,15 +7,15 @@ import { useForm } from 'react-hook-form';
 import { useAuth, UserRole } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { LogIn, User, Building2, ShieldCheck } from 'lucide-react';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  email: z.string().email({ message: 'Lütfen geçerli bir e-posta adresi girin' }),
+  password: z.string().min(6, { message: 'Şifre en az 6 karakter olmalıdır' }),
   role: z.enum(['admin', 'staff', 'brand']),
 });
 
@@ -54,14 +54,14 @@ const Login: React.FC = () => {
       }
       
       toast({
-        title: 'Login successful',
-        description: `Welcome back!`,
+        title: 'Giriş başarılı',
+        description: `Hoş geldiniz!`,
       });
     } catch (err) {
       toast({
         variant: 'destructive',
-        title: 'Login failed',
-        description: error || 'An error occurred during login',
+        title: 'Giriş başarısız',
+        description: error || 'Giriş sırasında bir hata oluştu',
       });
     }
   };
@@ -74,18 +74,22 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-8">
-      <div className="mx-auto w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-50 to-blue-100 p-4">
+      <div className="w-full max-w-md">
+        {/* Logo and header */}
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-primary">Metricly CRM</h1>
-          <p className="mt-2 text-muted-foreground">Hesabınıza giriş yapın</p>
+          <div className="mb-3 inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <ShieldCheck size={32} />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-primary">DataCrux CRM</h1>
+          <p className="mt-2 text-muted-foreground">Müşteri ilişkileri, düzenleme, analiz için tek platform</p>
         </div>
         
-        <Card>
-          <CardHeader>
-            <CardTitle>Login</CardTitle>
+        <Card className="border-none shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl">Giriş Yap</CardTitle>
             <CardDescription>
-              Rolünüze göre panele erişin
+              Hesabınıza erişmek için bilgilerinizi girin
             </CardDescription>
           </CardHeader>
           
@@ -97,9 +101,13 @@ const Login: React.FC = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>E-posta</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter your email" {...field} />
+                        <Input 
+                          placeholder="E-posta adresiniz" 
+                          {...field} 
+                          className="h-11"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -113,7 +121,12 @@ const Login: React.FC = () => {
                     <FormItem>
                       <FormLabel>Şifre</FormLabel>
                       <FormControl>
-                        <Input type="password" placeholder="Şifrenizi girin" {...field} />
+                        <Input 
+                          type="password" 
+                          placeholder="Şifreniz" 
+                          {...field} 
+                          className="h-11"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -129,26 +142,37 @@ const Login: React.FC = () => {
                       <FormControl>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          className="flex flex-col space-y-1"
+                          value={field.value}
+                          className="flex flex-col space-y-1 sm:flex-row sm:space-x-4 sm:space-y-0"
                         >
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                          <FormItem className="flex items-center space-x-2 space-y-0 rounded-md border p-3 hover:bg-slate-50">
                             <FormControl>
                               <RadioGroupItem value="admin" />
                             </FormControl>
-                            <FormLabel className="font-normal">Admin</FormLabel>
+                            <FormLabel className="flex cursor-pointer items-center gap-2 font-normal">
+                              <ShieldCheck size={16} />
+                              Admin
+                            </FormLabel>
                           </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                          
+                          <FormItem className="flex items-center space-x-2 space-y-0 rounded-md border p-3 hover:bg-slate-50">
                             <FormControl>
                               <RadioGroupItem value="staff" />
                             </FormControl>
-                            <FormLabel className="font-normal">Personel</FormLabel>
+                            <FormLabel className="flex cursor-pointer items-center gap-2 font-normal">
+                              <User size={16} />
+                              Personel
+                            </FormLabel>
                           </FormItem>
-                          <FormItem className="flex items-center space-x-3 space-y-0">
+                          
+                          <FormItem className="flex items-center space-x-2 space-y-0 rounded-md border p-3 hover:bg-slate-50">
                             <FormControl>
                               <RadioGroupItem value="brand" />
                             </FormControl>
-                            <FormLabel className="font-normal">Marka</FormLabel>
+                            <FormLabel className="flex cursor-pointer items-center gap-2 font-normal">
+                              <Building2 size={16} />
+                              Marka
+                            </FormLabel>
                           </FormItem>
                         </RadioGroup>
                       </FormControl>
@@ -158,20 +182,27 @@ const Login: React.FC = () => {
                 />
               </CardContent>
               
-              <CardFooter className="flex flex-col">
-                <Button type="submit" className="w-full" disabled={loading}>
+              <CardFooter className="flex flex-col space-y-4">
+                <Button 
+                  type="submit" 
+                  className="h-11 w-full"
+                  disabled={loading}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
                   {loading ? 'Giriş yapılıyor...' : 'Giriş yap'}
                 </Button>
                 
-                <div className="mt-4 text-center text-sm text-muted-foreground">
-                  <p>Demo hesaplar (tıklayarak doldurun):</p>
-                  <div className="mt-2 flex justify-center space-x-3">
+                <div className="text-center">
+                  <p className="text-sm font-medium text-muted-foreground">Demo hesaplar</p>
+                  <div className="mt-2 flex flex-wrap justify-center gap-2">
                     <Button
                       type="button"
                       variant="outline"
                       size="sm"
                       onClick={() => fillDemoCredentials('admin')}
+                      className="h-9"
                     >
+                      <ShieldCheck className="mr-1 h-4 w-4" />
                       Admin
                     </Button>
                     <Button
@@ -179,7 +210,9 @@ const Login: React.FC = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => fillDemoCredentials('staff')}
+                      className="h-9"
                     >
+                      <User className="mr-1 h-4 w-4" />
                       Personel
                     </Button>
                     <Button
@@ -187,7 +220,9 @@ const Login: React.FC = () => {
                       variant="outline"
                       size="sm"
                       onClick={() => fillDemoCredentials('brand')}
+                      className="h-9"
                     >
+                      <Building2 className="mr-1 h-4 w-4" />
                       Marka
                     </Button>
                   </div>
@@ -196,6 +231,10 @@ const Login: React.FC = () => {
             </form>
           </Form>
         </Card>
+        
+        <div className="mt-6 text-center text-sm text-muted-foreground">
+          <p>© {new Date().getFullYear()} DataCrux CRM. Tüm hakları saklıdır.</p>
+        </div>
       </div>
     </div>
   );
