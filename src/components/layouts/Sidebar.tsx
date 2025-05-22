@@ -60,7 +60,7 @@ const Sidebar: React.FC = () => {
   const navItems = getNavItems();
 
   return (
-    <div className="sidebar hidden h-screen w-64 flex-shrink-0 flex-col border-r bg-sidebar md:flex">
+    <div className="sidebar h-full w-64 flex-shrink-0 flex-col border-r bg-sidebar flex">
       <div className="flex h-16 items-center border-b px-6">
         <h1 className="text-lg font-bold text-primary">DataCrux</h1>
       </div>
@@ -73,8 +73,8 @@ const Sidebar: React.FC = () => {
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  "nav-link",
-                  isActive && "active"
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
+                  isActive ? "bg-accent text-accent-foreground" : "text-muted-foreground"
                 )
               }
             >

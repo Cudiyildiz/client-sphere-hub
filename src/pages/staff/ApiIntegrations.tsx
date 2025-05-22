@@ -765,7 +765,7 @@ const ApiIntegrations: React.FC = () => {
                       <SelectValue placeholder="API kategorisi seçin (opsiyonel)" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">Tüm Kategoriler</SelectItem>
+                      <SelectItem value="all">Tüm Kategoriler</SelectItem>
                       {apiCategories.map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}

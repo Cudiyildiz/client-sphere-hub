@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '@/components/layouts/Sidebar';
 import Topbar from '@/components/layouts/Topbar';
@@ -8,8 +7,30 @@ import { useTranslation } from 'react-i18next';
 
 const DashboardLayout: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const { toast } = useToast();
     
+  // Mobil ekran kontrolü
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      // Mobil ekranda sidebar'ı otomatik olarak kapat
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    
+    // İlk yükleme kontrolü
+    checkMobile();
+    
+    // Ekran boyutu değiştiğinde kontrol et
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -24,7 +45,19 @@ const DashboardLayout: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-background">
-      <div className={`sidebar transition-all duration-300 ${isSidebarOpen ? '' : 'hidden'}`}>
+      {/* Mobil için arka plan overlay */}
+      {isMobile && isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-10"
+          onClick={toggleSidebar}
+        />
+      )}
+      
+      <div 
+        className={`sidebar z-20 transition-all duration-300 ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } ${isMobile ? 'fixed h-full w-64' : ''}`}
+      >
         <Sidebar />
       </div>
       <div className="flex flex-1 flex-col overflow-hidden">

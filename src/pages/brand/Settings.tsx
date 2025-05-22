@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -263,16 +262,16 @@ const BrandSettings: React.FC = () => {
             <CardContent className="space-y-4">
               <div className="grid gap-4">
                 <div className="grid gap-2">
-                  <FormLabel>Mevcut Şifre</FormLabel>
-                  <Input type="password" />
+                  <label htmlFor="current-password" className="text-sm font-medium">Mevcut Şifre</label>
+                  <Input id="current-password" type="password" />
                 </div>
                 <div className="grid gap-2">
-                  <FormLabel>Yeni Şifre</FormLabel>
-                  <Input type="password" />
+                  <label htmlFor="new-password" className="text-sm font-medium">Yeni Şifre</label>
+                  <Input id="new-password" type="password" />
                 </div>
                 <div className="grid gap-2">
-                  <FormLabel>Yeni Şifre (Tekrar)</FormLabel>
-                  <Input type="password" />
+                  <label htmlFor="confirm-password" className="text-sm font-medium">Yeni Şifre (Tekrar)</label>
+                  <Input id="confirm-password" type="password" />
                 </div>
               </div>
             </CardContent>
