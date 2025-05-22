@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus, MessageSquare, MoreHorizontal, Edit, Trash, Users, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -91,93 +90,143 @@ const initialCampaigns: Campaign[] = [
 
 // Form schema
 const campaignFormSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  description: z.string().min(10, { message: 'Description must be at least 10 characters' }),
+  name: z.string().min(2, { message: 'İsim en az 2 karakter olmalıdır' }),
+  description: z.string().min(10, { message: 'Açıklama en az 10 karakter olmalıdır' }),
   status: z.enum(['Draft', 'Scheduled', 'Active', 'Completed']),
-  startDate: z.string().min(1, { message: 'Start date is required' }),
-  endDate: z.string().min(1, { message: 'End date is required' }),
+  startDate: z.string().min(1, { message: 'Başlangıç tarihi gereklidir' }),
+  endDate: z.string().min(1, { message: 'Bitiş tarihi gereklidir' }),
 });
 
 type CampaignFormValues = z.infer<typeof campaignFormSchema>;
 
+const defaultFormValues: CampaignFormValues = {
+  name: '',
+  description: '',
+  status: 'Draft',
+  startDate: '',
+  endDate: '',
+};
+
 const Campaigns: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
+  const [isFormReady, setIsFormReady] = useState(false);
   const { toast } = useToast();
 
   // Form setup
   const form = useForm<CampaignFormValues>({
     resolver: zodResolver(campaignFormSchema),
-    defaultValues: {
-      name: '',
-      description: '',
-      status: 'Draft',
-      startDate: '',
-      endDate: '',
-    },
+    defaultValues: defaultFormValues,
   });
 
-  // Handle adding new campaign
-  const onSubmit = (values: CampaignFormValues) => {
-    if (editingCampaign) {
-      // Update existing campaign
-      setCampaigns(
-        campaigns.map((c) =>
-          c.id === editingCampaign.id
-            ? { ...c, ...values } as Campaign
-            : c
-        )
-      );
-      toast({
-        title: 'Campaign updated',
-        description: `${values.name} has been updated successfully.`,
+  // Form etkileme mantığını ayrı bir useEffect içinde yönetiyoruz
+  useEffect(() => {
+    if (!isDialogOpen) return;
+    
+    if (editingCampaign && isFormReady) {
+      form.reset({
+        name: editingCampaign.name,
+        description: editingCampaign.description,
+        status: editingCampaign.status,
+        startDate: editingCampaign.startDate,
+        endDate: editingCampaign.endDate,
       });
+    } else if (isFormReady && !editingCampaign) {
+      form.reset(defaultFormValues);
+    }
+  }, [isDialogOpen, editingCampaign, isFormReady, form]);
+  
+  // Dialog açıldığında formun hazır olduğunu belirtiyoruz
+  useEffect(() => {
+    if (isDialogOpen) {
+      setIsFormReady(true);
     } else {
-      // Add new campaign
-      const newCampaign: Campaign = {
-        id: campaigns.length + 1,
-        name: values.name,
-        description: values.description,
-        status: values.status,
-        startDate: values.startDate,
-        endDate: values.endDate,
-        customers: 0,
-        messages: 0,
-      };
+      // Dialog kapandığında form hazırlığını sıfırlıyoruz
+      setIsFormReady(false);
+    }
+  }, [isDialogOpen]);
+
+  // Handle adding or updating campaign
+  const onSubmit = (values: CampaignFormValues) => {
+    try {
+      if (editingCampaign) {
+        // Update existing campaign
+        setCampaigns(prevCampaigns => 
+          prevCampaigns.map((c) =>
+            c.id === editingCampaign.id
+              ? { ...c, ...values } as Campaign
+              : c
+          )
+        );
+        toast({
+          title: 'Kampanya güncellendi',
+          description: `${values.name} başarıyla güncellendi.`,
+        });
+      } else {
+        // Add new campaign
+        const newCampaign: Campaign = {
+          id: Date.now(), // Benzersiz ID sağlıyor
+          name: values.name,
+          description: values.description,
+          status: values.status,
+          startDate: values.startDate,
+          endDate: values.endDate,
+          customers: 0,
+          messages: 0,
+        };
+        
+        setCampaigns(prevCampaigns => [...prevCampaigns, newCampaign]);
+        
+        toast({
+          title: 'Kampanya oluşturuldu',
+          description: `${values.name} başarıyla oluşturuldu.`,
+        });
+      }
       
-      setCampaigns([...campaigns, newCampaign]);
-      
+      closeDialog();
+    } catch (error) {
+      console.error('Form submission error:', error);
       toast({
-        title: 'Campaign created',
-        description: `${values.name} has been created successfully.`,
+        title: 'Bir hata oluştu',
+        description: 'Lütfen tekrar deneyin.',
+        variant: 'destructive',
       });
     }
-    
-    setIsAddDialogOpen(false);
+  };
+
+  // Dialog kapatma
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+  };
+  
+  // Yeni kampanya oluştur butonuna tıklandığında
+  const handleCreateClick = () => {
     setEditingCampaign(null);
-    form.reset();
+    setIsDialogOpen(true);
   };
 
   // Handle edit campaign
   const handleEdit = (campaign: Campaign) => {
-    setEditingCampaign(campaign);
-    form.reset({
-      name: campaign.name,
-      description: campaign.description,
-      status: campaign.status,
-      startDate: campaign.startDate,
-      endDate: campaign.endDate,
-    });
-    setIsAddDialogOpen(true);
+    try {
+      setEditingCampaign(campaign);
+      setIsDialogOpen(true);
+    } catch (error) {
+      console.error('Edit campaign error:', error);
+      toast({
+        title: 'Kampanya düzenlenemedi',
+        description: 'Lütfen tekrar deneyin.',
+        variant: 'destructive',
+      });
+    }
   };
 
   // Handle delete campaign
   const handleDelete = (id: number) => {
     setCampaigns(campaigns.filter((c) => c.id !== id));
     toast({
-      title: 'Campaign deleted',
-      description: 'The campaign has been deleted successfully.',
+      title: 'Kampanya silindi',
+      description: 'Kampanya başarıyla silindi.',
     });
   };
 
@@ -190,31 +239,24 @@ const Campaigns: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Campaign Management</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => {
-              setEditingCampaign(null);
-              form.reset({
-                name: '',
-                description: '',
-                status: 'Draft',
-                startDate: '',
-                endDate: '',
-              });
-            }}>
-              <Plus className="mr-2 h-4 w-4" /> Create Campaign
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{editingCampaign ? 'Edit Campaign' : 'Create New Campaign'}</DialogTitle>
-              <DialogDescription>
-                {editingCampaign 
-                  ? 'Update the campaign details below.' 
-                  : 'Fill in the details below to create a new marketing campaign.'}
-              </DialogDescription>
-            </DialogHeader>
+        <h1 className="text-2xl font-bold tracking-tight">Kampanya Yönetimi</h1>
+        <Button onClick={handleCreateClick}>
+          <Plus className="mr-2 h-4 w-4" /> Kampanya Oluştur
+        </Button>
+      </div>
+      
+      {/* Form dialog'u UI'den ayırıyoruz */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>{editingCampaign ? 'Kampanya Düzenle' : 'Yeni Kampanya Oluştur'}</DialogTitle>
+            <DialogDescription>
+              {editingCampaign 
+                ? 'Kampanya detaylarını güncelleyin.' 
+                : 'Yeni kampanya oluşturmak için aşağıdaki alanları doldurun.'}
+            </DialogDescription>
+          </DialogHeader>
+          {isFormReady && (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
@@ -222,9 +264,9 @@ const Campaigns: React.FC = () => {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Campaign Name</FormLabel>
+                      <FormLabel>Kampanya Adı</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter campaign name" {...field} />
+                        <Input placeholder="Kampanya adını girin" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -235,10 +277,10 @@ const Campaigns: React.FC = () => {
                   name="description"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Description</FormLabel>
+                      <FormLabel>Açıklama</FormLabel>
                       <FormControl>
                         <Textarea 
-                          placeholder="Describe the campaign purpose and goals" 
+                          placeholder="Kampanyanın amacını ve hedeflerini açıklayın" 
                           className="min-h-[100px]"
                           {...field} 
                         />
@@ -253,7 +295,7 @@ const Campaigns: React.FC = () => {
                     name="startDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Start Date</FormLabel>
+                        <FormLabel>Başlangıç Tarihi</FormLabel>
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>
@@ -266,7 +308,7 @@ const Campaigns: React.FC = () => {
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>End Date</FormLabel>
+                        <FormLabel>Bitiş Tarihi</FormLabel>
                         <FormControl>
                           <Input type="date" {...field} />
                         </FormControl>
@@ -280,33 +322,40 @@ const Campaigns: React.FC = () => {
                   name="status"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Durum</FormLabel>
                       <FormControl>
                         <select
                           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                           {...field}
                         >
-                          <option value="Draft">Draft</option>
-                          <option value="Scheduled">Scheduled</option>
-                          <option value="Active">Active</option>
-                          <option value="Completed">Completed</option>
+                          <option value="Draft">Taslak</option>
+                          <option value="Scheduled">Zamanlanmış</option>
+                          <option value="Active">Aktif</option>
+                          <option value="Completed">Tamamlandı</option>
                         </select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <DialogFooter>
-                  <Button type="submit">{editingCampaign ? 'Update' : 'Create'} Campaign</Button>
+                <DialogFooter className="flex gap-2 justify-end pt-2">
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    onClick={closeDialog}
+                  >
+                    İptal
+                  </Button>
+                  <Button type="submit">{editingCampaign ? 'Güncelle' : 'Oluştur'}</Button>
                 </DialogFooter>
               </form>
             </Form>
-          </DialogContent>
-        </Dialog>
-      </div>
+          )}
+        </DialogContent>
+      </Dialog>
       
       <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Active Campaigns</h2>
+        <h2 className="text-xl font-semibold">Aktif Kampanyalar</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {activeCampaigns.length > 0 ? (
             activeCampaigns.map((campaign) => (
@@ -318,13 +367,13 @@ const Campaigns: React.FC = () => {
               />
             ))
           ) : (
-            <p className="text-muted-foreground col-span-full">No active campaigns.</p>
+            <p className="text-muted-foreground col-span-full">Aktif kampanya yok.</p>
           )}
         </div>
       </div>
       
       <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Scheduled Campaigns</h2>
+        <h2 className="text-xl font-semibold">Zamanlanmış Kampanyalar</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {scheduledCampaigns.length > 0 ? (
             scheduledCampaigns.map((campaign) => (
@@ -336,14 +385,14 @@ const Campaigns: React.FC = () => {
               />
             ))
           ) : (
-            <p className="text-muted-foreground col-span-full">No scheduled campaigns.</p>
+            <p className="text-muted-foreground col-span-full">Zamanlanmış kampanya yok.</p>
           )}
         </div>
       </div>
       
       {draftCampaigns.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Draft Campaigns</h2>
+          <h2 className="text-xl font-semibold">Taslak Kampanyalar</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {draftCampaigns.map((campaign) => (
               <CampaignCard 
@@ -359,7 +408,7 @@ const Campaigns: React.FC = () => {
       
       {completedCampaigns.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold">Completed Campaigns</h2>
+          <h2 className="text-xl font-semibold">Tamamlanmış Kampanyalar</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {completedCampaigns.map((campaign) => (
               <CampaignCard 
@@ -383,6 +432,23 @@ interface CampaignCardProps {
 }
 
 const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete }) => {
+  // Tarihleri daha okunaklı formatta gösterme
+  const formatDate = (dateStr: string): string => {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  };
+  
+  // Durum çevirileri
+  const getStatusText = (status: string): string => {
+    switch (status) {
+      case 'Active': return 'Aktif';
+      case 'Scheduled': return 'Zamanlanmış';
+      case 'Draft': return 'Taslak';
+      case 'Completed': return 'Tamamlandı';
+      default: return status;
+    }
+  };
+
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -392,17 +458,17 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="-mt-2">
                 <MoreHorizontal className="h-4 w-4" />
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">Menü aç</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => onEdit(campaign)}>
                 <Edit className="mr-2 h-4 w-4" />
-                <span>Edit</span>
+                <span>Düzenle</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => onDelete(campaign.id)}>
                 <Trash className="mr-2 h-4 w-4" />
-                <span>Delete</span>
+                <span>Sil</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -419,10 +485,10 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
                 : 'bg-purple-100 text-purple-800'
             }`}
           >
-            {campaign.status}
+            {getStatusText(campaign.status)}
           </span>
           <span className="text-xs text-muted-foreground">
-            {campaign.startDate} to {campaign.endDate}
+            {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
           </span>
         </div>
         <CardDescription className="mt-2">
@@ -433,17 +499,17 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
         <div className="flex justify-between text-sm">
           <div className="flex items-center">
             <Users className="mr-1 h-4 w-4 text-muted-foreground" />
-            <span>{campaign.customers} customers</span>
+            <span>{campaign.customers} müşteri</span>
           </div>
           <div className="flex items-center">
             <MessageSquare className="mr-1 h-4 w-4 text-muted-foreground" />
-            <span>{campaign.messages} messages</span>
+            <span>{campaign.messages} mesaj</span>
           </div>
         </div>
       </CardContent>
       <CardFooter>
         <Button variant="ghost" size="sm" className="w-full justify-center">
-          <span>View Campaign</span>
+          <span>Kampanyayı Görüntüle</span>
           <ChevronRight className="ml-1 h-4 w-4" />
         </Button>
       </CardFooter>

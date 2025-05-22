@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, MoreHorizontal, Edit, Trash, Star, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -116,14 +115,21 @@ const BrandManagement: React.FC = () => {
 
   // Handle edit brand
   const handleEdit = (brand: Brand) => {
-    setEditingBrand(brand);
+    // Önce form state'i hazırlayalım
     form.reset({
       name: brand.name,
       industry: brand.industry,
       plan: brand.plan,
       status: brand.status,
     });
-    setIsEditDialogOpen(true);
+    
+    // Sonra editing brand'ı ayarlayalım
+    setEditingBrand(brand);
+    
+    // En son diyaloğu açalım (kısa bir gecikmeyle)
+    setTimeout(() => {
+      setIsEditDialogOpen(true);
+    }, 10);
   };
 
   // Handle delete brand
@@ -226,7 +232,21 @@ const BrandManagement: React.FC = () => {
         </Table>
       </div>
 
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog 
+        open={isEditDialogOpen} 
+        onOpenChange={(open) => {
+          if (open) {
+            // Dialog açılırken bir şey yapmıyoruz, bu işlem handleEdit fonksiyonunda gerçekleşiyor
+          } else {
+            // Dialog kapanırken form resetlenmeli ve editingBrand temizlenmeli
+            setIsEditDialogOpen(false);
+            setEditingBrand(null);
+            setTimeout(() => {
+              form.reset();
+            }, 100);
+          }
+        }}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Brand</DialogTitle>
@@ -235,7 +255,10 @@ const BrandManagement: React.FC = () => {
             </DialogDescription>
           </DialogHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit(onSubmit)();
+            }} className="space-y-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -302,7 +325,14 @@ const BrandManagement: React.FC = () => {
                 )}
               />
               <DialogFooter>
-                <Button type="submit">Update Brand</Button>
+                <Button 
+                  type="button"
+                  onClick={() => {
+                    form.handleSubmit(onSubmit)();
+                  }}
+                >
+                  Update Brand
+                </Button>
               </DialogFooter>
             </form>
           </Form>

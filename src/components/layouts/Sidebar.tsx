@@ -11,7 +11,8 @@ import {
   BarChart,
   Calendar,
   Tag,
-  Link2
+  Link2,
+  Share2
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -49,6 +50,7 @@ const Sidebar: React.FC = () => {
           { path: '/brand', label: 'Gösterge Paneli', icon: <LayoutDashboard size={20} /> },
           { path: '/brand/customers', label: 'Müşteriler', icon: <Users size={20} /> },
           { path: '/brand/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
+          { path: '/brand/social-media', label: 'Platform Entegrasyonları', icon: <Share2 size={20} /> },
           { path: '/brand/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
           { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];

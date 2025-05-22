@@ -65,7 +65,7 @@ interface PaymentHistory {
 const initialPlans: SubscriptionPlan[] = [
   {
     id: 1,
-    name: 'Basic',
+    name: 'Easy Plan',
     price: 49,
     billingCycle: 'Monthly',
     features: ['Basic customer management', 'Up to 1000 customers', 'Email support'],
@@ -74,7 +74,7 @@ const initialPlans: SubscriptionPlan[] = [
   },
   {
     id: 2,
-    name: 'Standard',
+    name: 'Plus Plan',
     price: 99,
     billingCycle: 'Monthly',
     features: ['Advanced customer management', 'Up to 5000 customers', 'Priority email support', 'Campaign analytics'],
@@ -83,7 +83,7 @@ const initialPlans: SubscriptionPlan[] = [
   },
   {
     id: 3,
-    name: 'Premium',
+    name: 'Pro Plan',
     price: 199,
     billingCycle: 'Monthly',
     features: ['Enterprise customer management', 'Unlimited customers', '24/7 phone support', 'Advanced analytics', 'Custom integrations'],

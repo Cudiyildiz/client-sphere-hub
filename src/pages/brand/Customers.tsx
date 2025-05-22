@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, Users, Mail, Phone, Star, Tag, MessageSquare } from 'lucide-react';
+import { Search, Users, Mail, Phone, MessageSquare, Calendar, Tag, Filter, X, Edit, Save, BadgePercent, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -19,6 +18,26 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from '@/hooks/use-toast';
 
 // Tanımlamalar
 interface CustomerTag {
@@ -39,7 +58,7 @@ interface CustomerCampaign {
   id: number;
   name: string;
   date: string;
-  status: 'Gönderildi' | 'Açıldı' | 'Tıklandı' | 'Cevaplanmadı';
+  status: 'Gönderildi' | 'Açıldı' | 'Tıklandı' | 'Cevaplanmadı' | 'Başarısız';
 }
 
 interface Customer {
@@ -54,111 +73,149 @@ interface Customer {
   tags: CustomerTag[];
   campaigns: CustomerCampaign[];
   messages: CustomerMessage[];
+  image?: string;
+  notes?: string;
+  status: 'Randevu' | 'Satıldı' | 'İlgileniyor';
 }
 
 // Mock verisi
 const customerTags: CustomerTag[] = [
-  { id: 1, name: 'Aktif', color: 'bg-green-100 text-green-800 border-green-200' },
-  { id: 2, name: 'VIP', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-  { id: 3, name: 'Yeni', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-  { id: 4, name: 'Pasif', color: 'bg-gray-100 text-gray-800 border-gray-200' },
-  { id: 5, name: 'Potansiyel', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-  { id: 6, name: 'Kayıtlı', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' }
+  { id: 1, name: 'Sıcak Lider', color: 'bg-red-100 text-red-800 border-red-200' },
+  { id: 2, name: 'VIP Müşteri', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { id: 3, name: 'Yeni Talep', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+  { id: 4, name: 'Takip Gerekli', color: 'bg-amber-100 text-amber-800 border-amber-200' },
+  { id: 5, name: 'Takip Gerekiyor', color: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+  { id: 6, name: 'Teknoloji Meraklısı', color: 'bg-indigo-100 text-indigo-800 border-indigo-200' }
+];
+
+// Placeholder görselleri
+const customerImages = [
+  "https://img.freepik.com/free-photo/3d-illustration-cute-cartoon-girl-blue-jacket_1142-41044.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph",
+  "https://img.freepik.com/free-photo/3d-cartoon-character-isolated-white-background-with-phone_1142-54246.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph",
+  "https://img.freepik.com/free-photo/3d-render-young-man-3d-cartoon-avatar-portrait-character-boy-colorful-style-generative-ai_1258-150704.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph",
+  "https://img.freepik.com/free-photo/3d-render-asian-teenage-girl-with-jacket-generative-ai_1409-5607.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph",
+  "https://img.freepik.com/free-photo/3d-render-cartoon-avatar-stylish-girl-generative-ai_1258-151397.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph",
+  "https://img.freepik.com/free-photo/3d-cartoon-style-character_23-2151033001.jpg?size=626&ext=jpg&ga=GA1.1.1222169770.1715817600&semt=sph"
+];
+
+// Kampanya listeleri
+const campaignList = [
+  'Yaz İndirimleri', 
+  'Teknoloji Fuarı 2025', 
+  "Fitness'ta Bahar Kampanyası", 
+  'Okul Dönüşü Kampanyası',
+  'Kış Harikaları Diyarı'
 ];
 
 const mockCustomers: Customer[] = [
   {
     id: 1,
-    name: 'Ahmet Yılmaz',
-    email: 'ahmet@example.com',
-    phone: '+90 (555) 123-4567',
+    name: 'Alice Wonderland',
+    email: 'alice@example.com',
+    phone: '+123456789',
     segment: 'Premium',
     joinDate: '2023-08-15',
     lastActivity: '2025-05-10',
-    points: 2350,
-    tags: [customerTags[0], customerTags[1]],
+    points: 85,
+    tags: [customerTags[0], customerTags[5]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Açıldı' },
-      { id: 2, name: 'Müşteri Sadakat Programı', date: '2025-04-15', status: 'Tıklandı' },
-      { id: 3, name: 'Özel Fırsat Duyurusu', date: '2025-04-01', status: 'Gönderildi' }
+      { id: 1, name: campaignList[0], date: '2025-05-01', status: 'Açıldı' },
+      { id: 2, name: campaignList[2], date: '2025-03-15', status: 'Tıklandı' }
     ],
     messages: [
       { 
         id: 1, 
         date: '2025-05-10', 
         message: 'Sadakat programınız hakkında daha fazla bilgi alabilir miyim?', 
-        campaign: 'Müşteri Sadakat Programı',
+        campaign: campaignList[0],
         response: 'Merhaba, sadakat programımız hakkında detaylı bilgileri e-posta adresinize ilettik. İyi günler dileriz!'
       },
       { 
         id: 2, 
-        date: '2025-04-20', 
-        message: 'Yaz indirimleri ne zaman başlıyor?', 
-        campaign: 'Yaz İndirimi 2025' 
+        date: '2025-03-20', 
+        message: 'Fitness programı için üyelik şartları neler?', 
+        campaign: campaignList[2],
+        response: 'Merhaba Alice, fitness programımıza katılmak için herhangi bir ön koşul bulunmamaktadır.'
       }
-    ]
+    ],
+    image: customerImages[0],
+    notes: 'Alice is interested in our new app launch. Follow up next week. Loves tech gadgets.',
+    status: 'Randevu'
   },
   {
     id: 2,
-    name: 'Zeynep Kaya',
-    email: 'zeynep@example.com',
-    phone: '+90 (555) 987-6543',
+    name: 'Charlie Chaplin',
+    email: 'charlie@example.com',
+    phone: '+1122334455',
     segment: 'Standard',
     joinDate: '2024-11-22',
     lastActivity: '2025-05-15',
-    points: 1250,
-    tags: [customerTags[0], customerTags[2]],
+    points: 95,
+    tags: [customerTags[5], customerTags[3]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Tıklandı' },
-      { id: 2, name: 'Yeni Ürün Lansmanı', date: '2025-04-10', status: 'Açıldı' }
+      { id: 1, name: campaignList[1], date: '2025-05-01', status: 'Tıklandı' },
+      { id: 2, name: campaignList[4], date: '2025-01-10', status: 'Gönderildi' }
     ],
     messages: [
       { 
         id: 1, 
         date: '2025-05-15', 
         message: 'Yeni ürünleriniz hakkında bilgi alabilir miyim?', 
-        campaign: 'Yeni Ürün Lansmanı',
-        response: 'Merhaba Zeynep Hanım, yeni ürün kataloğumuzu e-posta adresinize gönderdik. İnceleyebilirsiniz.'
+        campaign: campaignList[1],
+        response: 'Merhaba Charlie, yeni ürün kataloğumuzu e-posta adresinize gönderdik. İnceleyebilirsiniz.'
       }
-    ]
+    ],
+    image: customerImages[1],
+    notes: 'Purchased the premium package. Add to VIP list.',
+    status: 'Satıldı'
   },
   {
     id: 3,
-    name: 'Mehmet Demir',
-    email: 'mehmet@example.com',
-    phone: '+90 (555) 456-7890',
+    name: 'Ethan Hunt',
+    email: 'ethan@example.com',
+    phone: '+5544332211',
     segment: 'Premium',
     joinDate: '2023-05-10',
     lastActivity: '2025-05-18',
-    points: 3450,
-    tags: [customerTags[0], customerTags[1], customerTags[5]],
+    points: 88,
+    tags: [customerTags[2], customerTags[3]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Tıklandı' },
-      { id: 2, name: 'Müşteri Sadakat Programı', date: '2025-04-15', status: 'Tıklandı' },
-      { id: 3, name: 'Özel Fırsat Duyurusu', date: '2025-04-01', status: 'Açıldı' }
+      { id: 1, name: campaignList[2], date: '2025-05-01', status: 'Tıklandı' },
+      { id: 2, name: campaignList[3], date: '2024-09-05', status: 'Açıldı' },
+      { id: 3, name: campaignList[0], date: '2024-06-20', status: 'Başarısız' }
     ],
     messages: [
       { 
         id: 1, 
         date: '2025-05-18', 
         message: 'Premium üyelere özel ayrıcalıklar nelerdir?', 
-        campaign: 'Müşteri Sadakat Programı' 
+        campaign: campaignList[2]
+      },
+      { 
+        id: 2, 
+        date: '2024-09-10', 
+        message: 'Okul kampanyasına nasıl katılabilirim?', 
+        campaign: campaignList[3],
+        response: 'Merhaba Ethan, kampanyaya katılmak için web sitemizdeki formu doldurabilirsiniz.'
       }
-    ]
+    ],
+    image: customerImages[2],
+    notes: 'Meeting scheduled to discuss integration with spy tools.',
+    status: 'Randevu'
   },
   {
     id: 4,
-    name: 'Ayşe Yıldız',
-    email: 'ayse@example.com',
-    phone: '+90 (555) 789-0123',
+    name: 'Fiona Shrek',
+    email: 'fiona@example.com',
+    phone: '+4433221100',
     segment: 'Basic',
     joinDate: '2025-01-05',
     lastActivity: '2025-04-30',
-    points: 650,
+    points: 92,
     tags: [customerTags[4], customerTags[2]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Gönderildi' },
-      { id: 2, name: 'Yeni Üye Hoş Geldin', date: '2025-01-05', status: 'Açıldı' }
+      { id: 1, name: campaignList[0], date: '2025-05-01', status: 'Gönderildi' },
+      { id: 2, name: campaignList[4], date: '2025-02-15', status: 'Cevaplanmadı' }
     ],
     messages: [
       { 
@@ -166,72 +223,121 @@ const mockCustomers: Customer[] = [
         date: '2025-04-15', 
         message: 'Üyelik seviyemi nasıl yükseltebilirim?', 
         campaign: 'Yeni Üye Hoş Geldin',
-        response: 'Merhaba Ayşe Hanım, üyelik seviyenizi yükseltmek için 1000 puan toplamanız gerekmektedir. Şu an 650 puanınız bulunmaktadır.'
+        response: 'Merhaba Fiona Hanım, üyelik seviyenizi yükseltmek için 1000 puan toplamanız gerekmektedir.'
       }
-    ]
+    ],
+    image: customerImages[3],
+    notes: 'Closed deal on the enterprise solution. Send a thank you gift.',
+    status: 'Satıldı'
   },
   {
     id: 5,
-    name: 'Mustafa Şahin',
-    email: 'mustafa@example.com',
-    phone: '+90 (555) 321-6547',
-    segment: 'Standard',
+    name: 'Diana Prince',
+    email: 'diana@example.com',
+    phone: '+6677889900',
+    segment: 'Premium',
     joinDate: '2024-09-20',
     lastActivity: '2025-05-12',
-    points: 1820,
-    tags: [customerTags[0], customerTags[5]],
+    points: 90,
+    tags: [customerTags[5], customerTags[1]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Açıldı' },
-      { id: 2, name: 'Müşteri Sadakat Programı', date: '2025-04-15', status: 'Cevaplanmadı' }
+      { id: 1, name: campaignList[3], date: '2025-05-01', status: 'Gönderildi' },
+      { id: 2, name: campaignList[1], date: '2024-12-10', status: 'Tıklandı' }
     ],
     messages: [
       { 
         id: 1, 
         date: '2025-05-12', 
-        message: 'Kampanya detaylarınızı öğrenebilir miyim?', 
-        campaign: 'Yaz İndirimi 2025',
-        response: 'Merhaba Mustafa Bey, kampanya detaylarımızı inceleyebilirsiniz: [link]. İyi günler dileriz!'
+        message: 'Güvenlik özellikleri hakkında daha fazla bilgi alabilir miyim?', 
+        campaign: campaignList[3],
+        response: 'Merhaba Diana, güvenlik özelliklerimiz hakkında detaylı bir broşür gönderdik.'
       }
-    ]
+    ],
+    image: customerImages[4],
+    notes: 'Interested in the security features of our app. Follow up with a detailed brochure.',
+    status: 'İlgileniyor'
   },
   {
     id: 6,
-    name: 'Elif Öztürk',
-    email: 'elif@example.com',
-    phone: '+90 (555) 111-2233',
+    name: 'Bob Builder',
+    email: 'bob@example.com',
+    phone: '+0987654321',
     segment: 'Basic',
     joinDate: '2025-02-15',
     lastActivity: '2025-05-05',
-    points: 450,
-    tags: [customerTags[2], customerTags[4]],
+    points: 90,
+    tags: [customerTags[5], customerTags[3]],
     campaigns: [
-      { id: 1, name: 'Yaz İndirimi 2025', date: '2025-05-01', status: 'Gönderildi' }
+      { id: 1, name: campaignList[4], date: '2025-05-01', status: 'Gönderildi' },
+      { id: 2, name: campaignList[2], date: '2025-03-05', status: 'Açıldı' },
+      { id: 3, name: campaignList[0], date: '2024-07-15', status: 'Tıklandı' }
     ],
-    messages: []
+    messages: [
+      { 
+        id: 1, 
+        date: '2025-05-05', 
+        message: 'Demo için randevu ayarlayabilir miyiz?', 
+        campaign: campaignList[4],
+        response: 'Merhaba Bob, demo için Çarşamba günü müsait misiniz?'
+      },
+      { 
+        id: 2, 
+        date: '2025-03-10', 
+        message: 'Fitness programının süresi ne kadar?', 
+        campaign: campaignList[2],
+        response: 'Merhaba Bob, fitness programımız 12 hafta sürmektedir.'
+      }
+    ],
+    image: customerImages[5],
+    notes: 'Scheduled a demo for next Wednesday. Works in construction tech.',
+    status: 'Randevu'
   }
 ];
 
 const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ customer, onClick }) => {
+  // Durum rengini belirle
+  const getStatusColor = () => {
+    switch (customer.status) {
+      case 'Randevu': return 'bg-blue-100 text-blue-800';
+      case 'Satıldı': return 'bg-green-100 text-green-800';
+      case 'İlgileniyor': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Mesaj geçmişi durumu
+  const messageCode = `MSG${String(customer.id).padStart(4, '0')}`;
+  
+  // Son katıldığı kampanya
+  const lastCampaign = customer.campaigns.length > 0 ? 
+    customer.campaigns.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] : null;
+  
+  // Dönüşüm durumu
+  const getConversionStatus = (customer: Customer) => {
+    const lastMessage = customer.messages[customer.messages.length - 1];
+    if (customer.status === 'Satıldı') return 'Başarılı';
+    if (lastMessage?.response) return 'Gönderildi';
+    return 'Açık';
+  };
+  
   return (
-    <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={onClick}>
+    <Card 
+      className="hover:shadow-md transition-shadow cursor-pointer border-l-4" 
+      style={{ borderLeftColor: customer.status === 'Randevu' ? '#3b82f6' : 
+                              customer.status === 'Satıldı' ? '#22c55e' : '#a855f7' }}
+      onClick={onClick}
+    >
       <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
+        <div className="flex justify-between">
           <CardTitle className="text-lg">{customer.name}</CardTitle>
-          <div className="flex items-center gap-1">
-            <Star className="h-4 w-4 text-amber-500" />
-            <span className="text-sm font-medium">{customer.points}</span>
-          </div>
+          <Badge className={getStatusColor()}>
+            {customer.status}
+          </Badge>
         </div>
-        <CardDescription className="flex gap-2 mt-1">
-          {customer.tags.map(tag => (
-            <Badge key={tag.id} variant="outline" className={tag.color}>
-              {tag.name}
-            </Badge>
-          ))}
-        </CardDescription>
       </CardHeader>
-      <CardContent className="pb-2">
-        <div className="text-sm space-y-2">
+      <CardContent className="space-y-3">
+        {/* İletişim Bilgileri */}
+        <div className="text-sm space-y-1">
           <div className="flex items-center gap-2">
             <Mail className="h-4 w-4 text-muted-foreground" />
             <span>{customer.email}</span>
@@ -240,296 +346,733 @@ const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ c
             <Phone className="h-4 w-4 text-muted-foreground" />
             <span>{customer.phone}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium">{customer.segment}</span>
+        </div>
+        
+        {/* Kampanya Bilgisi */}
+        <div>
+          <div className="text-xs font-medium text-muted-foreground">Son Kampanya:</div>
+          <div className="text-sm flex justify-between items-center">
+            <span>{lastCampaign?.name || 'Kampanya yok'}</span>
+            {lastCampaign && (
+              <Badge variant="outline" className={
+                lastCampaign.status === 'Tıklandı' ? 'bg-green-100 text-green-800 border-green-200' :
+                lastCampaign.status === 'Açıldı' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                'bg-gray-100 text-gray-800 border-gray-200'
+              }>
+                {lastCampaign.status}
+              </Badge>
+            )}
+          </div>
+          <div className="text-xs text-muted-foreground mt-1">
+            Toplam {customer.campaigns.length} kampanyaya katıldı
           </div>
         </div>
-      </CardContent>
-      <CardFooter className="flex justify-between pt-0">
-        <div className="text-xs text-muted-foreground">
-          Üyelik: {new Date(customer.joinDate).toLocaleDateString('tr-TR')}
+        
+        {/* Segment ve Puan Bilgisi */}
+        <div className="flex gap-2">
+          <div className="flex-1 bg-muted rounded-md p-2">
+            <div className="text-xs text-muted-foreground">Segment</div>
+            <div className="font-medium">{customer.segment}</div>
+          </div>
+          <div className="flex-1 bg-muted rounded-md p-2">
+            <div className="text-xs text-muted-foreground">Puanı</div>
+            <div className="font-medium">{customer.points}</div>
+          </div>
         </div>
+        
+        {/* Etiketler */}
+        <div>
+          <div className="text-xs font-medium text-muted-foreground mb-1">Etiketler:</div>
+          <div className="flex flex-wrap gap-1">
+            {customer.tags.map(tag => (
+              <Badge key={tag.id} variant="outline" className={tag.color}>
+                {tag.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        
+        {/* Dahili Notlar (Kısaltılmış) */}
+        <div>
+          <div className="text-xs font-medium text-muted-foreground">Dahili Notlar:</div>
+          <div className="text-sm line-clamp-2">{customer.notes}</div>
+        </div>
+      </CardContent>
+      <CardFooter className="flex justify-between pt-0 border-t mt-2 py-3">
         <div className="text-xs text-muted-foreground">
           Son aktivite: {new Date(customer.lastActivity).toLocaleDateString('tr-TR')}
         </div>
+        <Badge variant="outline" className={
+          getConversionStatus(customer) === 'Başarılı' ? 'bg-green-100 text-green-800' :
+          getConversionStatus(customer) === 'Gönderildi' ? 'bg-blue-100 text-blue-800' :
+          'bg-amber-100 text-amber-800'
+        }>
+          {getConversionStatus(customer)}
+        </Badge>
       </CardFooter>
     </Card>
   );
 };
 
-const CustomerDetail: React.FC<{ customer: Customer, onClose: () => void }> = ({ customer, onClose }) => {
+// Müşteri detay sayfası yan panel bileşeni
+const CustomerDetail: React.FC<{ 
+  customer: Customer | null, 
+  onClose: () => void,
+  isOpen: boolean,
+  onCustomerUpdate: (updatedCustomer: Customer) => void
+}> = ({ customer, onClose, isOpen, onCustomerUpdate }) => {
+  const { toast } = useToast();
+  const [editMode, setEditMode] = useState(false);
+  const [editedPoints, setEditedPoints] = useState('');
+  const [editedSegment, setEditedSegment] = useState<'Premium' | 'Standard' | 'Basic' | ''>('');
+  const [activeTab, setActiveTab] = useState('info');
+  
+  if (!customer) return null;
+  
+  // Durum rengini belirle
+  const getStatusColor = () => {
+    switch (customer.status) {
+      case 'Randevu': return 'bg-blue-100 text-blue-800';
+      case 'Satıldı': return 'bg-green-100 text-green-800';
+      case 'İlgileniyor': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+  
+  // Mesaj kodu
+  const messageCode = `MSG${String(customer.id).padStart(4, '0')}`;
+  
+  const handleEditToggle = () => {
+    if (editMode) {
+      // Düzenleme modundan çıkış
+      setEditMode(false);
+      setEditedPoints('');
+      setEditedSegment('');
+    } else {
+      // Düzenleme moduna giriş
+      setEditMode(true);
+      setEditedPoints(customer.points.toString());
+      setEditedSegment(customer.segment);
+    }
+  };
+  
+  const handleSaveChanges = () => {
+    if (!customer) return;
+    
+    const points = parseInt(editedPoints);
+    if (isNaN(points) || points < 0) {
+      toast({
+        title: "Hata",
+        description: "Geçerli bir puan değeri giriniz.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (!editedSegment) {
+      toast({
+        title: "Hata",
+        description: "Lütfen bir segment seçiniz.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Update customer data
+    const updatedCustomer = {
+      ...customer,
+      points,
+      segment: editedSegment as 'Premium' | 'Standard' | 'Basic'
+    };
+    
+    onCustomerUpdate(updatedCustomer);
+    setEditMode(false);
+    
+    toast({
+      title: "Başarılı",
+      description: "Müşteri bilgileri güncellendi.",
+    });
+  };
+  
+  const getCampaignStatusColor = (status: string) => {
+    switch (status) {
+      case 'Tıklandı': return 'bg-green-100 text-green-800 border-green-200';
+      case 'Açıldı': return 'bg-blue-100 text-blue-800 border-blue-200';
+      case 'Gönderildi': return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'Cevaplanmadı': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Başarısız': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+  
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
-          <Button variant="outline" size="icon" onClick={onClose}>
-            <Users className="h-4 w-4" />
-          </Button>
-          <div>
-            <h2 className="text-2xl font-bold">{customer.name}</h2>
-            <div className="flex gap-2 mt-1">
-              {customer.tags.map(tag => (
-                <Badge key={tag.id} variant="outline" className={tag.color}>
-                  {tag.name}
-                </Badge>
-              ))}
-            </div>
+    <Sheet open={isOpen} onOpenChange={() => onClose()}>
+      <SheetContent className="w-full max-w-md overflow-y-auto">
+        <SheetHeader className="border-b pb-4 mb-4">
+          <div className="flex justify-between items-center">
+            <SheetTitle className="text-2xl flex items-center gap-2">
+              {customer.name}
+              {customer.segment === 'Premium' && <Star className="h-4 w-4 text-amber-500" fill="currentColor" />}
+            </SheetTitle>
+            <Badge className={getStatusColor()}>{customer.status}</Badge>
           </div>
-        </div>
-        <div className="flex items-center gap-2 bg-primary-foreground p-2 rounded-lg">
-          <Star className="h-5 w-5 text-amber-500" />
-          <div>
-            <div className="text-sm font-medium">Müşteri Puanı</div>
-            <div className="text-2xl font-bold">{customer.points}</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">İletişim Bilgileri</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <span>{customer.email}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <span>{customer.phone}</span>
+        </SheetHeader>
+        
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="info">Bilgiler</TabsTrigger>
+            <TabsTrigger value="campaigns">Kampanyalar</TabsTrigger>
+            <TabsTrigger value="messages">Mesajlar</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="info" className="space-y-6 pt-4">
+            {/* Müşteri Bilgileri */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">İletişim Bilgileri</h3>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                  <span>{customer.email}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-primary" />
+                  <span>{customer.phone}</span>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Segment Bilgileri</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="font-medium">{customer.segment} Segment</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Tag className="h-4 w-4 text-muted-foreground" />
-                <span>Üyelik Tarihi: {new Date(customer.joinDate).toLocaleDateString('tr-TR')}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Aktivite Bilgileri</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                <span>{customer.messages.length} mesaj</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Tag className="h-4 w-4 text-muted-foreground" />
-                <span>Son Aktivite: {new Date(customer.lastActivity).toLocaleDateString('tr-TR')}</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Tabs defaultValue="campaigns">
-        <TabsList>
-          <TabsTrigger value="campaigns">Kampanya Geçmişi</TabsTrigger>
-          <TabsTrigger value="messages">Mesaj Geçmişi</TabsTrigger>
-        </TabsList>
-        <TabsContent value="campaigns" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Kampanya Geçmişi</CardTitle>
-              <CardDescription>Müşterinin katıldığı kampanyalar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {customer.campaigns.length > 0 ? (
-                  customer.campaigns.map(campaign => (
-                    <div key={campaign.id} className="flex justify-between items-center p-4 border rounded-lg">
-                      <div>
-                        <h3 className="font-medium">{campaign.name}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(campaign.date).toLocaleDateString('tr-TR')}
-                        </p>
-                      </div>
-                      <Badge className={
-                        campaign.status === 'Tıklandı' ? "bg-green-100 text-green-800 hover:bg-green-100" : 
-                        campaign.status === 'Açıldı' ? "bg-blue-100 text-blue-800 hover:bg-blue-100" : 
-                        campaign.status === 'Gönderildi' ? "bg-gray-100 text-gray-800 hover:bg-gray-100" :
-                        "bg-yellow-100 text-yellow-800 hover:bg-yellow-100"
-                      }>
-                        {campaign.status}
-                      </Badge>
-                    </div>
-                  ))
+            
+            {/* Durum Bilgileri */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-sm font-medium text-muted-foreground">Durum</h3>
+                {!editMode ? (
+                  <Button variant="ghost" size="sm" onClick={handleEditToggle} className="h-8 px-2">
+                    <Edit className="h-4 w-4 mr-1" /> Düzenle
+                  </Button>
                 ) : (
-                  <p className="text-center text-muted-foreground py-4">Kampanya geçmişi bulunamadı</p>
+                  <Button variant="ghost" size="sm" onClick={handleEditToggle} className="h-8 px-2">
+                    <X className="h-4 w-4 mr-1" /> İptal
+                  </Button>
                 )}
               </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="messages" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Mesaj Geçmişi</CardTitle>
-              <CardDescription>Müşteri mesajları ve yanıtlar</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                {customer.messages.length > 0 ? (
-                  customer.messages.map(message => (
-                    <div key={message.id} className="space-y-3">
-                      <div className="bg-muted p-4 rounded-lg">
+              
+              <div className="bg-muted rounded-md p-4 space-y-4">
+                <div className="flex gap-3">
+                  {editMode ? (
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground mb-1">Segment</div>
+                      <Select 
+                        value={editedSegment} 
+                        onValueChange={(val) => setEditedSegment(val as 'Premium' | 'Standard' | 'Basic')}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Segment seçin" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Premium">Premium</SelectItem>
+                          <SelectItem value="Standard">Standard</SelectItem>
+                          <SelectItem value="Basic">Basic</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  ) : (
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground">Segment</div>
+                      <div className="flex items-center gap-1 font-medium">
+                        {customer.segment === 'Premium' && <Star className="h-3 w-3 text-amber-500" fill="currentColor" />}
+                        {customer.segment}
+                      </div>
+                    </div>
+                  )}
+                  
+                  {editMode ? (
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground mb-1">Puanı</div>
+                      <Input 
+                        type="number" 
+                        value={editedPoints} 
+                        onChange={(e) => setEditedPoints(e.target.value)}
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex-1">
+                      <div className="text-xs text-muted-foreground">Puanı</div>
+                      <div className="font-medium flex items-center gap-1">
+                        <BadgePercent className="h-3 w-3 text-primary" />
+                        {customer.points}
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex-1">
+                    <div className="text-xs text-muted-foreground">Üyelik Tarihi</div>
+                    <div className="font-medium">
+                      {new Date(customer.joinDate).toLocaleDateString('tr-TR')}
+                    </div>
+                  </div>
+                </div>
+                
+                {editMode && (
+                  <Button onClick={handleSaveChanges} className="w-full">
+                    <Save className="h-4 w-4 mr-2" /> Değişiklikleri Kaydet
+                  </Button>
+                )}
+              </div>
+            </div>
+            
+            {/* Etiketler */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">Etiketler</h3>
+              <div className="flex flex-wrap gap-2">
+                {customer.tags.map(tag => (
+                  <Badge key={tag.id} variant="outline" className={tag.color}>
+                    {tag.name}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+            
+            {/* Dahili Notlar */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-2">Dahili Notlar</h3>
+              <Card className="bg-muted">
+                <CardContent className="p-3">
+                  <p className="text-sm">{customer.notes}</p>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="campaigns" className="space-y-6 pt-4">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-muted-foreground">Kampanya Geçmişi</h3>
+              {customer.campaigns.length > 0 ? (
+                customer.campaigns
+                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .map((campaign) => (
+                    <Card key={campaign.id} className="overflow-hidden">
+                      <CardHeader className="py-2 px-3 bg-muted">
+                        <div className="flex justify-between items-center">
+                          <h4 className="font-medium text-sm">{campaign.name}</h4>
+                          <Badge 
+                            variant="outline" 
+                            className={getCampaignStatusColor(campaign.status)}
+                          >
+                            {campaign.status}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="p-3 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4 text-muted-foreground" />
+                          <span>{new Date(campaign.date).toLocaleDateString('tr-TR')}</span>
+                        </div>
+                        
+                        {/* İlgili Mesajlar */}
+                        {customer.messages.some(msg => msg.campaign === campaign.name) && (
+                          <div className="mt-3 pt-3 border-t">
+                            <div className="text-xs font-medium mb-2">İlgili Mesajlar:</div>
+                            {customer.messages
+                              .filter(msg => msg.campaign === campaign.name)
+                              .map((msg) => (
+                                <div key={msg.id} className="ml-2 my-2 pl-2 border-l-2 border-primary text-xs">
+                                  <div className="text-muted-foreground">
+                                    {new Date(msg.date).toLocaleDateString('tr-TR')}
+                                  </div>
+                                  <div>{msg.message}</div>
+                                </div>
+                              ))
+                            }
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  ))
+              ) : (
+                <div className="text-sm text-muted-foreground text-center py-4">
+                  Kampanya geçmişi bulunamadı
+                </div>
+              )}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="messages" className="space-y-6 pt-4">
+            <div className="space-y-4">
+              <h3 className="text-sm font-medium text-muted-foreground">Mesaj Geçmişi</h3>
+              {customer.messages.length > 0 ? (
+                customer.messages
+                  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                  .map(message => (
+                    <div key={message.id} className="space-y-2">
+                      <div className="bg-muted p-3 rounded-md">
                         <div className="flex justify-between">
-                          <h3 className="font-medium">Müşteri Mesajı</h3>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-xs text-muted-foreground">{messageCode}</span>
+                          <span className="text-xs text-muted-foreground">
                             {new Date(message.date).toLocaleDateString('tr-TR')}
                           </span>
                         </div>
-                        <div className="text-sm mt-2">{message.message}</div>
-                        <div className="text-xs text-muted-foreground mt-2">
+                        <div className="mt-1 text-sm">{message.message}</div>
+                        <div className="mt-1 text-xs text-muted-foreground">
                           Kampanya: {message.campaign}
                         </div>
                       </div>
                       
                       {message.response && (
-                        <div className="bg-primary-foreground p-4 rounded-lg ml-6">
-                          <div className="flex justify-between">
-                            <h3 className="font-medium">Yanıtınız</h3>
-                            <span className="text-sm text-muted-foreground">
-                              {new Date(message.date).toLocaleDateString('tr-TR')}
-                            </span>
-                          </div>
-                          <div className="text-sm mt-2">{message.response}</div>
-                        </div>
-                      )}
-                      
-                      {!message.response && (
-                        <div className="flex justify-end">
-                          <Button variant="outline">Yanıtla</Button>
+                        <div className="bg-primary-foreground p-3 rounded-md ml-6 border-l-4 border-primary">
+                          <p className="text-xs text-muted-foreground mb-1">Marka yanıtı:</p>
+                          <p className="text-sm">{message.response}</p>
                         </div>
                       )}
                     </div>
                   ))
-                ) : (
-                  <p className="text-center text-muted-foreground py-4">Mesaj geçmişi bulunamadı</p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-4">Mesaj geçmişi bulunamadı</p>
+              )}
+            </div>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-6 flex justify-end space-x-2">
+          <Button variant="outline" onClick={onClose}>
+            Kapat
+          </Button>
+          <Button>
+            <MessageSquare className="mr-2 h-4 w-4" />
+            Mesaj Gönder
+          </Button>
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
+const FilterDialog: React.FC<{
+  isOpen: boolean,
+  onClose: () => void,
+  currentTags: string[],
+  onTagsChange: (tags: string[]) => void,
+  currentStatus: string,
+  onStatusChange: (status: string) => void,
+  currentCampaign: string,
+  onCampaignChange: (campaign: string) => void,
+}> = ({isOpen, onClose, currentTags, onTagsChange, currentStatus, onStatusChange, currentCampaign, onCampaignChange}) => {
+  // Geçici filtre state'leri
+  const [tempTags, setTempTags] = useState(currentTags);
+  const [tempStatus, setTempStatus] = useState(currentStatus);
+  const [tempCampaign, setTempCampaign] = useState(currentCampaign);
+  
+  // Tag ekle/çıkar
+  const toggleTag = (tagName: string) => {
+    if (tempTags.includes(tagName)) {
+      setTempTags(tempTags.filter(t => t !== tagName));
+    } else {
+      setTempTags([...tempTags, tagName]);
+    }
+  };
+  
+  // Filtreleri uygula
+  const applyFilters = () => {
+    onTagsChange(tempTags);
+    onStatusChange(tempStatus);
+    onCampaignChange(tempCampaign);
+    onClose();
+  };
+  
+  // Filtreleri sıfırla
+  const resetFilters = () => {
+    setTempTags([]);
+    setTempStatus('all');
+    setTempCampaign('all');
+    onTagsChange([]);
+    onStatusChange('all');
+    onCampaignChange('all');
+    onClose();
+  };
+  
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Filtreleri Ayarla</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4 py-4">
+          {/* Etiket filtreleri */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">Etiketler</h3>
+            <div className="flex flex-wrap gap-2">
+              {customerTags.map(tag => (
+                <Badge 
+                  key={tag.id} 
+                  variant={tempTags.includes(tag.name) ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => toggleTag(tag.name)}
+                >
+                  {tag.name}
+                </Badge>
+              ))}
+            </div>
+          </div>
+          
+          {/* Durum filtreleri */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">Durum</h3>
+            <div className="flex flex-wrap gap-2">
+              <Badge 
+                variant={tempStatus === 'all' ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setTempStatus('all')}
+              >
+                Tümü
+              </Badge>
+              <Badge 
+                variant={tempStatus === 'Randevu' ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setTempStatus('Randevu')}
+              >
+                Randevu
+              </Badge>
+              <Badge 
+                variant={tempStatus === 'Satıldı' ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setTempStatus('Satıldı')}
+              >
+                Satıldı
+              </Badge>
+              <Badge 
+                variant={tempStatus === 'İlgileniyor' ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setTempStatus('İlgileniyor')}
+              >
+                İlgileniyor
+              </Badge>
+            </div>
+          </div>
+          
+          {/* Kampanya filtreleri */}
+          <div className="space-y-2">
+            <h3 className="text-sm font-medium">Kampanya</h3>
+            <div className="flex flex-wrap gap-2">
+              <Badge 
+                variant={tempCampaign === 'all' ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setTempCampaign('all')}
+              >
+                Tüm Kampanyalar
+              </Badge>
+              {campaignList.map((campaign, index) => (
+                <Badge 
+                  key={index} 
+                  variant={tempCampaign === campaign ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => setTempCampaign(campaign)}
+                >
+                  {campaign}
+                </Badge>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex justify-between">
+          <Button variant="ghost" onClick={resetFilters}>
+            Filtreleri Temizle
+          </Button>
+          <Button onClick={applyFilters}>
+            Filtreleri Uygula
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };
 
 const Customers: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedSegment, setSelectedSegment] = useState<string>("all");
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
+  const { toast } = useToast();
+  
+  // Filtreler
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const [selectedCampaign, setSelectedCampaign] = useState<string>('all');
 
   // Filtreleme fonksiyonları
-  const filteredCustomers = mockCustomers.filter(customer => {
+  const filteredCustomers = customers.filter(customer => {
     const matchesSearch = 
       customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchQuery.toLowerCase());
+      customer.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone.toLowerCase().includes(searchQuery.toLowerCase());
     
-    const matchesSegment = selectedSegment === "all" || customer.segment.toLowerCase() === selectedSegment.toLowerCase();
+    const matchesStatus = selectedStatus === 'all' || customer.status === selectedStatus;
     
-    return matchesSearch && matchesSegment;
+    const matchesCampaign = selectedCampaign === 'all' || 
+      customer.campaigns.some(c => c.name === selectedCampaign);
+    
+    const matchesTags = selectedTags.length === 0 || 
+      selectedTags.every(tag => customer.tags.some(t => t.name === tag));
+    
+    return matchesSearch && matchesStatus && matchesCampaign && matchesTags;
   });
+
+  // Müşteri seçme ve detay gösterme
+  const handleSelectCustomer = (customer: Customer) => {
+    setSelectedCustomer(customer);
+    setIsDetailOpen(true);
+  };
+
+  // Müşteri güncelleme
+  const handleUpdateCustomer = (updatedCustomer: Customer) => {
+    const updatedCustomers = customers.map(c => 
+      c.id === updatedCustomer.id ? updatedCustomer : c
+    );
+    
+    setCustomers(updatedCustomers);
+    setSelectedCustomer(updatedCustomer);
+    
+    toast({
+      title: "Müşteri Güncellendi",
+      description: `${updatedCustomer.name} bilgileri başarıyla güncellendi.`
+    });
+  };
+
+  // Aktif filtreleri gösterme
+  const hasActiveFilters = selectedTags.length > 0 || selectedStatus !== 'all' || selectedCampaign !== 'all';
+  
+  // Aktif filtre sayısını hesaplama
+  const activeFilterCount = selectedTags.length + 
+    (selectedStatus !== 'all' ? 1 : 0) + 
+    (selectedCampaign !== 'all' ? 1 : 0);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Müşteriler</h1>
-        <Button>
-          <Users className="mr-2 h-4 w-4" />
-          Yeni Müşteri Ekle
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setIsFilterOpen(true)}>
+            <Filter className="mr-2 h-4 w-4" />
+            Filtrele
+            {activeFilterCount > 0 && (
+              <span className="ml-1 rounded-full bg-primary text-primary-foreground text-xs px-1.5">
+                {activeFilterCount}
+              </span>
+            )}
+          </Button>
+          <Button>
+            <Users className="mr-2 h-4 w-4" />
+            Yeni Müşteri Ekle
+          </Button>
+        </div>
       </div>
       
-      {!selectedCustomer ? (
-        <>
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex-1 min-w-[300px]">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Müşteri ara..." 
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Button 
-                variant={selectedSegment === "all" ? "default" : "outline"} 
-                size="sm"
-                onClick={() => setSelectedSegment("all")}
-              >
-                Tümü
-              </Button>
-              <Button 
-                variant={selectedSegment === "premium" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedSegment("premium")}
-              >
-                Premium
-              </Button>
-              <Button 
-                variant={selectedSegment === "standard" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedSegment("standard")}
-              >
-                Standard
-              </Button>
-              <Button 
-                variant={selectedSegment === "basic" ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedSegment("basic")}
-              >
-                Basic
-              </Button>
-            </div>
-          </div>
-          
-          {filteredCustomers.length > 0 ? (
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredCustomers.map(customer => (
-                <CustomerCard 
-                  key={customer.id} 
-                  customer={customer} 
-                  onClick={() => setSelectedCustomer(customer)}
-                />
-              ))}
-            </div>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">Müşteri bulunamadı</h3>
-              <p className="text-sm text-muted-foreground mt-2">Arama kriterlerinize uygun müşteri bulunmamaktadır.</p>
-            </div>
+      <div className="flex items-center">
+        <div className="relative flex-1">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input 
+            placeholder="Müşteri adı, e-posta veya telefon ile ara..." 
+            className="pl-8"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
+      
+      {/* Aktif filtreler */}
+      {hasActiveFilters && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium">Aktif Filtreler:</span>
+          {selectedTags.map(tag => (
+            <Badge 
+              key={tag}
+              variant="secondary"
+              className="flex items-center gap-1"
+            >
+              {tag}
+              <X 
+                className="h-3 w-3 cursor-pointer" 
+                onClick={() => setSelectedTags(selectedTags.filter(t => t !== tag))}
+              />
+            </Badge>
+          ))}
+          {selectedStatus !== 'all' && (
+            <Badge 
+              variant="secondary"
+              className="flex items-center gap-1"
+            >
+              Durum: {selectedStatus}
+              <X 
+                className="h-3 w-3 cursor-pointer" 
+                onClick={() => setSelectedStatus('all')}
+              />
+            </Badge>
           )}
-        </>
-      ) : (
-        <CustomerDetail 
-          customer={selectedCustomer} 
-          onClose={() => setSelectedCustomer(null)}
-        />
+          {selectedCampaign !== 'all' && (
+            <Badge 
+              variant="secondary"
+              className="flex items-center gap-1"
+            >
+              Kampanya: {selectedCampaign}
+              <X 
+                className="h-3 w-3 cursor-pointer" 
+                onClick={() => setSelectedCampaign('all')}
+              />
+            </Badge>
+          )}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-7 px-2 text-xs"
+            onClick={() => {
+              setSelectedTags([]);
+              setSelectedStatus('all');
+              setSelectedCampaign('all');
+            }}
+          >
+            Tümünü Temizle
+          </Button>
+        </div>
       )}
+      
+      {filteredCustomers.length > 0 ? (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredCustomers.map(customer => (
+            <CustomerCard 
+              key={customer.id} 
+              customer={customer} 
+              onClick={() => handleSelectCustomer(customer)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-12">
+          <Users className="h-12 w-12 text-muted-foreground mb-4" />
+          <h3 className="text-lg font-medium">Müşteri bulunamadı</h3>
+          <p className="text-sm text-muted-foreground mt-2">Arama kriterlerinize uygun müşteri bulunmamaktadır.</p>
+        </div>
+      )}
+      
+      {/* Müşteri detay yan paneli */}
+      <CustomerDetail 
+        customer={selectedCustomer}
+        onClose={() => setIsDetailOpen(false)}
+        isOpen={isDetailOpen}
+        onCustomerUpdate={handleUpdateCustomer}
+      />
+      
+      {/* Filtre diyaloğu */}
+      <FilterDialog 
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        currentTags={selectedTags}
+        onTagsChange={setSelectedTags}
+        currentStatus={selectedStatus}
+        onStatusChange={setSelectedStatus}
+        currentCampaign={selectedCampaign}
+        onCampaignChange={setSelectedCampaign}
+      />
     </div>
   );
 };

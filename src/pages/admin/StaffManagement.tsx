@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Search, MoreHorizontal, Edit, Trash } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -135,14 +134,18 @@ const StaffManagement: React.FC = () => {
 
   // Handle edit staff
   const handleEdit = (staffMember: Staff) => {
-    setEditingStaff(staffMember);
     form.reset({
       name: staffMember.name,
       email: staffMember.email,
       role: staffMember.role,
       status: staffMember.status,
     });
-    setIsAddDialogOpen(true);
+    
+    setEditingStaff(staffMember);
+    
+    setTimeout(() => {
+      setIsAddDialogOpen(true);
+    }, 10);
   };
 
   // Handle delete staff
@@ -158,7 +161,19 @@ const StaffManagement: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Staff Management</h1>
-        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <Dialog 
+          open={isAddDialogOpen} 
+          onOpenChange={(open) => {
+            if (open) {
+            } else {
+              setIsAddDialogOpen(false);
+              setEditingStaff(null);
+              setTimeout(() => {
+                form.reset();
+              }, 100);
+            }
+          }}
+        >
           <DialogTrigger asChild>
             <Button onClick={() => {
               setEditingStaff(null);
@@ -168,6 +183,9 @@ const StaffManagement: React.FC = () => {
                 role: '',
                 status: 'Active',
               });
+              setTimeout(() => {
+                setIsAddDialogOpen(true);
+              }, 10);
             }}>
               <Plus className="mr-2 h-4 w-4" /> Add Staff
             </Button>
@@ -242,7 +260,14 @@ const StaffManagement: React.FC = () => {
                   )}
                 />
                 <DialogFooter>
-                  <Button type="submit">{editingStaff ? 'Update' : 'Add'} Staff</Button>
+                  <Button 
+                    type="button"
+                    onClick={() => {
+                      form.handleSubmit(onSubmit)();
+                    }}
+                  >
+                    {editingStaff ? 'Update' : 'Add'} Staff
+                  </Button>
                 </DialogFooter>
               </form>
             </Form>

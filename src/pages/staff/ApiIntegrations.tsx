@@ -46,11 +46,8 @@ import {
 // API kategorileri
 const apiCategories = [
   { id: 'e-commerce', name: 'E-Ticaret' },
-  { id: 'analytics', name: 'Analitik' },
-  { id: 'communication', name: 'İletişim' },
-  { id: 'crm', name: 'CRM' },
   { id: 'marketing', name: 'Pazarlama' },
-  { id: 'payment', name: 'Ödeme' },
+  { id: 'analytics', name: 'Analitik' }
 ];
 
 // Mock brand data
@@ -64,50 +61,80 @@ const brands = [
 // Genişletilmiş API servisleri
 const apiServices = [
   { 
-    id: 'zapier', 
-    name: 'Zapier', 
-    description: 'Binlerce uygulamayla bağlantı kurun', 
-    icon: '🔌',
-    category: 'communication',
+    id: 'ikas', 
+    name: 'İKAS', 
+    description: 'E-ticaret altyapı platformu', 
+    icon: '🛍️',
+    category: 'e-commerce',
     endpoints: [
-      { name: 'webhooks', description: 'Webhook entegrasyonu', isDefault: true },
-      { name: 'oauth', description: 'OAuth kimlik doğrulama', isDefault: false }
-    ]
+      { name: 'products', description: 'Ürün yönetimi', isDefault: true },
+      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
+      { name: 'customers', description: 'Müşteri yönetimi', isDefault: true },
+      { name: 'categories', description: 'Kategori yönetimi', isDefault: false },
+      { name: 'inventory', description: 'Stok yönetimi', isDefault: false }
+    ],
+    authType: 'apiKey'
   },
   { 
-    id: 'slack', 
-    name: 'Slack', 
-    description: 'Takım iletişim platformu', 
-    icon: '💬',
-    category: 'communication',
+    id: 'trendyol', 
+    name: 'Trendyol', 
+    description: 'Türkiye e-ticaret pazaryeri', 
+    icon: '🏪',
+    category: 'e-commerce',
     endpoints: [
-      { name: 'messages', description: 'Mesaj gönderme', isDefault: true },
-      { name: 'channels', description: 'Kanal yönetimi', isDefault: false }
-    ]
+      { name: 'products', description: 'Ürün yönetimi', isDefault: true },
+      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
+      { name: 'settlements', description: 'Ödeme ve uzlaşma', isDefault: false },
+      { name: 'returns', description: 'İade yönetimi', isDefault: false },
+      { name: 'questions', description: 'Ürün soruları', isDefault: false }
+    ],
+    authType: 'supplierAuth'
   },
   { 
-    id: 'mailchimp', 
-    name: 'Mailchimp', 
-    description: 'E-posta pazarlama servisi', 
-    icon: '📧',
+    id: 'tcimax', 
+    name: 'TCimax', 
+    description: 'B2B e-ticaret yazılım çözümü', 
+    icon: '🔄',
+    category: 'e-commerce',
+    endpoints: [
+      { name: 'products', description: 'Ürün yönetimi', isDefault: true },
+      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
+      { name: 'customers', description: 'Müşteri yönetimi', isDefault: true },
+      { name: 'pricing', description: 'Fiyatlandırma', isDefault: false },
+      { name: 'stock', description: 'Stok yönetimi', isDefault: false },
+      { name: 'invoices', description: 'Fatura yönetimi', isDefault: false }
+    ],
+    authType: 'tcimaxAuth'
+  },
+  { 
+    id: 'hepsiburada', 
+    name: 'Hepsiburada', 
+    description: 'Türkiye online alışveriş platformu', 
+    icon: '🛒',
+    category: 'e-commerce',
+    endpoints: [
+      { name: 'listings', description: 'Ürün listeleme', isDefault: true },
+      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
+      { name: 'inventory', description: 'Stok yönetimi', isDefault: true },
+      { name: 'returns', description: 'İade yönetimi', isDefault: false },
+      { name: 'claims', description: 'Şikayet yönetimi', isDefault: false }
+    ],
+    authType: 'apiKey'
+  },
+  { 
+    id: 'google_ads', 
+    name: 'Google Ads', 
+    description: 'Google reklam platformu', 
+    icon: '📈',
     category: 'marketing',
     endpoints: [
       { name: 'campaigns', description: 'Kampanya yönetimi', isDefault: true },
-      { name: 'lists', description: 'Liste yönetimi', isDefault: true },
-      { name: 'templates', description: 'Şablon yönetimi', isDefault: false }
-    ]
-  },
-  { 
-    id: 'hubspot', 
-    name: 'HubSpot', 
-    description: 'CRM platformu', 
-    icon: '🔄',
-    category: 'crm',
-    endpoints: [
-      { name: 'contacts', description: 'Kişi yönetimi', isDefault: true },
-      { name: 'deals', description: 'Fırsat yönetimi', isDefault: false },
-      { name: 'companies', description: 'Şirket yönetimi', isDefault: false }
-    ]
+      { name: 'adgroups', description: 'Reklam grubu yönetimi', isDefault: true },
+      { name: 'reports', description: 'Performans raporları', isDefault: true },
+      { name: 'keywords', description: 'Anahtar kelime yönetimi', isDefault: false },
+      { name: 'budget', description: 'Bütçe ayarları', isDefault: false }
+    ],
+    authType: 'oauth'
   },
   { 
     id: 'google_analytics', 
@@ -117,32 +144,12 @@ const apiServices = [
     category: 'analytics',
     endpoints: [
       { name: 'reports', description: 'Rapor alma', isDefault: true },
-      { name: 'events', description: 'Olay takibi', isDefault: false }
-    ]
-  },
-  { 
-    id: 'stripe', 
-    name: 'Stripe', 
-    description: 'Online ödeme işlemleri', 
-    icon: '💳',
-    category: 'payment',
-    endpoints: [
-      { name: 'charges', description: 'Ücretlendirme', isDefault: true },
-      { name: 'customers', description: 'Müşteri yönetimi', isDefault: false },
-      { name: 'subscriptions', description: 'Abonelik yönetimi', isDefault: false }
-    ]
-  },
-  { 
-    id: 'shopify', 
-    name: 'Shopify', 
-    description: 'E-ticaret platformu', 
-    icon: '🛒',
-    category: 'e-commerce',
-    endpoints: [
-      { name: 'products', description: 'Ürün yönetimi', isDefault: true },
-      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
-      { name: 'customers', description: 'Müşteri yönetimi', isDefault: false }
-    ]
+      { name: 'events', description: 'Olay takibi', isDefault: true },
+      { name: 'metrics', description: 'Metrik ölçümleri', isDefault: true },
+      { name: 'dimensions', description: 'Boyut raporları', isDefault: false },
+      { name: 'realtime', description: 'Gerçek zamanlı veriler', isDefault: false }
+    ],
+    authType: 'oauth'
   },
   { 
     id: 'woocommerce', 
@@ -153,42 +160,26 @@ const apiServices = [
     endpoints: [
       { name: 'products', description: 'Ürün yönetimi', isDefault: true },
       { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
-      { name: 'coupons', description: 'Kupon yönetimi', isDefault: false }
-    ]
+      { name: 'customers', description: 'Müşteri yönetimi', isDefault: true },
+      { name: 'coupons', description: 'Kupon yönetimi', isDefault: false },
+      { name: 'categories', description: 'Kategori yönetimi', isDefault: false }
+    ],
+    authType: 'consumerKey'
   },
   { 
-    id: 'facebook', 
-    name: 'Facebook Ads', 
-    description: 'Facebook reklam platformu', 
-    icon: '👥',
-    category: 'marketing',
+    id: 'shopify', 
+    name: 'Shopify', 
+    description: 'E-ticaret platformu', 
+    icon: '🛒',
+    category: 'e-commerce',
     endpoints: [
-      { name: 'campaigns', description: 'Kampanya yönetimi', isDefault: true },
-      { name: 'audience', description: 'Hedef kitle yönetimi', isDefault: false }
-    ]
-  },
-  { 
-    id: 'twilio', 
-    name: 'Twilio', 
-    description: 'İletişim API platformu', 
-    icon: '📱',
-    category: 'communication',
-    endpoints: [
-      { name: 'sms', description: 'SMS gönderimi', isDefault: true },
-      { name: 'voice', description: 'Sesli arama', isDefault: false }
-    ]
-  },
-  { 
-    id: 'salesforce', 
-    name: 'Salesforce', 
-    description: 'CRM ve bulut çözümleri', 
-    icon: '☁️',
-    category: 'crm',
-    endpoints: [
-      { name: 'contacts', description: 'Kişi yönetimi', isDefault: true },
-      { name: 'opportunities', description: 'Fırsat yönetimi', isDefault: false },
-      { name: 'accounts', description: 'Hesap yönetimi', isDefault: false }
-    ]
+      { name: 'products', description: 'Ürün yönetimi', isDefault: true },
+      { name: 'orders', description: 'Sipariş yönetimi', isDefault: true },
+      { name: 'customers', description: 'Müşteri yönetimi', isDefault: true },
+      { name: 'inventory', description: 'Stok yönetimi', isDefault: false },
+      { name: 'fulfillments', description: 'Sipariş işleme', isDefault: false }
+    ],
+    authType: 'shopifyAuth'
   }
 ];
 
@@ -206,8 +197,15 @@ interface ApiConnection {
   serviceId: string;
   serviceName: string;
   serviceIcon: string;
-  apiKey: string;
+  apiKey?: string;
+  apiSecret?: string; 
+  supplierId?: string;
   webhookUrl?: string;
+  developerToken?: string;
+  clientId?: string;
+  clientSecret?: string;
+  clientCustomerId?: string;
+  refreshToken?: string;
   status: 'active' | 'pending' | 'error';
   createdAt: Date;
   lastChecked?: Date;
@@ -279,6 +277,8 @@ const ApiIntegrations: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedService, setSelectedService] = useState<string>('');
   const [apiKey, setApiKey] = useState('');
+  const [apiSecret, setApiSecret] = useState('');
+  const [supplierId, setSupplierId] = useState('');
   const [webhookUrl, setWebhookUrl] = useState('');
   const [connections, setConnections] = useState<ApiConnection[]>(initialConnections);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -290,6 +290,25 @@ const ApiIntegrations: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const { toast } = useToast();
+  
+  // Google Ads için özel alanlar
+  const [developerToken, setDeveloperToken] = useState('');
+  const [clientCustomerId, setClientCustomerId] = useState('');
+  const [refreshToken, setRefreshToken] = useState('');
+  const [clientId, setClientId] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
+  
+  // WooCommerce için özel alanlar
+  const [consumerKey, setConsumerKey] = useState('');
+  const [consumerSecret, setConsumerSecret] = useState('');
+  const [siteUrl, setSiteUrl] = useState('');
+  
+  // Shopify için özel alanlar
+  const [shopifyStore, setShopifyStore] = useState('');
+  const [adminApiAccessToken, setAdminApiAccessToken] = useState('');
+  
+  // Google Analytics için özel alanlar
+  const [gaViewId, setGaViewId] = useState('');
   
   // Seçilen marka değiştiğinde dialog kontrolü
   useEffect(() => {
@@ -336,97 +355,271 @@ const ApiIntegrations: React.FC = () => {
   };
   
   const handleConnect = () => {
-    if (!selectedBrand || !selectedService || !apiKey) {
-      toast({
-        title: 'Eksik Bilgi',
-        description: 'Lütfen marka, API servisi ve API anahtarı bilgilerini doldurunuz.',
-        variant: 'destructive',
-      });
-      return;
-    }
+    if (!selectedBrand || !selectedService) return;
     
-    setIsConnecting(true);
-    setConnectionStatus('idle');
+    const selectedServiceData = apiServices.find(s => s.id === selectedService);
+    if (!selectedServiceData) return;
     
-    // Simulate API connection process
-    setTimeout(() => {
-      try {
-        const service = apiServices.find(s => s.id === selectedService);
-        
-        if (!service) {
-          setConnectionStatus('error');
-          setIsConnecting(false);
+    // Her servis için farklı bağlantı mantığı
+    let apiData: any = {
+      id: `conn-${Date.now()}`,
+      brandId: selectedBrand,
+      brandName: brands.find(b => b.id === selectedBrand)?.name || '',
+      serviceId: selectedService,
+      serviceName: selectedServiceData.name,
+      serviceIcon: selectedServiceData.icon,
+      status: 'active',
+      createdAt: new Date(),
+      lastChecked: new Date(),
+      autoSync,
+      syncInterval,
+      endpoints: selectedEndpoints.map(name => ({
+        id: `endpoint-${Date.now()}-${name}`,
+        name,
+        enabled: true
+      }))
+    };
+    
+    // API'ye göre farklı kimlik doğrulama bilgileri
+    switch (selectedServiceData.authType) {
+      case 'oauth':
+        // Google Ads için
+        if (selectedService === 'google_ads') {
+          if (!developerToken || !clientId || !clientSecret || !clientCustomerId) {
+            toast({
+              title: "Eksik Bilgi",
+              description: "Google Ads bağlantısı için tüm gerekli alanları doldurmalısınız.",
+              variant: "destructive"
+            });
+            return;
+          }
+          
+          apiData = {
+            ...apiData,
+            developerToken,
+            clientId,
+            clientSecret,
+            clientCustomerId,
+            refreshToken,
+            apiKey: `gads-${Date.now()}` // Sistem içi referans için
+          };
+          
+          // Google Ads için dokümantasyona yönlendirme
           toast({
-            title: 'Hata',
-            description: 'Seçilen API servisi bulunamadı.',
-            variant: 'destructive',
+            title: "Google Ads Bağlantısı",
+            description: "OAuth yetkilendirme işlemi için yönlendirileceksiniz.",
+          });
+          
+          // OAuth yönlendirme simülasyonu
+          setTimeout(() => {
+            window.open('https://developers.google.com/google-ads/api/docs/oauth/overview', '_blank');
+          }, 1000);
+        }
+        // Google Analytics için
+        else if (selectedService === 'google_analytics') {
+          if (!clientId || !clientSecret || !gaViewId) {
+            toast({
+              title: "Eksik Bilgi",
+              description: "Google Analytics bağlantısı için Client ID, Client Secret ve View ID alanları gereklidir.",
+              variant: "destructive"
+            });
+            return;
+          }
+          
+          apiData = {
+            ...apiData,
+            clientId,
+            clientSecret,
+            refreshToken,
+            gaViewId,
+            apiKey: `ga-${Date.now()}` // Sistem içi referans için
+          };
+          
+          toast({
+            title: "Google Analytics Bağlantısı",
+            description: "OAuth yetkilendirme işlemi için yönlendirileceksiniz.",
+          });
+          
+          // OAuth yönlendirme simülasyonu
+          setTimeout(() => {
+            window.open('https://developers.google.com/analytics/devguides/reporting/core/v4/authorization', '_blank');
+          }, 1000);
+        }
+        break;
+        
+      case 'tcimaxAuth':
+        // TCimax için
+        if (!apiKey || !apiSecret || !supplierId) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "TCimax API bağlantısı için API Key, API Secret ve Şirket ID alanları gereklidir.",
+            variant: "destructive"
           });
           return;
         }
         
-        // Varsayılan endpoint'leri al veya seçilenleri kullan
-        let endpoints: ApiEndpoint[] = [];
-        if (selectedEndpoints.length > 0) {
-          endpoints = selectedEndpoints.map(ep => ({
-            id: `${service.id}_${ep}`,
-            name: ep,
-            enabled: true,
-            custom_url: ''
-          }));
-        } else {
-          endpoints = service.endpoints
-            .filter(ep => ep.isDefault)
-            .map(ep => ({
-              id: `${service.id}_${ep.name}`,
-              name: ep.name,
-              enabled: true,
-              custom_url: ''
-            }));
-        }
-        
-        const newConnection: ApiConnection = {
-          id: Date.now().toString(),
-          brandId: selectedBrand,
-          brandName: brands.find(b => b.id === selectedBrand)?.name || '',
-          serviceId: selectedService,
-          serviceName: service.name,
-          serviceIcon: service.icon,
-          apiKey: apiKey,
-          webhookUrl: webhookUrl,
-          status: 'active',
-          createdAt: new Date(),
-          lastChecked: new Date(),
-          endpoints: endpoints,
-          autoSync: autoSync,
-          syncInterval: syncInterval,
-          customHeaders: customHeaders
+        apiData = {
+          ...apiData,
+          apiKey,
+          apiSecret,
+          supplierId,
+          webhookUrl: webhookUrl || undefined,
+          customHeaders: customHeaders || undefined
         };
         
-        setConnections([...connections, newConnection]);
-        setApiKey('');
-        setWebhookUrl('');
-        setSelectedService('');
-        setSelectedEndpoints([]);
-        setCustomHeaders('');
-        setIsConnecting(false);
-        setConnectionStatus('success');
-        setIsAddDialogOpen(false);
+        toast({
+          title: "TCimax Bağlantısı",
+          description: "TCimax API bağlantısı oluşturuluyor...",
+        });
+        break;
         
+      case 'supplierAuth':
+        // Trendyol için
+        if (!supplierId || !apiKey || !apiSecret) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "Trendyol API bağlantısı için tedarikçi ID, API Key ve API Secret gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        apiData = {
+          ...apiData,
+          supplierId,
+          apiKey,
+          apiSecret
+        };
+        break;
+        
+      case 'apiKey':
+        // İKAS veya Hepsiburada
+        if (!apiKey) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "API anahtarı gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        if (selectedService === 'ikas' && !apiSecret) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "İKAS API bağlantısı için API Secret gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        if (selectedService === 'hepsiburada' && !supplierId) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "Hepsiburada API bağlantısı için Satıcı ID gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        apiData = {
+          ...apiData,
+          apiKey,
+          apiSecret: selectedService === 'ikas' ? apiSecret : undefined,
+          supplierId: selectedService === 'hepsiburada' ? supplierId : undefined,
+          webhookUrl: webhookUrl || undefined,
+          customHeaders: customHeaders || undefined
+        };
+        break;
+
+      case 'consumerKey':
+        // WooCommerce için
+        if (!consumerKey || !consumerSecret || !siteUrl) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "WooCommerce API bağlantısı için Site URL, Consumer Key ve Consumer Secret gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        // Site URL'nin biçimini kontrol et
+        if (!siteUrl.startsWith('http')) {
+          toast({
+            title: "Hatalı URL",
+            description: "Site URL 'http://' veya 'https://' ile başlamalıdır.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        apiData = {
+          ...apiData,
+          siteUrl,
+          consumerKey,
+          consumerSecret,
+          webhookUrl: webhookUrl || undefined,
+          apiKey: consumerKey // Referans için
+        };
+        break;
+        
+      case 'shopifyAuth':
+        // Shopify için
+        if (!shopifyStore || !adminApiAccessToken || !apiKey || !apiSecret) {
+          toast({
+            title: "Eksik Bilgi",
+            description: "Shopify API bağlantısı için Mağaza Adı, Admin API Erişim Tokeni, API Key ve API Secret gereklidir.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        // Shopify mağaza adını formatlama
+        const formattedShopifyStore = shopifyStore
+          .replace(/\s+/g, '-')         // Boşlukları tire ile değiştir
+          .replace(/[^\w-]+/g, '')      // Alfanümerik olmayan karakterleri kaldır
+          .toLowerCase();               // Küçük harfe dönüştür
+          
+        if (!formattedShopifyStore) {
+          toast({
+            title: "Geçersiz Mağaza Adı",
+            description: "Lütfen geçerli bir Shopify mağaza adı girin.",
+            variant: "destructive"
+          });
+          return;
+        }
+        
+        apiData = {
+          ...apiData,
+          shopifyStore: formattedShopifyStore,
+          shopUrl: `https://${formattedShopifyStore}.myshopify.com`,
+          adminApiAccessToken,
+          apiKey,
+          apiSecret,
+          webhookUrl: webhookUrl || undefined
+        };
+        break;
+      
+      default:
         toast({
-          title: 'Bağlantı Başarılı',
-          description: `${brands.find(b => b.id === selectedBrand)?.name} için ${service.name} API bağlantısı kuruldu.`,
+          title: "Hata",
+          description: "Geçersiz API türü.",
+          variant: "destructive"
         });
-      } catch (error) {
-        console.error("API bağlantısı oluşturulurken hata:", error);
-        setConnectionStatus('error');
-        setIsConnecting(false);
-        toast({
-          title: 'Beklenmeyen Hata',
-          description: 'API bağlantısı oluşturulurken bir hata oluştu.',
-          variant: 'destructive',
-        });
-      }
-    }, 1500);
+        return;
+    }
+    
+    // Bağlantı kaydı
+    setConnections(prev => [...prev, apiData]);
+    
+    // Başarılı bildirim
+    toast({
+      title: "Bağlantı Başarılı",
+      description: `${apiData.serviceName} bağlantısı başarıyla kuruldu.`,
+    });
+    
+    // Formu sıfırla ve dialogu kapat
+    resetForm();
+    setIsAddDialogOpen(false);
   };
   
   const handleDelete = (connectionId: string) => {
@@ -474,15 +667,31 @@ const ApiIntegrations: React.FC = () => {
 
   // Reset form function update
   const resetForm = () => {
+    setSelectedBrand('');
     setSelectedService('');
     setApiKey('');
+    setApiSecret('');
+    setSupplierId('');
     setWebhookUrl('');
-    setConnectionStatus('idle');
-    setSelectedEndpoints([]);
-    setCustomHeaders('');
     setAutoSync(true);
     setSyncInterval('daily');
-    setSelectedCategory('all');
+    setSelectedEndpoints([]);
+    setCustomHeaders('');
+    // Google Ads için özel alanları sıfırla
+    setDeveloperToken('');
+    setClientCustomerId('');
+    setRefreshToken('');
+    setClientId('');
+    setClientSecret('');
+    // WooCommerce için özel alanları sıfırla
+    setConsumerKey('');
+    setConsumerSecret('');
+    setSiteUrl('');
+    // Shopify için özel alanları sıfırla
+    setShopifyStore('');
+    setAdminApiAccessToken('');
+    // Google Analytics için özel alanları sıfırla
+    setGaViewId('');
   };
 
   const openAddDialog = (brandId?: string) => {
@@ -497,465 +706,1014 @@ const ApiIntegrations: React.FC = () => {
     }, 10);
   };
   
+  // Render service specific fields based on authType
+  const renderServiceSpecificFields = () => {
+    const selectedServiceData = apiServices.find(s => s.id === selectedService);
+    if (!selectedServiceData) return null;
+    
+    switch (selectedServiceData.authType) {
+      case 'oauth':
+        // Google servisleri için OAuth (Ads ve Analytics)
+        if (selectedService === 'google_ads') {
+          return (
+            <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+              <h3 className="font-medium text-sm">Google Ads API Yapılandırması</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="developerToken">Geliştirici Token</Label>
+                <Input
+                  id="developerToken"
+                  value={developerToken}
+                  onChange={(e) => setDeveloperToken(e.target.value)}
+                  placeholder="Örn: _AbCdEfGhIjKlMnOpQrStUv"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Google Ads API'ye erişim için geliştirici tokenınız
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="clientCustomerId">Müşteri ID</Label>
+                <Input
+                  id="clientCustomerId"
+                  value={clientCustomerId}
+                  onChange={(e) => setClientCustomerId(e.target.value)}
+                  placeholder="Örn: 123-456-7890"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Google Ads hesabınızın müşteri ID'si
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="clientId">OAuth Client ID</Label>
+                <Input
+                  id="clientId"
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  placeholder="Örn: 123456789-abcdefg.apps.googleusercontent.com"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="clientSecret">Client Secret</Label>
+                <Input
+                  id="clientSecret"
+                  value={clientSecret}
+                  onChange={(e) => setClientSecret(e.target.value)}
+                  placeholder="Örn: ABCDEF-1234567890"
+                  type="password"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="refreshToken">Refresh Token</Label>
+                <Input
+                  id="refreshToken"
+                  value={refreshToken}
+                  onChange={(e) => setRefreshToken(e.target.value)}
+                  placeholder="Refresh token"
+                  type="password"
+                />
+                <p className="text-xs text-muted-foreground">
+                  OAuth 2.0 yetkilendirmesi için refresh token
+                </p>
+              </div>
+              
+              <div className="mt-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => window.open('https://developers.google.com/google-ads/api/docs/oauth/overview', '_blank')}
+                >
+                  OAuth 2.0 Dokümantasyonu
+                </Button>
+              </div>
+            </div>
+          );
+        } else if (selectedService === 'google_analytics') {
+          return (
+            <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+              <h3 className="font-medium text-sm">Google Analytics API Yapılandırması</h3>
+              
+              <div className="space-y-2">
+                <Label htmlFor="gaViewId">Görünüm ID (View ID)</Label>
+                <Input
+                  id="gaViewId"
+                  value={gaViewId}
+                  onChange={(e) => setGaViewId(e.target.value)}
+                  placeholder="Örn: ga:123456789"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Google Analytics görünüm ID'niz. GA4'te bu Measurement ID olarak geçer.
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="clientId">OAuth Client ID</Label>
+                <Input
+                  id="clientId"
+                  value={clientId}
+                  onChange={(e) => setClientId(e.target.value)}
+                  placeholder="Örn: 123456789-abcdefg.apps.googleusercontent.com"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="clientSecret">Client Secret</Label>
+                <Input
+                  id="clientSecret"
+                  value={clientSecret}
+                  onChange={(e) => setClientSecret(e.target.value)}
+                  placeholder="Örn: ABCDEF-1234567890"
+                  type="password"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="refreshToken">Refresh Token</Label>
+                <Input
+                  id="refreshToken"
+                  value={refreshToken}
+                  onChange={(e) => setRefreshToken(e.target.value)}
+                  placeholder="Refresh token"
+                  type="password"
+                />
+              </div>
+              
+              <div className="mt-4">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => window.open('https://developers.google.com/analytics/devguides/reporting/core/v4', '_blank')}
+                >
+                  Google Analytics API Dokümantasyonu
+                </Button>
+              </div>
+            </div>
+          );
+        }
+        break;
+      
+      case 'tcimaxAuth':
+        // TCimax için kimlik doğrulama alanları
+        return (
+          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+            <h3 className="font-medium text-sm">TCimax API Yapılandırması</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">API Anahtarı</Label>
+              <Input
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="API anahtarınızı girin"
+              />
+              <p className="text-xs text-muted-foreground">
+                TCimax yönetim panelinden alacağınız API anahtarı
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiSecret">API Gizli Anahtarı</Label>
+              <Input
+                id="apiSecret"
+                value={apiSecret}
+                onChange={(e) => setApiSecret(e.target.value)}
+                placeholder="API gizli anahtarınızı girin"
+                type="password"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="supplierId">Şirket ID</Label>
+              <Input
+                id="supplierId"
+                value={supplierId}
+                onChange={(e) => setSupplierId(e.target.value)}
+                placeholder="TCimax Şirket/Hesap ID'nizi girin"
+              />
+              <p className="text-xs text-muted-foreground">
+                TCimax'teki şirket/hesap kimlik numaranız
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="webhookUrl">Webhook URL (isteğe bağlı)</Label>
+              <Input
+                id="webhookUrl"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                placeholder="Örn: https://example.com/webhook"
+              />
+              <p className="text-xs text-muted-foreground">
+                Sipariş, stok değişikliği gibi olaylarda TCimax'in bildirim göndereceği adres
+              </p>
+            </div>
+            
+            <div className="mt-2">
+              <Alert variant="outline" className="bg-orange-50 border-orange-200 text-orange-800 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-xs">Bilgi</AlertTitle>
+                <AlertDescription className="text-xs">
+                  TCimax API bilgilerinizi TCimax Yönetim Paneli'ndeki API Entegrasyonları bölümünden edinebilirsiniz. API kullanımı için genellikle yetkili TCimax destek ekibiyle iletişime geçmeniz gerekebilir.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        );
+      
+      case 'supplierAuth':
+        // Trendyol için tedarikçi kimlik doğrulama
+        return (
+          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+            <h3 className="font-medium text-sm">Trendyol API Yapılandırması</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="supplierId">Tedarikçi ID</Label>
+              <Input
+                id="supplierId"
+                value={supplierId}
+                onChange={(e) => setSupplierId(e.target.value)}
+                placeholder="Tedarikçi ID'nizi girin"
+              />
+              <p className="text-xs text-muted-foreground">
+                Trendyol satıcı panelinizden alacağınız tedarikçi ID
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">API Anahtarı (API Key)</Label>
+              <Input
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="API anahtarınızı girin"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiSecret">API Gizli Anahtarı (API Secret)</Label>
+              <Input
+                id="apiSecret"
+                value={apiSecret}
+                onChange={(e) => setApiSecret(e.target.value)}
+                placeholder="API gizli anahtarınızı girin"
+                type="password"
+              />
+            </div>
+            
+            <div className="mt-2">
+              <Alert variant="outline" className="bg-amber-50 border-amber-200 text-amber-800 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-xs">Bilgi</AlertTitle>
+                <AlertDescription className="text-xs">
+                  Trendyol API kimlik bilgilerini Trendyol Satıcı Paneli'ndeki <strong>Hesabım &gt; API Entegrasyonu</strong> bölümünden alabilirsiniz.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        );
+      
+      case 'apiKey':
+        // Hepsiburada ve İKAS için API key yöntemi
+        const isHepsiburada = selectedService === 'hepsiburada';
+        
+        return (
+          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+            <h3 className="font-medium text-sm">{isHepsiburada ? 'Hepsiburada' : 'İKAS'} API Yapılandırması</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">API Anahtarı</Label>
+              <Input
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="API anahtarınızı girin"
+              />
+            </div>
+            
+            {isHepsiburada && (
+              <div className="space-y-2">
+                <Label htmlFor="merchantId">Satıcı ID</Label>
+                <Input
+                  id="merchantId"
+                  value={supplierId}
+                  onChange={(e) => setSupplierId(e.target.value)}
+                  placeholder="Hepsiburada satıcı ID'nizi girin"
+                />
+              </div>
+            )}
+            
+            {!isHepsiburada && (
+              <div className="space-y-2">
+                <Label htmlFor="apiSecret">API Gizli Anahtarı</Label>
+                <Input
+                  id="apiSecret"
+                  value={apiSecret}
+                  onChange={(e) => setApiSecret(e.target.value)}
+                  placeholder="API gizli anahtarınızı girin"
+                  type="password"
+                />
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Label htmlFor="webhookUrl">Webhook URL (isteğe bağlı)</Label>
+              <Input
+                id="webhookUrl"
+                value={webhookUrl}
+                onChange={(e) => setWebhookUrl(e.target.value)}
+                placeholder="Örn: https://example.com/webhook"
+              />
+            </div>
+            
+            <div className="mt-2">
+              <Alert variant="outline" className="bg-blue-50 border-blue-200 text-blue-800 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-xs">Bilgi</AlertTitle>
+                <AlertDescription className="text-xs">
+                  {isHepsiburada 
+                    ? "API bilgilerinizi Hepsiburada Satıcı Paneli'ndeki API Erişim Bilgileri bölümünden alabilirsiniz."
+                    : "İKAS API kimlik bilgilerinizi İKAS Yönetim Paneli'ndeki Entegrasyonlar bölümünden alabilirsiniz."}
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        );
+        
+      case 'consumerKey':
+        // WooCommerce için Consumer Key kimlik doğrulama
+        return (
+          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+            <h3 className="font-medium text-sm">WooCommerce API Yapılandırması</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="siteUrl">Site URL</Label>
+              <Input
+                id="siteUrl"
+                value={siteUrl}
+                onChange={(e) => setSiteUrl(e.target.value)}
+                placeholder="Örn: https://websitem.com"
+              />
+              <p className="text-xs text-muted-foreground">
+                WooCommerce kurulu olan WordPress sitenizin tam URL'si
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="consumerKey">Consumer Key</Label>
+              <Input
+                id="consumerKey"
+                value={consumerKey}
+                onChange={(e) => setConsumerKey(e.target.value)}
+                placeholder="Consumer Key girin"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="consumerSecret">Consumer Secret</Label>
+              <Input
+                id="consumerSecret"
+                value={consumerSecret}
+                onChange={(e) => setConsumerSecret(e.target.value)}
+                placeholder="Consumer Secret girin"
+                type="password"
+              />
+            </div>
+            
+            <div className="mt-2">
+              <Alert variant="outline" className="bg-green-50 border-green-200 text-green-800 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-xs">Bilgi</AlertTitle>
+                <AlertDescription className="text-xs">
+                  WooCommerce API anahtarlarını WordPress yönetim panelinizden <strong>WooCommerce &gt; Ayarlar &gt; Gelişmiş &gt; REST API</strong> bölümünden oluşturabilirsiniz. "Okuma/Yazma" yetkisi vermeyi unutmayın.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        );
+        
+      case 'shopifyAuth':
+        // Shopify için Admin API
+        return (
+          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+            <h3 className="font-medium text-sm">Shopify API Yapılandırması</h3>
+            
+            <div className="space-y-2">
+              <Label htmlFor="shopifyStore">Mağaza Adı</Label>
+              <div className="flex">
+                <Input
+                  id="shopifyStore"
+                  value={shopifyStore}
+                  onChange={(e) => setShopifyStore(e.target.value)}
+                  placeholder="magazam"
+                />
+                <span className="border border-l-0 rounded-r-md px-3 flex items-center bg-slate-100 text-sm">
+                  .myshopify.com
+                </span>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Shopify mağazanızın adı (myshopify.com uzantısı olmadan)
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="adminApiAccessToken">Admin API Erişim Tokeni</Label>
+              <Input
+                id="adminApiAccessToken"
+                value={adminApiAccessToken}
+                onChange={(e) => setAdminApiAccessToken(e.target.value)}
+                placeholder="shpat_..."
+                type="password"
+              />
+              <p className="text-xs text-muted-foreground">
+                Shopify Admin API ile iletişim kurmak için gereken erişim tokeni
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiKey">API Anahtarı</Label>
+              <Input
+                id="apiKey"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder="API Key"
+              />
+              <p className="text-xs text-muted-foreground">
+                Shopify API Key (App API Key olarak da bilinir)
+              </p>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="apiSecret">API Gizli Anahtarı</Label>
+              <Input
+                id="apiSecret"
+                value={apiSecret}
+                onChange={(e) => setApiSecret(e.target.value)}
+                placeholder="API Secret Key"
+                type="password"
+              />
+            </div>
+            
+            <div className="mt-2">
+              <Alert variant="outline" className="bg-purple-50 border-purple-200 text-purple-800 text-sm">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle className="text-xs">Bilgi</AlertTitle>
+                <AlertDescription className="text-xs">
+                  Bu bilgileri Shopify yönetim panelinizden <strong>Uygulamalar &gt; Uygulama Geliştirme &gt; Özel Uygulama Oluştur</strong> bölümünden oluşturabilirsiniz. Admin API erişim tokenini oluştururken gerekli izinleri vermeyi unutmayın.
+                </AlertDescription>
+              </Alert>
+            </div>
+          </div>
+        );
+      
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">API Entegrasyonları</h1>
+        <Button onClick={() => openAddDialog()}>
+          <PlusCircle className="mr-2 h-4 w-4" />
+          Yeni Entegrasyon
+        </Button>
       </div>
 
-      {/* Marka Seçme Kartı - Ana Ekranda */}
-      {!selectedBrand && (
-        <Card className="bg-slate-50">
-          <CardHeader>
-            <CardTitle>Marka Seçin</CardTitle>
-            <CardDescription>
-              Markanızı seçerek mevcut API entegrasyonlarını görüntüleyin veya yeni ekleyin
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {brands.map((brand) => {
-                const brandApis = connections.filter(conn => conn.brandId === brand.id);
-                return (
-                  <Card 
-                    key={brand.id} 
-                    className="cursor-pointer hover:shadow-md transition-shadow"
-                    onClick={() => setSelectedBrand(brand.id)}
-                  >
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-lg">{brand.name}</CardTitle>
-                      <CardDescription>
-                        {brandApis.length} API bağlantısı
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex flex-wrap gap-1 mb-2">
-                        {brandApis.slice(0, 3).map(api => (
-                          <Badge key={api.id} variant="outline" className="text-xs">
-                            <span className="mr-1">{api.serviceIcon}</span> {api.serviceName}
-                          </Badge>
-                        ))}
-                        {brandApis.length > 3 && (
-                          <Badge variant="outline" className="text-xs">
-                            +{brandApis.length - 3} diğer
-                          </Badge>
-                        )}
-                      </div>
-                    </CardContent>
-                    <CardFooter className="pt-0 border-t">
-                      <Button variant="ghost" size="sm" className="w-full justify-between">
-                        <span>Görüntüle</span>
-                        <ChevronRight size={16} />
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-      
-      {selectedBrand && (
-        <>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => setSelectedBrand('')}
+      <Tabs defaultValue="all">
+        <TabsList>
+          <TabsTrigger value="all">Tüm Servisler</TabsTrigger>
+          {apiCategories.map(category => (
+            <TabsTrigger key={category.id} value={category.id}>
+              {category.name}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+        
+        <TabsContent value="all" className="mt-6 space-y-6">
+          {/* Marka filtreleme ve arama */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <div className="w-full sm:w-1/3">
+              <Label htmlFor="brandFilter">Marka Filtresi</Label>
+              <Select 
+                value={selectedBrand} 
+                onValueChange={setSelectedBrand}
               >
-                Tüm Markalar
-              </Button>
-              <h2 className="text-xl font-medium">
-                {brands.find(b => b.id === selectedBrand)?.name}
-              </h2>
+                <SelectTrigger id="brandFilter">
+                  <SelectValue placeholder="Tüm Markalar" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tüm Markalar</SelectItem>
+                  {brands.map(brand => (
+                    <SelectItem key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Button onClick={() => openAddDialog(selectedBrand)}>
-              <PlusCircle className="mr-2 h-4 w-4" />
-              Yeni API Ekle
-            </Button>
-          </div>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>API Bağlantıları</CardTitle>
-              <CardDescription>
-                Bu markaya ait mevcut API bağlantıları
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            <div className="w-full sm:w-2/3">
+              <Label htmlFor="searchFilter">API Servisi Ara</Label>
               <Input
-                placeholder="API adına göre ara..."
+                id="searchFilter"
+                placeholder="Servis adına göre ara..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="max-w-md"
               />
-              
-              {brandConnections.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-muted-foreground">Bu marka için henüz API bağlantısı bulunmamaktadır.</p>
+            </div>
+          </div>
+          
+          {/* Google Ads API'si için özel açıklama kartı */}
+          {selectedService === 'google_ads' && (
+            <Alert className="bg-red-50 border-red-200">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <AlertTitle>Google Ads API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  Google Ads API entegrasyonu için aşağıdaki adımları izlemeniz gerekmektedir:
+                </p>
+                <ol className="list-decimal pl-5 space-y-1 mb-2">
+                  <li className="text-sm">Google Cloud Console'da bir proje oluşturun</li>
+                  <li className="text-sm">OAuth 2.0 kimlik bilgilerini yapılandırın</li>
+                  <li className="text-sm">Google Ads API'sine erişim izni alın</li>
+                  <li className="text-sm">Geliştirici (Developer) token'ı alın</li>
+                  <li className="text-sm">Müşteri ID'sini bulun</li>
+                </ol>
+                <p className="mb-2">
+                  <strong>Not:</strong> Google Ads API entegrasyonu her marka için ayrı yapılandırma gerektirir.
+                  Entegrasyon yaptığınız markanın Google hesabına yönetici erişiminiz olduğundan emin olun.
+                </p>
+                <p>
+                  Daha fazla bilgi için <a href="https://developers.google.com/google-ads/api/docs/start" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Ads API Dökümanları</a>'nı inceleyebilirsiniz.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Trendyol API'si için özel açıklama kartı */}
+          {selectedService === 'trendyol' && (
+            <Alert className="bg-amber-50 border-amber-200">
+              <AlertCircle className="h-4 w-4 text-amber-600" />
+              <AlertTitle>Trendyol API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  Trendyol API ile entegrasyon için aşağıdaki bilgilere ihtiyacınız olacak:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">Tedarikçi ID (Supplier ID)</li>
+                  <li className="text-sm">API Key</li>
+                  <li className="text-sm">API Secret</li>
+                </ul>
+                <p className="mb-2">
+                  Bu bilgileri <strong>Trendyol Satıcı Paneli &gt; Hesabım &gt; API Entegrasyonu</strong> menüsünden alabilirsiniz.
+                </p>
+                <p>
+                  Daha fazla bilgi için <a href="https://developers.trendyol.com/tr" target="_blank" rel="noopener noreferrer" className="text-primary underline">Trendyol API Dökümanları</a>'nı inceleyebilirsiniz.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Hepsiburada API'si için özel açıklama kartı */}
+          {selectedService === 'hepsiburada' && (
+            <Alert className="bg-blue-50 border-blue-200">
+              <AlertCircle className="h-4 w-4 text-blue-600" />
+              <AlertTitle>Hepsiburada API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  Hepsiburada API entegrasyonu için gerekli bilgiler:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">API Key (Satıcı panelinden alınacak)</li>
+                  <li className="text-sm">Satıcı ID (Merchant ID)</li>
+                </ul>
+                <p className="mb-2">
+                  Bu bilgileri <strong>Hepsiburada Satıcı Paneli &gt; Hesap Ayarları &gt; API Erişim Bilgileri</strong> bölümünden edinebilirsiniz.
+                </p>
+                <p>
+                  Daha fazla bilgi için <a href="https://developers.hepsiburada.com" target="_blank" rel="noopener noreferrer" className="text-primary underline">Hepsiburada API Dökümanları</a>'nı inceleyebilirsiniz.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* İKAS API'si için özel açıklama kartı */}
+          {selectedService === 'ikas' && (
+            <Alert className="bg-green-50 border-green-200">
+              <AlertCircle className="h-4 w-4 text-green-600" />
+              <AlertTitle>İKAS API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  İKAS API entegrasyonu için gerekli bilgiler:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">API Key</li>
+                  <li className="text-sm">API Secret</li>
+                </ul>
+                <p className="mb-2">
+                  Bu bilgileri <strong>İKAS Yönetim Paneli &gt; Ayarlar &gt; Entegrasyonlar</strong> bölümünden alabilirsiniz.
+                </p>
+                <p>
+                  Webhook URL, İKAS'tan gelecek bildirimler (sipariş, ürün güncelleme vb.) için kullanılacaktır.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Google Analytics API'si için özel açıklama kartı */}
+          {selectedService === 'google_analytics' && (
+            <Alert className="bg-blue-50 border-blue-200">
+              <AlertCircle className="h-4 w-4 text-blue-600" />
+              <AlertTitle>Google Analytics API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  Google Analytics API entegrasyonu için gerekli adımlar:
+                </p>
+                <ol className="list-decimal pl-5 space-y-1 mb-2">
+                  <li className="text-sm">Google Cloud Console'da bir proje oluşturun</li>
+                  <li className="text-sm">Analytics Reporting API'yi etkinleştirin</li>
+                  <li className="text-sm">OAuth 2.0 kimlik bilgilerini yapılandırın</li>
+                  <li className="text-sm">Gerekli API izinlerini tanımlayın</li>
+                  <li className="text-sm">Görünüm ID'nizi Google Analytics hesabınızdan alın</li>
+                </ol>
+                <p className="mb-2">
+                  <strong>Görünüm ID (View ID):</strong> GA Yönetici panelinden Görünüm Ayarları bölümünden elde edilebilir. GA4 ile entegrasyon için ölçüm ID veya akış ID'si gereklidir.
+                </p>
+                <p>
+                  Daha fazla bilgi için <a href="https://developers.google.com/analytics/devguides/reporting/core/v4" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Analytics API Dökümanları</a>'nı inceleyebilirsiniz.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* WooCommerce API'si için özel açıklama kartı */}
+          {selectedService === 'woocommerce' && (
+            <Alert className="bg-green-50 border-green-200">
+              <AlertCircle className="h-4 w-4 text-green-600" />
+              <AlertTitle>WooCommerce API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  WooCommerce REST API entegrasyonu için gerekli bilgiler:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">Site URL (WordPress sitenizin tam adresi)</li>
+                  <li className="text-sm">Consumer Key ve Consumer Secret (API anahtarları)</li>
+                </ul>
+                <p className="mb-2">
+                  API anahtarlarınızı WordPress admin panelinizden <strong>WooCommerce &gt; Ayarlar &gt; Gelişmiş &gt; REST API</strong> bölümünden oluşturabilirsiniz. "Okuma/Yazma" yetkisi vermeyi unutmayın.
+                </p>
+                <p>
+                  Webhook URL, siparişlerde değişiklik olduğunda otomatik bildirim almak için kullanılabilir. Bu isteğe bağlıdır.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* TCimax API'si için özel açıklama kartı */}
+          {selectedService === 'tcimax' && (
+            <Alert className="bg-orange-50 border-orange-200">
+              <AlertCircle className="h-4 w-4 text-orange-600" />
+              <AlertTitle>TCimax API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  TCimax API entegrasyonu için gerekli bilgiler:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">API Key (API Anahtarı)</li>
+                  <li className="text-sm">API Secret (API Gizli Anahtarı)</li>
+                  <li className="text-sm">Şirket/Hesap ID</li>
+                </ul>
+                <p className="mb-2">
+                  Bu bilgileri <strong>TCimax Yönetim Paneli &gt; Ayarlar &gt; API Entegrasyonları</strong> bölümünden alabilirsiniz.
+                  API kullanımı için genellikle TCimax destek ekibiyle iletişime geçmeniz ve gerekli izinlerin tanımlanması gerekebilir.
+                </p>
+                <p>
+                  TCimax API'si, B2B işlemlerinizi, stok yönetiminizi, siparişlerinizi ve fiyatlandırma stratejilerinizi 
+                  diğer sistemlerle entegre etmenizi sağlar.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Shopify API'si için özel açıklama kartı */}
+          {selectedService === 'shopify' && (
+            <Alert className="bg-purple-50 border-purple-200">
+              <AlertCircle className="h-4 w-4 text-purple-600" />
+              <AlertTitle>Shopify API Entegrasyonu</AlertTitle>
+              <AlertDescription>
+                <p className="mb-2">
+                  Shopify Admin API entegrasyonu için gerekli bilgiler:
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-2">
+                  <li className="text-sm">Mağaza Adı (örn: magazam.myshopify.com adresindeki "magazam" kısmı)</li>
+                  <li className="text-sm">Admin API Erişim Tokeni (Private App veya Custom App üzerinden alınır)</li>
+                  <li className="text-sm">API Key ve API Secret Key</li>
+                </ul>
+                <p className="mb-2">
+                  Bu bilgileri <strong>Shopify Admin &gt; Apps &gt; App and Sales Channel Settings &gt; Develop Apps</strong> bölümünden özel uygulama oluşturarak alabilirsiniz.
+                </p>
+                <p>
+                  API erişim tokenini oluştururken, ihtiyacınız olan API izinlerini seçmeyi unutmayın (örn: products, orders, customers).
+                </p>
+                <p className="mt-2">
+                  Daha fazla bilgi için <a href="https://shopify.dev/api/admin-rest" target="_blank" rel="noopener noreferrer" className="text-primary underline">Shopify Admin API Dökümanları</a>'nı inceleyebilirsiniz.
+                </p>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* API Bağlantı listesi */}
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {brandConnections.map(connection => (
+              <Card key={connection.id} className="overflow-hidden">
+                <div className="h-2 bg-primary" />
+                <CardHeader className="flex flex-row items-center gap-4 pb-2">
+                  <div className="p-2 rounded-md bg-primary/10 text-2xl">
+                    {connection.serviceIcon}
+                  </div>
+                  <div>
+                    <CardTitle>{connection.serviceName}</CardTitle>
+                    <CardDescription>
+                      {connection.brandName}
+                    </CardDescription>
+                  </div>
+                </CardHeader>
+                <CardContent className="pb-2">
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Durum:</span>
+                      <Badge variant={connection.status === 'active' ? 'default' : connection.status === 'pending' ? 'outline' : 'destructive'}>
+                        {connection.status === 'active' ? 'Aktif' : connection.status === 'pending' ? 'Beklemede' : 'Hata'}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">API Anahtarı:</span>
+                      <div className="flex items-center">
+                        <span className="font-mono text-xs">•••••••••••••</span>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8"
+                          onClick={() => handleCopyApiKey(connection.apiKey || '')}
+                        >
+                          <Copy className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {connection.serviceId === 'google_ads' && (
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">Müşteri ID:</span>
+                        <span className="text-xs font-mono">{connection.brandId}-ads</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">Senkronizasyon:</span>
+                      <Badge variant="outline" className={connection.autoSync ? "bg-green-50" : "bg-slate-50"}>
+                        {connection.autoSync ? `${connection.syncInterval} Otomatik` : "Manuel"}
+                      </Badge>
+                    </div>
+                    
+                    <div className="mt-2">
+                      <span className="text-sm text-muted-foreground">Etkin uç noktalar:</span>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {connection.endpoints.map((endpoint) => (
+                          <Badge 
+                            key={endpoint.id} 
+                            variant="outline"
+                            className={endpoint.enabled ? "bg-primary/10" : "bg-slate-50 text-muted-foreground"}
+                          >
+                            {endpoint.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+                <CardFooter className="flex justify-between">
                   <Button 
                     variant="outline" 
-                    className="mt-4"
-                    onClick={() => openAddDialog(selectedBrand)}
+                    size="sm"
+                    onClick={() => handleTestConnection(connection.id)}
                   >
-                    <Plus className="mr-2 h-4 w-4" />
-                    Yeni API Ekle
+                    <RefreshCw className="mr-2 h-3 w-3" />
+                    Test Et
                   </Button>
-                </div>
-              ) : (
-                <div className="grid gap-4 md:grid-cols-2">
-                  {brandConnections.map((connection) => (
-                    <Card key={connection.id} className="relative overflow-hidden hover:shadow-md transition-shadow">
-                      <div className={`absolute top-0 left-0 w-2 h-full ${
-                        connection.status === 'active' ? 'bg-green-500' :
-                        connection.status === 'pending' ? 'bg-amber-500' :
-                        'bg-red-500'
-                      }`} />
-                      
-                      <CardHeader className="pb-2">
-                        <div className="flex justify-between items-start">
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">{connection.serviceIcon}</span>
-                            <div>
-                              <CardTitle>{connection.serviceName}</CardTitle>
-                              <CardDescription>
-                                {connection.brandName}
-                              </CardDescription>
-                            </div>
-                          </div>
-                          <Badge 
-                            variant={connection.status === 'active' ? 'default' : 
-                                  connection.status === 'pending' ? 'outline' : 'destructive'}
-                          >
-                            {connection.status === 'active' ? 'Aktif' : 
-                             connection.status === 'pending' ? 'Beklemede' : 'Hata'}
-                          </Badge>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="pb-2">
-                        <div className="text-sm space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">API Anahtarı:</span>
-                            <div className="flex items-center">
-                              <span className="font-mono">•••••••••••••</span>
-                              <Button 
-                                variant="ghost" 
-                                size="icon" 
-                                className="h-8 w-8"
-                                onClick={() => handleCopyApiKey(connection.apiKey)}
-                              >
-                                <Copy className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            {connection.endpoints.map((endpoint) => (
-                              <Badge 
-                                key={endpoint.id} 
-                                variant="outline"
-                                className="bg-slate-50"
-                              >
-                                {endpoint.name}
-                              </Badge>
-                            ))}
-                          </div>
-                          
-                          <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
-                            <span>Oluşturulma: {connection.createdAt.toLocaleDateString()}</span>
-                            {connection.lastChecked && (
-                              <span>Son kontrol: {connection.lastChecked.toLocaleDateString()}</span>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                      <CardFooter className="pt-2 flex justify-between">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleTestConnection(connection.id)}
-                        >
-                          <RefreshCw className="mr-1 h-3 w-3" />
-                          Test Et
-                        </Button>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                          >
-                            <Settings className="mr-1 h-3 w-3" />
-                            Düzenle
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleDelete(connection.id)}
-                          >
-                            <Trash2 className="mr-1 h-3 w-3" />
-                            Sil
-                          </Button>
-                        </div>
-                      </CardFooter>
-                    </Card>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </>
-      )}
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="mr-2 h-3 w-3" />
+                      Düzenle
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleDelete(connection.id)}
+                    >
+                      <Trash2 className="mr-2 h-3 w-3" />
+                      Sil
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Yeni API Ekleme Dialog */}
-      <Dialog 
-        open={isAddDialogOpen} 
-        onOpenChange={(open) => {
-          setIsAddDialogOpen(open);
-          if (!open) resetForm();
-        }}
-      >
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>Yeni API Bağlantısı Ekle</DialogTitle>
+      <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+        <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto p-0">
+          <DialogHeader className="p-6 border-b sticky top-0 bg-white z-10">
+            <DialogTitle className="text-2xl">Yeni API Entegrasyonu</DialogTitle>
             <DialogDescription>
-              {selectedBrand ? 
-                `${brands.find(b => b.id === selectedBrand)?.name} için yeni API entegrasyonu oluşturun` :
-                'Yeni API entegrasyonu oluşturmak için önce marka seçin'}
+              Markanız için yeni bir API entegrasyonu ekleyin
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 my-2">
-            {!selectedBrand && (
-              <div className="space-y-2">
-                <Label htmlFor="brand">Marka Seçin</Label>
-                <Select
-                  value={selectedBrand}
-                  onValueChange={(value) => {
-                    setSelectedBrand(value);
-                    setConnectionStatus('idle');
-                  }}
-                >
-                  <SelectTrigger id="brand">
-                    <SelectValue placeholder="Marka seçin" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {brands.map((brand) => (
-                      <SelectItem key={brand.id} value={brand.id}>
-                        {brand.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            
-            {selectedBrand && (
-              <>
-                <div className="space-y-2">
-                  <Label htmlFor="api-category">API Kategorisi</Label>
-                  <Select
-                    value={selectedCategory}
-                    onValueChange={(value) => {
-                      setSelectedCategory(value);
-                      setSelectedService('');
-                    }}
-                  >
-                    <SelectTrigger id="api-category">
-                      <SelectValue placeholder="API kategorisi seçin (opsiyonel)" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">Tüm Kategoriler</SelectItem>
-                      {apiCategories.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="api-service">API Servisi</Label>
-                  <Select
-                    value={selectedService}
-                    onValueChange={(value) => {
-                      setSelectedService(value);
-                      setConnectionStatus('idle');
-                      setSelectedEndpoints([]);
-                    }}
-                  >
-                    <SelectTrigger id="api-service">
-                      <SelectValue placeholder="API servisi seçin" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {filteredServices.map((service) => (
-                        <SelectItem key={service.id} value={service.id}>
-                          <div className="flex items-center gap-2">
-                            <span>{service.icon}</span>
-                            <span>{service.name}</span>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </>
-            )}
-            
-            {selectedBrand && selectedService && (
-              <div className="space-y-4 border rounded-md p-4 bg-slate-50">
-                <div className="flex items-center gap-2">
-                  <span className="text-2xl">
-                    {getServiceDetails(selectedService)?.icon}
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{getServiceDetails(selectedService)?.name}</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {getServiceDetails(selectedService)?.description}
-                    </p>
-                  </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="api-key">API Anahtarı</Label>
-                  <Input
-                    id="api-key"
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="API anahtarını girin"
-                  />
-                </div>
-                
-                {selectedService === 'zapier' && (
+          <div className="p-6 space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h3 className="text-lg font-medium mb-3 flex items-center">
+                  <span className="bg-primary/10 p-1 rounded-md mr-2">🏢</span>
+                  Bağlantı Bilgileri
+                </h3>
+                <div className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="webhook-url">Webhook URL (İsteğe bağlı)</Label>
-                    <Input
-                      id="webhook-url"
-                      value={webhookUrl}
-                      onChange={(e) => setWebhookUrl(e.target.value)}
-                      placeholder="Webhook URL'ini girin"
-                    />
+                    <Label htmlFor="brandSelect">Marka Seçin</Label>
+                    <Select 
+                      value={selectedBrand} 
+                      onValueChange={setSelectedBrand}
+                    >
+                      <SelectTrigger id="brandSelect" className="h-10">
+                        <SelectValue placeholder="Marka seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {brands.map(brand => (
+                          <SelectItem key={brand.id} value={brand.id}>
+                            {brand.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="serviceSelect">API Servisi</Label>
+                    <Select 
+                      value={selectedService} 
+                      onValueChange={(value) => {
+                        setSelectedService(value);
+                        
+                        // Servis değiştiğinde varsayılan endpoint'leri seç
+                        const service = apiServices.find(s => s.id === value);
+                        if (service) {
+                          const defaultEndpoints = service.endpoints
+                            .filter(e => e.isDefault)
+                            .map(e => e.name);
+                          setSelectedEndpoints(defaultEndpoints);
+                        } else {
+                          setSelectedEndpoints([]);
+                        }
+                      }}
+                    >
+                      <SelectTrigger id="serviceSelect" className="h-10">
+                        <SelectValue placeholder="API servisi seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {apiServices.map(service => (
+                          <SelectItem key={service.id} value={service.id}>
+                            <div className="flex items-center">
+                              <span className="mr-2">{service.icon}</span>
+                              {service.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                
+                {selectedService && (
+                  <div className="mt-6 space-y-4">
+                    <h3 className="text-lg font-medium mb-3 flex items-center">
+                      <span className="bg-primary/10 p-1 rounded-md mr-2">⚙️</span>
+                      Senkronizasyon Ayarları
+                    </h3>
+                    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-md">
+                      <Label htmlFor="auto-sync" className="font-medium">Otomatik Senkronizasyon</Label>
+                      <Switch
+                        id="auto-sync"
+                        checked={autoSync}
+                        onCheckedChange={setAutoSync}
+                      />
+                    </div>
+                    
+                    {autoSync && (
+                      <div className="space-y-2">
+                        <Label htmlFor="syncInterval">Senkronizasyon Aralığı</Label>
+                        <Select 
+                          value={syncInterval} 
+                          onValueChange={setSyncInterval}
+                        >
+                          <SelectTrigger id="syncInterval" className="h-10">
+                            <SelectValue placeholder="Senkronizasyon sıklığı" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hourly">Saatlik</SelectItem>
+                            <SelectItem value="daily">Günlük</SelectItem>
+                            <SelectItem value="weekly">Haftalık</SelectItem>
+                            <SelectItem value="monthly">Aylık</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
                 )}
+              </div>
+              
+              <div>
+                {/* API servisine özel alanlar */}
+                {renderServiceSpecificFields()}
                 
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>API Endpointlerini Özelleştir</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4">
-                        <p className="text-sm text-muted-foreground">
-                          Kullanmak istediğiniz API endpointlerini seçin (seçilmezse varsayılanlar kullanılır):
-                        </p>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {getServiceDetails(selectedService)?.endpoints.map((endpoint, index) => (
-                            <div key={index} className="flex items-center space-x-2">
-                              <Checkbox 
-                                id={`endpoint-${endpoint.name}`}
-                                checked={selectedEndpoints.includes(endpoint.name)}
-                                onCheckedChange={(checked) => 
-                                  handleEndpointChange(endpoint.name, checked === true)
-                                }
-                              />
-                              <Label 
-                                htmlFor={`endpoint-${endpoint.name}`}
-                                className="flex items-center gap-2"
-                              >
-                                <span>{endpoint.name}</span>
-                                {endpoint.isDefault && (
-                                  <Badge variant="outline" className="text-xs bg-blue-50">
-                                    Varsayılan
-                                  </Badge>
-                                )}
-                              </Label>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                  
-                  <AccordionItem value="item-2">
-                    <AccordionTrigger>Gelişmiş Ayarlar</AccordionTrigger>
-                    <AccordionContent>
-                      <div className="space-y-4">
-                        <div className="flex items-center space-x-2">
-                          <Switch
-                            id="auto-sync"
-                            checked={autoSync}
-                            onCheckedChange={setAutoSync}
+                {selectedService && (
+                  <div className="mt-6 space-y-4">
+                    <h3 className="text-lg font-medium mb-3 flex items-center">
+                      <span className="bg-primary/10 p-1 rounded-md mr-2">🔌</span>
+                      Aktif Edilecek Uç Noktalar
+                    </h3>
+                    <div className="grid grid-cols-1 gap-3 p-3 bg-slate-50 rounded-md">
+                      {apiServices.find(s => s.id === selectedService)?.endpoints.map(endpoint => (
+                        <div key={endpoint.name} className="flex items-start space-x-3 p-2 hover:bg-white rounded-md transition-colors">
+                          <Checkbox 
+                            id={`endpoint-${endpoint.name}`}
+                            checked={selectedEndpoints.includes(endpoint.name)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedEndpoints([...selectedEndpoints, endpoint.name]);
+                              } else {
+                                setSelectedEndpoints(selectedEndpoints.filter(e => e !== endpoint.name));
+                              }
+                            }}
+                            className="mt-1"
                           />
-                          <Label htmlFor="auto-sync">Otomatik Senkronizasyon</Label>
-                        </div>
-                        
-                        {autoSync && (
-                          <div className="space-y-2">
-                            <Label htmlFor="sync-interval">Senkronizasyon Aralığı</Label>
-                            <Select
-                              value={syncInterval}
-                              onValueChange={setSyncInterval}
+                          <div className="grid gap-1 leading-none">
+                            <Label
+                              htmlFor={`endpoint-${endpoint.name}`}
+                              className="text-sm font-medium leading-none"
                             >
-                              <SelectTrigger id="sync-interval">
-                                <SelectValue placeholder="Senkronizasyon aralığı seçin" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                <SelectItem value="hourly">Saatlik</SelectItem>
-                                <SelectItem value="daily">Günlük</SelectItem>
-                                <SelectItem value="weekly">Haftalık</SelectItem>
-                              </SelectContent>
-                            </Select>
+                              {endpoint.name}
+                            </Label>
+                            <p className="text-xs text-muted-foreground">
+                              {endpoint.description}
+                            </p>
                           </div>
-                        )}
-                        
-                        <div className="space-y-2">
-                          <Label htmlFor="custom-headers">Özel HTTP Başlıkları (JSON formatında)</Label>
-                          <Textarea
-                            id="custom-headers"
-                            placeholder='{"Authorization": "Bearer token", "X-Custom-Header": "Value"}'
-                            value={customHeaders}
-                            onChange={(e) => setCustomHeaders(e.target.value)}
-                            className="min-h-[100px]"
-                          />
                         </div>
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-                
-                {connectionStatus === 'success' && (
-                  <Alert className="bg-green-50 border-green-200">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <AlertTitle>Bağlantı Başarılı</AlertTitle>
-                    <AlertDescription>
-                      API servisi başarıyla bağlandı. Artık bu bağlantıyı kullanabilirsiniz.
-                    </AlertDescription>
-                  </Alert>
-                )}
-                
-                {connectionStatus === 'error' && (
-                  <Alert variant="destructive">
-                    <AlertCircle className="h-4 w-4" />
-                    <AlertTitle>Bağlantı Hatası</AlertTitle>
-                    <AlertDescription>
-                      API bağlantısı kurulurken bir hata oluştu. Lütfen bilgilerinizi kontrol edin ve tekrar deneyin.
-                    </AlertDescription>
-                  </Alert>
+                      ))}
+                    </div>
+                    
+                    <Accordion type="single" collapsible>
+                      <AccordionItem value="advanced">
+                        <AccordionTrigger>Gelişmiş Ayarlar</AccordionTrigger>
+                        <AccordionContent>
+                          <div className="space-y-4 pt-2">
+                            <Label htmlFor="customHeaders">Özel HTTP Başlıkları</Label>
+                            <Textarea
+                              id="customHeaders"
+                              value={customHeaders}
+                              onChange={(e) => setCustomHeaders(e.target.value)}
+                              placeholder='{"X-Custom-Header": "value"}'
+                              className="min-h-[100px] font-mono text-sm"
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              JSON formatında özel HTTP başlıkları
+                            </p>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
                 )}
               </div>
-            )}
+            </div>
           </div>
           
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddDialogOpen(false)}>
+          <DialogFooter className="p-6 border-t bg-slate-50 sticky bottom-0">
+            <Button variant="outline" onClick={resetForm}>
               İptal
             </Button>
             <Button 
               onClick={handleConnect} 
-              disabled={isConnecting || !apiKey || !selectedBrand || !selectedService}
+              disabled={!selectedBrand || !selectedService}
+              className="min-w-[100px]"
             >
-              {isConnecting ? 'Bağlanıyor...' : 'API Bağlantısı Kur'}
+              Bağlantı Kur
             </Button>
           </DialogFooter>
         </DialogContent>

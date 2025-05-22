@@ -45,7 +45,7 @@ const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, showWelcomeToast }) =>
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             type="search"
-            placeholder="Search customers, campaigns..."
+            placeholder="Arama yap..."
             className="w-full bg-background pl-8 md:w-[300px] lg:w-[400px]"
           />
         </div>

@@ -66,7 +66,7 @@ const DashboardLayout: React.FC = () => {
           <Outlet />
         </main>
         <footer className="border-t p-4 text-center text-sm text-muted-foreground">
-          <p>© 2025 CRM Platformu. Tüm hakları saklıdır.</p>
+          <p>© 2025 DataCrux CRM Platformu. Tüm hakları saklıdır.</p>
         </footer>
       </div>
     </div>

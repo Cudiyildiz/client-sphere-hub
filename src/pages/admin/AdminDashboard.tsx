@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Users, Building2, CreditCard, ArrowUpRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,7 +13,7 @@ const StatCard = ({ title, value, icon, change }: { title: string; value: string
       {change && (
         <p className="text-xs text-muted-foreground flex items-center gap-1">
           <ArrowUpRight className="h-3 w-3 text-green-500" />
-          <span className="text-green-500">{change}</span> from last month
+          <span className="text-green-500">{change}</span> geçen aydan
         </p>
       )}
     </CardContent>
@@ -30,25 +29,25 @@ const AdminDashboard: React.FC = () => {
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Total Staff"
+          title="Toplam Personel"
           value="12"
           icon={<Users className="h-4 w-4" />}
           change="2.5%"
         />
         <StatCard
-          title="Total Brands"
+          title="Toplam Markalar"
           value="36"
           icon={<Building2 className="h-4 w-4" />}
           change="10.3%"
         />
         <StatCard
-          title="Monthly Revenue"
-          value="$12,234"
+          title="Aylık Gelir"
+          value="₺12,234"
           icon={<CreditCard className="h-4 w-4" />}
           change="4.1%"
         />
         <StatCard
-          title="Active Subscriptions"
+          title="Aktif Abonelikler"
           value="28"
           icon={<Users className="h-4 w-4" />}
           change="3.2%"
@@ -58,16 +57,16 @@ const AdminDashboard: React.FC = () => {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Recent Staff Activity</CardTitle>
-            <CardDescription>Latest actions from staff members</CardDescription>
+            <CardTitle>Son Personel Aktivitesi</CardTitle>
+            <CardDescription>Personel üyelerinden son işlemler</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: 'John Doe', action: 'Created new brand account', time: '2 hours ago' },
-                { name: 'Sarah Smith', action: 'Updated campaign settings', time: '5 hours ago' },
-                { name: 'Mark Johnson', action: 'Resolved customer ticket', time: '1 day ago' },
-                { name: 'Emily Davis', action: 'Added new staff member', time: '2 days ago' },
+                { name: 'John Doe', action: 'Yeni marka hesabı oluşturdu', time: '2 saat önce' },
+                { name: 'Sarah Smith', action: 'Kampanya ayarlarını güncelledi', time: '5 saat önce' },
+                { name: 'Mark Johnson', action: 'Müşteri talebini çözdü', time: '1 gün önce' },
+                { name: 'Emily Davis', action: 'Yeni personel üyesi ekledi', time: '2 gün önce' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center border-b pb-3 last:border-b-0 last:pb-0">
                   <div className="mr-3 flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -86,16 +85,16 @@ const AdminDashboard: React.FC = () => {
         
         <Card>
           <CardHeader>
-            <CardTitle>New Brand Signups</CardTitle>
-            <CardDescription>Recently onboarded brands</CardDescription>
+            <CardTitle>Yeni Marka Kayıtları</CardTitle>
+            <CardDescription>Yeni katılan markalar</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {[
-                { name: 'Acme Inc.', plan: 'Premium Plan', date: 'May 15, 2025' },
-                { name: 'Tech Solutions', plan: 'Standard Plan', date: 'May 12, 2025' },
-                { name: 'Global Foods', plan: 'Premium Plan', date: 'May 10, 2025' },
-                { name: 'Urban Fashion', plan: 'Basic Plan', date: 'May 8, 2025' },
+                { name: 'Acme Inc.', plan: 'Premium Plan', date: '15 Mayıs 2025' },
+                { name: 'Tech Solutions', plan: 'Standart Plan', date: '12 Mayıs 2025' },
+                { name: 'Global Foods', plan: 'Premium Plan', date: '10 Mayıs 2025' },
+                { name: 'Urban Fashion', plan: 'Temel Plan', date: '8 Mayıs 2025' },
               ].map((item, i) => (
                 <div key={i} className="flex items-center justify-between border-b pb-3 last:border-b-0 last:pb-0">
                   <div className="flex items-center">

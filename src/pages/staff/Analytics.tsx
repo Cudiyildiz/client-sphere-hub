@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Calendar, BarChart3, Users, MessageSquare } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,6 +63,14 @@ const brandPerformanceData: BrandPerformance[] = [
   { name: 'Kozmetik Markası', customers: 4200, messages: 3700, responses: 2600, sales: 780 }
 ];
 
+// Marka listesi tanımlama
+const brandList = [
+  { id: 'all', name: 'Tüm Markalar' },
+  { id: 'moda', name: 'Moda Markası' },
+  { id: 'teknoloji', name: 'Teknoloji Markası' },
+  { id: 'kozmetik', name: 'Kozmetik Markası' },
+];
+
 const customerSegmentData: CustomerSegment[] = [
   { name: 'Premium', value: 2350 },
   { name: 'Standard', value: 5800 },
@@ -93,10 +100,67 @@ const StaffAnalytics: React.FC = () => {
   const [timeFrame, setTimeFrame] = useState('last30days');
   const [brandFilter, setBrandFilter] = useState('all');
 
+  // Seçilen markaya göre filtreleme fonksiyonu
+  const getFilteredData = () => {
+    if (brandFilter === 'all') return { 
+      brandPerformanceData, 
+      monthlyData, 
+      customerSegmentData, 
+      campaignPerformanceData 
+    };
+    
+    // Marka filtresi uygulanmış verileri döndür
+    // Gerçek uygulamada burada her marka için özel veri çekme işlemi yapılacaktır
+    const selectedBrandData = brandPerformanceData.find(
+      brand => brand.name === brandList.find(b => b.id === brandFilter)?.name
+    );
+    
+    if (selectedBrandData) {
+      return {
+        brandPerformanceData: [selectedBrandData],
+        monthlyData: monthlyData.map(month => ({
+          ...month,
+          customers: month.customers * 0.3, // Demo amaçlı değerler azaltıldı
+          messages: month.messages * 0.3,
+          sales: month.sales * 0.3
+        })),
+        customerSegmentData, // Demo için değiştirilmedi
+        campaignPerformanceData // Demo için değiştirilmedi
+      };
+    }
+    
+    return { 
+      brandPerformanceData, 
+      monthlyData, 
+      customerSegmentData, 
+      campaignPerformanceData 
+    };
+  };
+  
+  const filteredData = getFilteredData();
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">İstatistikler</h1>
+      <div className="flex flex-col md:flex-row gap-4 md:items-center justify-between">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold tracking-tight">İstatistikler</h1>
+          <div className="w-[220px]">
+            <Select value={brandFilter} onValueChange={setBrandFilter}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Marka Seçin" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {brandList.map((brand) => (
+                    <SelectItem key={brand.id} value={brand.id}>
+                      {brand.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <div className="flex gap-2">
           <Select value={timeFrame} onValueChange={setTimeFrame}>
             <SelectTrigger className="w-[180px]">
@@ -127,7 +191,12 @@ const StaffAnalytics: React.FC = () => {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">10,050</div>
+            <div className="text-2xl font-bold">
+              {brandFilter !== 'all' 
+                ? Math.round(10050 * 0.3).toLocaleString() // Demo için
+                : '10,050'
+              }
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-500">+12%</span> son 30 günde
             </p>
@@ -139,7 +208,12 @@ const StaffAnalytics: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">8,500</div>
+            <div className="text-2xl font-bold">
+              {brandFilter !== 'all' 
+                ? Math.round(8500 * 0.3).toLocaleString() // Demo için
+                : '8,500'
+              }
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-500">+18%</span> son 30 günde
             </p>
@@ -151,7 +225,12 @@ const StaffAnalytics: React.FC = () => {
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">5,050</div>
+            <div className="text-2xl font-bold">
+              {brandFilter !== 'all' 
+                ? Math.round(5050 * 0.3).toLocaleString() // Demo için
+                : '5,050'
+              }
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-500">+22%</span> son 30 günde
             </p>
@@ -163,7 +242,12 @@ const StaffAnalytics: React.FC = () => {
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">1,780</div>
+            <div className="text-2xl font-bold">
+              {brandFilter !== 'all' 
+                ? Math.round(1780 * 0.3).toLocaleString() // Demo için
+                : '1,780'
+              }
+            </div>
             <p className="text-xs text-muted-foreground">
               <span className="text-green-500">+15%</span> son 30 günde
             </p>
@@ -185,11 +269,16 @@ const StaffAnalytics: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Aylık Performans Trendleri</CardTitle>
-              <CardDescription>Son 5 aydaki müşteri, mesaj ve satış verileriniz</CardDescription>
+              <CardDescription>
+                {brandFilter === 'all' 
+                  ? 'Son 5 aydaki müşteri, mesaj ve satış verileriniz' 
+                  : `Son 5 aydaki ${brandList.find(b => b.id === brandFilter)?.name} markasının verileri`
+                }
+              </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={monthlyData}>
+                <AreaChart data={filteredData.monthlyData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="month" />
                   <YAxis />
@@ -213,7 +302,7 @@ const StaffAnalytics: React.FC = () => {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={customerSegmentData}
+                      data={filteredData.customerSegmentData}
                       cx="50%"
                       cy="50%"
                       labelLine={false}
@@ -223,7 +312,7 @@ const StaffAnalytics: React.FC = () => {
                       nameKey="name"
                       label={({name, percent}) => `${name}: ${(percent * 100).toFixed(0)}%`}
                     >
-                      {customerSegmentData.map((entry, index) => (
+                      {filteredData.customerSegmentData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -242,7 +331,7 @@ const StaffAnalytics: React.FC = () => {
               <CardContent className="h-60">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart
-                    data={campaignPerformanceData.map(item => ({
+                    data={filteredData.campaignPerformanceData.map(item => ({
                       name: item.name,
                       oran: (item.sales / item.sent * 100).toFixed(1)
                     }))}
@@ -264,11 +353,16 @@ const StaffAnalytics: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Marka Performans Karşılaştırması</CardTitle>
-              <CardDescription>Tüm markaların performans metrikleri</CardDescription>
+              <CardDescription>
+                {brandFilter === 'all' 
+                  ? 'Tüm markaların performans metrikleri'
+                  : `${brandList.find(b => b.id === brandFilter)?.name} performans metrikleri`
+                }
+              </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={brandPerformanceData}>
+                <BarChart data={filteredData.brandPerformanceData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -284,7 +378,7 @@ const StaffAnalytics: React.FC = () => {
           </Card>
           
           <div className="grid gap-4 md:grid-cols-3">
-            {brandPerformanceData.map((brand, index) => (
+            {filteredData.brandPerformanceData.map((brand, index) => (
               <Card key={index}>
                 <CardHeader>
                   <CardTitle>{brand.name}</CardTitle>
@@ -329,13 +423,18 @@ const StaffAnalytics: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Müşteri Segment Dağılımı</CardTitle>
-                <CardDescription>Aktif müşterilerin segment dağılımı</CardDescription>
+                <CardDescription>
+                  {brandFilter === 'all' 
+                    ? 'Aktif müşterilerin segment dağılımı' 
+                    : `${brandList.find(b => b.id === brandFilter)?.name} müşteri segmentleri`
+                  }
+                </CardDescription>
               </CardHeader>
               <CardContent className="h-80">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={customerSegmentData}
+                      data={filteredData.customerSegmentData}
                       cx="50%"
                       cy="50%"
                       labelLine={true}
@@ -345,7 +444,7 @@ const StaffAnalytics: React.FC = () => {
                       nameKey="name"
                       label
                     >
-                      {customerSegmentData.map((entry, index) => (
+                      {filteredData.customerSegmentData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -359,7 +458,12 @@ const StaffAnalytics: React.FC = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Segment Performans Analizi</CardTitle>
-                <CardDescription>Segment başına müşteri değeri ve etkileşim</CardDescription>
+                <CardDescription>
+                  {brandFilter === 'all' 
+                    ? 'Segment başına müşteri değeri ve etkileşim' 
+                    : `${brandList.find(b => b.id === brandFilter)?.name} segment performansı`
+                  }
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-8">
@@ -436,11 +540,16 @@ const StaffAnalytics: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle>Kampanya Performansı</CardTitle>
-              <CardDescription>Tüm kampanyaların performans metrikleri</CardDescription>
+              <CardDescription>
+                {brandFilter === 'all' 
+                  ? 'Tüm kampanyaların performans metrikleri' 
+                  : `${brandList.find(b => b.id === brandFilter)?.name} kampanya metrikleri`
+                }
+              </CardDescription>
             </CardHeader>
             <CardContent className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={campaignPerformanceData}>
+                <BarChart data={filteredData.campaignPerformanceData}>
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis dataKey="name" />
                   <YAxis />
@@ -456,7 +565,7 @@ const StaffAnalytics: React.FC = () => {
           </Card>
           
           <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {campaignPerformanceData.map((campaign, index) => (
+            {filteredData.campaignPerformanceData.map((campaign, index) => (
               <Card key={index}>
                 <CardHeader>
                   <CardTitle>{campaign.name}</CardTitle>

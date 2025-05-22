@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -36,6 +35,7 @@ import Customers from "@/pages/brand/Customers";
 import Campaigns from "@/pages/brand/Campaigns";
 import BrandMessages from "@/pages/brand/Messages";
 import BrandSettings from "@/pages/brand/Settings";
+import SocialMediaIntegrations from "@/pages/brand/SocialMediaIntegrations";
 
 // 404 page
 import NotFound from "./pages/NotFound";
@@ -103,6 +103,7 @@ const App = () => (
               <Route path="customers" element={<Customers />} />
               <Route path="campaigns" element={<Campaigns />} />
               <Route path="messages" element={<BrandMessages />} />
+              <Route path="social-media" element={<SocialMediaIntegrations />} />
               <Route path="settings" element={<BrandSettings />} />
             </Route>
             
