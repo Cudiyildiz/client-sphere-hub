@@ -276,7 +276,7 @@ const initialConnections: ApiConnection[] = [
 
 const ApiIntegrations: React.FC = () => {
   const [selectedBrand, setSelectedBrand] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedService, setSelectedService] = useState<string>('');
   const [apiKey, setApiKey] = useState('');
   const [webhookUrl, setWebhookUrl] = useState('');
@@ -324,7 +324,7 @@ const ApiIntegrations: React.FC = () => {
   
   // Filter API services by selected category
   const filteredServices = apiServices.filter(service => 
-    !selectedCategory || service.category === selectedCategory
+    selectedCategory === 'all' || service.category === selectedCategory
   );
   
   const handleEndpointChange = (endpoint: string, isChecked: boolean) => {
@@ -472,6 +472,7 @@ const ApiIntegrations: React.FC = () => {
     });
   };
 
+  // Reset form function update
   const resetForm = () => {
     setSelectedService('');
     setApiKey('');
@@ -481,7 +482,7 @@ const ApiIntegrations: React.FC = () => {
     setCustomHeaders('');
     setAutoSync(true);
     setSyncInterval('daily');
-    setSelectedCategory('');
+    setSelectedCategory('all');
   };
 
   const openAddDialog = (brandId?: string) => {
