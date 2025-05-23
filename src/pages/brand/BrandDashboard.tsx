@@ -4,8 +4,15 @@ import { MessageSquare, Users, ArrowUpRight } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useNavigate } from 'react-router-dom';
 
 const BrandDashboard: React.FC = () => {
+  const navigate = useNavigate();
+
+  const handleViewCampaign = () => {
+    navigate('/brand/campaigns');
+  };
+  
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -100,7 +107,7 @@ const BrandDashboard: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline">Görüntüle</Button>
+                    <Button size="sm" variant="outline" onClick={handleViewCampaign}>Görüntüle</Button>
                   </div>
                 ))}
               </div>
@@ -116,10 +123,10 @@ const BrandDashboard: React.FC = () => {
             <CardContent>
               <div className="space-y-4">
                 {[
-                  { name: 'John Smith', message: 'Interested in your summer sale promotion. Do you ship internationally?', time: '2 hours ago', campaign: 'Summer Sale 2025' },
-                  { name: 'Emily Johnson', message: 'When will the new product be available in stores?', time: '5 hours ago', campaign: 'New Product Launch' },
-                  { name: 'Michael Brown', message: 'How many loyalty points do I need for the premium tier?', time: '1 day ago', campaign: 'Customer Loyalty Program' },
-                  { name: 'Sarah Davis', message: 'Is the discount applicable to all products or just selected items?', time: '1 day ago', campaign: 'Summer Sale 2025' },
+                  { name: 'John Smith', message: 'Interested in your summer sale promotion. Do you ship internationally?', time: '2 saat önce', campaign: 'Summer Sale 2025' },
+                  { name: 'Emily Johnson', message: 'When will the new product be available in stores?', time: '5 saat önce', campaign: 'New Product Launch' },
+                  { name: 'Michael Brown', message: 'How many loyalty points do I need for the premium tier?', time: '1 gün önce', campaign: 'Customer Loyalty Program' },
+                  { name: 'Sarah Davis', message: 'Is the discount applicable to all products or just selected items?', time: '1 gün önce', campaign: 'Summer Sale 2025' },
                 ].map((message, i) => (
                   <div key={i} className="flex items-start space-x-4 rounded-lg border p-4">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
@@ -133,9 +140,9 @@ const BrandDashboard: React.FC = () => {
                       <p className="text-sm text-muted-foreground">{message.message}</p>
                       <div className="flex items-center justify-between mt-2">
                         <span className="text-xs text-muted-foreground">
-                          Campaign: {message.campaign}
+                          Kampanya: {message.campaign}
                         </span>
-                        <Button size="sm" variant="outline">Yanıtla</Button>
+                        <Button size="sm" variant="outline" onClick={() => navigate('/brand/messages')}>Yanıtla</Button>
                       </div>
                     </div>
                   </div>
