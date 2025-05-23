@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Plus, MessageSquare, MoreHorizontal, Edit, Trash, Users, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { 
@@ -15,7 +15,6 @@ import {
   DialogTitle, 
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -99,6 +98,7 @@ const campaignFormSchema = z.object({
 
 type CampaignFormValues = z.infer<typeof campaignFormSchema>;
 
+// Default form values
 const defaultFormValues: CampaignFormValues = {
   name: '',
   description: '',
@@ -107,48 +107,189 @@ const defaultFormValues: CampaignFormValues = {
   endDate: '',
 };
 
+// Campaign Dialog component (memoized)
+interface CampaignFormDialogProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  campaign: Campaign | null;
+  onSave: (values: CampaignFormValues) => void;
+}
+
+const CampaignFormDialog = memo(({ isOpen, setIsOpen, campaign, onSave }: CampaignFormDialogProps) => {
+  const form = useForm<CampaignFormValues>({
+    resolver: zodResolver(campaignFormSchema),
+    defaultValues: campaign ? {
+      name: campaign.name,
+      description: campaign.description,
+      status: campaign.status,
+      startDate: campaign.startDate,
+      endDate: campaign.endDate,
+    } : defaultFormValues,
+  });
+  
+  // Reset form when campaign changes
+  useEffect(() => {
+    if (isOpen) {
+      if (campaign) {
+        form.reset({
+          name: campaign.name,
+          description: campaign.description,
+          status: campaign.status,
+          startDate: campaign.startDate,
+          endDate: campaign.endDate,
+        });
+      } else {
+        form.reset(defaultFormValues);
+      }
+    }
+  }, [campaign, form, isOpen]);
+  
+  const onSubmit = useCallback((data: CampaignFormValues) => {
+    onSave(data);
+  }, [onSave]);
+  
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+  }, [setIsOpen]);
+
+  if (!isOpen) return null;
+  
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>{campaign ? 'Kampanya Düzenle' : 'Yeni Kampanya Oluştur'}</DialogTitle>
+          <DialogDescription>
+            {campaign 
+              ? 'Kampanya detaylarını güncelleyin.' 
+              : 'Yeni kampanya oluşturmak için aşağıdaki alanları doldurun.'}
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kampanya Adı</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Kampanya adını girin" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Açıklama</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Kampanyanın amacını ve hedeflerini açıklayın" 
+                      className="min-h-[100px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Başlangıç Tarihi</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bitiş Tarihi</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Durum</FormLabel>
+                  <FormControl>
+                    <select
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      {...field}
+                    >
+                      <option value="Draft">Taslak</option>
+                      <option value="Scheduled">Zamanlanmış</option>
+                      <option value="Active">Aktif</option>
+                      <option value="Completed">Tamamlandı</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <DialogFooter className="flex gap-2 justify-end pt-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={handleClose}
+              >
+                İptal
+              </Button>
+              <Button type="submit">{campaign ? 'Güncelle' : 'Oluştur'}</Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+});
+
+CampaignFormDialog.displayName = 'CampaignFormDialog';
+
+// Main component
 const Campaigns: React.FC = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>(initialCampaigns);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCampaign, setEditingCampaign] = useState<Campaign | null>(null);
-  const [isFormReady, setIsFormReady] = useState(false);
   const { toast } = useToast();
 
-  // Form setup
-  const form = useForm<CampaignFormValues>({
-    resolver: zodResolver(campaignFormSchema),
-    defaultValues: defaultFormValues,
-  });
+  // Campaign section filtering
+  const activeCampaigns = campaigns.filter(c => c.status === 'Active');
+  const scheduledCampaigns = campaigns.filter(c => c.status === 'Scheduled');
+  const draftCampaigns = campaigns.filter(c => c.status === 'Draft');
+  const completedCampaigns = campaigns.filter(c => c.status === 'Completed');
 
-  // Form etkileme mantığını ayrı bir useEffect içinde yönetiyoruz
-  useEffect(() => {
-    if (!isDialogOpen) return;
-    
-    if (editingCampaign && isFormReady) {
-      form.reset({
-        name: editingCampaign.name,
-        description: editingCampaign.description,
-        status: editingCampaign.status,
-        startDate: editingCampaign.startDate,
-        endDate: editingCampaign.endDate,
-      });
-    } else if (isFormReady && !editingCampaign) {
-      form.reset(defaultFormValues);
-    }
-  }, [isDialogOpen, editingCampaign, isFormReady, form]);
-  
-  // Dialog açıldığında formun hazır olduğunu belirtiyoruz
-  useEffect(() => {
-    if (isDialogOpen) {
-      setIsFormReady(true);
-    } else {
-      // Dialog kapandığında form hazırlığını sıfırlıyoruz
-      setIsFormReady(false);
-    }
-  }, [isDialogOpen]);
+  // Safe dialog opening
+  const openDialog = useCallback((campaign: Campaign | null = null) => {
+    setEditingCampaign(campaign);
+    // Slight delay to prevent UI freezing
+    setTimeout(() => {
+      setIsDialogOpen(true);
+    }, 10);
+  }, []);
 
-  // Handle adding or updating campaign
-  const onSubmit = (values: CampaignFormValues) => {
+  // Handle campaign save (both create and update)
+  const handleSaveCampaign = useCallback((values: CampaignFormValues) => {
     try {
       if (editingCampaign) {
         // Update existing campaign
@@ -166,7 +307,7 @@ const Campaigns: React.FC = () => {
       } else {
         // Add new campaign
         const newCampaign: Campaign = {
-          id: Date.now(), // Benzersiz ID sağlıyor
+          id: Date.now(),
           name: values.name,
           description: values.description,
           status: values.status,
@@ -176,7 +317,7 @@ const Campaigns: React.FC = () => {
           messages: 0,
         };
         
-        setCampaigns(prevCampaigns => [...prevCampaigns, newCampaign]);
+        setCampaigns(prev => [...prev, newCampaign]);
         
         toast({
           title: 'Kampanya oluşturuldu',
@@ -184,7 +325,13 @@ const Campaigns: React.FC = () => {
         });
       }
       
-      closeDialog();
+      // Close dialog safely
+      setIsDialogOpen(false);
+      // Clear editing state after dialog is closed
+      setTimeout(() => {
+        setEditingCampaign(null);
+      }, 300);
+      
     } catch (error) {
       console.error('Form submission error:', error);
       toast({
@@ -193,48 +340,26 @@ const Campaigns: React.FC = () => {
         variant: 'destructive',
       });
     }
-  };
+  }, [editingCampaign, toast]);
 
-  // Dialog kapatma
-  const closeDialog = () => {
-    setIsDialogOpen(false);
-  };
-  
-  // Yeni kampanya oluştur butonuna tıklandığında
-  const handleCreateClick = () => {
-    setEditingCampaign(null);
-    setIsDialogOpen(true);
-  };
+  // Handle creating new campaign
+  const handleCreateClick = useCallback(() => {
+    openDialog(null);
+  }, [openDialog]);
 
-  // Handle edit campaign
-  const handleEdit = (campaign: Campaign) => {
-    try {
-      setEditingCampaign(campaign);
-      setIsDialogOpen(true);
-    } catch (error) {
-      console.error('Edit campaign error:', error);
-      toast({
-        title: 'Kampanya düzenlenemedi',
-        description: 'Lütfen tekrar deneyin.',
-        variant: 'destructive',
-      });
-    }
-  };
+  // Handle editing campaign
+  const handleEdit = useCallback((campaign: Campaign) => {
+    openDialog(campaign);
+  }, [openDialog]);
 
-  // Handle delete campaign
-  const handleDelete = (id: number) => {
-    setCampaigns(campaigns.filter((c) => c.id !== id));
+  // Handle deleting campaign
+  const handleDelete = useCallback((id: number) => {
+    setCampaigns(prev => prev.filter(c => c.id !== id));
     toast({
       title: 'Kampanya silindi',
       description: 'Kampanya başarıyla silindi.',
     });
-  };
-
-  // Group campaigns by status
-  const activeCampaigns = campaigns.filter(c => c.status === 'Active');
-  const scheduledCampaigns = campaigns.filter(c => c.status === 'Scheduled');
-  const draftCampaigns = campaigns.filter(c => c.status === 'Draft');
-  const completedCampaigns = campaigns.filter(c => c.status === 'Completed');
+  }, [toast]);
 
   return (
     <div className="space-y-6">
@@ -245,114 +370,13 @@ const Campaigns: React.FC = () => {
         </Button>
       </div>
       
-      {/* Form dialog'u UI'den ayırıyoruz */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[600px]">
-          <DialogHeader>
-            <DialogTitle>{editingCampaign ? 'Kampanya Düzenle' : 'Yeni Kampanya Oluştur'}</DialogTitle>
-            <DialogDescription>
-              {editingCampaign 
-                ? 'Kampanya detaylarını güncelleyin.' 
-                : 'Yeni kampanya oluşturmak için aşağıdaki alanları doldurun.'}
-            </DialogDescription>
-          </DialogHeader>
-          {isFormReady && (
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Kampanya Adı</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Kampanya adını girin" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Açıklama</FormLabel>
-                      <FormControl>
-                        <Textarea 
-                          placeholder="Kampanyanın amacını ve hedeflerini açıklayın" 
-                          className="min-h-[100px]"
-                          {...field} 
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <div className="grid grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
-                    name="startDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Başlangıç Tarihi</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="endDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Bitiş Tarihi</FormLabel>
-                        <FormControl>
-                          <Input type="date" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <FormField
-                  control={form.control}
-                  name="status"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Durum</FormLabel>
-                      <FormControl>
-                        <select
-                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                          {...field}
-                        >
-                          <option value="Draft">Taslak</option>
-                          <option value="Scheduled">Zamanlanmış</option>
-                          <option value="Active">Aktif</option>
-                          <option value="Completed">Tamamlandı</option>
-                        </select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <DialogFooter className="flex gap-2 justify-end pt-2">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
-                    onClick={closeDialog}
-                  >
-                    İptal
-                  </Button>
-                  <Button type="submit">{editingCampaign ? 'Güncelle' : 'Oluştur'}</Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          )}
-        </DialogContent>
-      </Dialog>
+      {/* Campaign form dialog */}
+      <CampaignFormDialog
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+        campaign={editingCampaign}
+        onSave={handleSaveCampaign}
+      />
       
       <div className="space-y-6">
         <h2 className="text-xl font-semibold">Aktif Kampanyalar</h2>
@@ -425,21 +449,22 @@ const Campaigns: React.FC = () => {
   );
 };
 
+// Memoized CampaignCard component
 interface CampaignCardProps {
   campaign: Campaign;
   onEdit: (campaign: Campaign) => void;
   onDelete: (id: number) => void;
 }
 
-const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete }) => {
+const CampaignCard = memo(({ campaign, onEdit, onDelete }: CampaignCardProps) => {
   // Tarihleri daha okunaklı formatta gösterme
-  const formatDate = (dateStr: string): string => {
+  const formatDate = useCallback((dateStr: string): string => {
     const date = new Date(dateStr);
     return date.toLocaleDateString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  };
+  }, []);
   
   // Durum çevirileri
-  const getStatusText = (status: string): string => {
+  const getStatusText = useCallback((status: string): string => {
     switch (status) {
       case 'Active': return 'Aktif';
       case 'Scheduled': return 'Zamanlanmış';
@@ -447,7 +472,16 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
       case 'Completed': return 'Tamamlandı';
       default: return status;
     }
-  };
+  }, []);
+  
+  // Event handlers
+  const handleEdit = useCallback(() => {
+    onEdit(campaign);
+  }, [campaign, onEdit]);
+  
+  const handleDelete = useCallback(() => {
+    onDelete(campaign.id);
+  }, [campaign.id, onDelete]);
 
   return (
     <Card>
@@ -462,11 +496,11 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onEdit(campaign)}>
+              <DropdownMenuItem onClick={handleEdit}>
                 <Edit className="mr-2 h-4 w-4" />
                 <span>Düzenle</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDelete(campaign.id)}>
+              <DropdownMenuItem onClick={handleDelete}>
                 <Trash className="mr-2 h-4 w-4" />
                 <span>Sil</span>
               </DropdownMenuItem>
@@ -515,6 +549,8 @@ const CampaignCard: React.FC<CampaignCardProps> = ({ campaign, onEdit, onDelete 
       </CardFooter>
     </Card>
   );
-};
+});
+
+CampaignCard.displayName = 'CampaignCard';
 
 export default Campaigns;
