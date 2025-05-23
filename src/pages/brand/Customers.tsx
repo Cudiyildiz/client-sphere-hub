@@ -382,6 +382,73 @@ const CustomerListItem: React.FC<{ customer: Customer, onClick: () => void }> = 
   );
 };
 
+// Create the CustomerCard component for the grid view
+const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ customer, onClick }) => {
+  // Get status color
+  const getStatusColor = () => {
+    switch (customer.status) {
+      case 'Randevu': return 'bg-blue-100 text-blue-800';
+      case 'Satıldı': return 'bg-green-100 text-green-800';
+      case 'İlgileniyor': return 'bg-purple-100 text-purple-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  return (
+    <Card className="cursor-pointer hover:bg-muted/50" onClick={onClick}>
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-3">
+          {customer.image && (
+            <div className="w-10 h-10 rounded-full overflow-hidden">
+              <img src={customer.image} alt={customer.name} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <div>
+            <CardTitle className="text-lg flex items-center gap-1">
+              {customer.name}
+              {customer.segment === 'Premium' && <Star className="h-4 w-4 text-amber-500" fill="currentColor" />}
+            </CardTitle>
+            <CardDescription>{customer.email}</CardDescription>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="pb-2">
+        <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="flex items-center gap-2">
+            <Phone className="h-4 w-4 text-muted-foreground" />
+            <span>{customer.phone}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <BadgePercent className="h-4 w-4 text-muted-foreground" />
+            <span>{customer.points} puan</span>
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-1 mt-3">
+          {customer.tags.slice(0, 2).map(tag => (
+            <Badge key={tag.id} variant="outline" className={tag.color}>
+              {tag.name}
+            </Badge>
+          ))}
+          {customer.tags.length > 2 && (
+            <Badge variant="outline">+{customer.tags.length - 2}</Badge>
+          )}
+        </div>
+      </CardContent>
+      <CardFooter className="border-t pt-2">
+        <div className="flex justify-between w-full items-center">
+          <Badge className={getStatusColor()}>
+            {customer.status}
+          </Badge>
+          <div className="text-xs text-muted-foreground">
+            {new Date(customer.lastActivity).toLocaleDateString('tr-TR')}
+          </div>
+        </div>
+      </CardFooter>
+    </Card>
+  );
+};
+
 // Müşteri detay sayfası yan panel bileşeni
 const CustomerDetail: React.FC<{ 
   customer: Customer | null, 
