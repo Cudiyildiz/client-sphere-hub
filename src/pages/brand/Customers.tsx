@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, Users, Mail, Phone, MessageSquare, Calendar, Tag, Filter, X, Edit, Save, BadgePercent, Star } from 'lucide-react';
+import { Search, Users, Mail, Phone, MessageSquare, Calendar, Tag, Filter, X, Edit, Save, BadgePercent, Star, List, LayoutGrid } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -21,12 +20,14 @@ import { Badge } from '@/components/ui/badge';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -38,6 +39,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from '@/hooks/use-toast';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 // Tanımlamalar
 interface CustomerTag {
@@ -294,8 +296,9 @@ const mockCustomers: Customer[] = [
   }
 ];
 
-const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ customer, onClick }) => {
-  // Durum rengini belirle
+// Create a new component for the list view
+const CustomerListItem: React.FC<{ customer: Customer, onClick: () => void }> = ({ customer, onClick }) => {
+  // Get status color
   const getStatusColor = () => {
     switch (customer.status) {
       case 'Randevu': return 'bg-blue-100 text-blue-800';
@@ -304,56 +307,43 @@ const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ c
       default: return 'bg-gray-100 text-gray-800';
     }
   };
-
-  // Mesaj geçmişi durumu
-  const messageCode = `MSG${String(customer.id).padStart(4, '0')}`;
   
-  // Son katıldığı kampanya
+  // Last campaign
   const lastCampaign = customer.campaigns.length > 0 ? 
     customer.campaigns.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())[0] : null;
   
-  // Dönüşüm durumu
-  const getConversionStatus = (customer: Customer) => {
-    const lastMessage = customer.messages[customer.messages.length - 1];
-    if (customer.status === 'Satıldı') return 'Başarılı';
-    if (lastMessage?.response) return 'Gönderildi';
-    return 'Açık';
-  };
-  
   return (
-    <Card 
-      className="hover:shadow-md transition-shadow cursor-pointer border-l-4" 
-      style={{ borderLeftColor: customer.status === 'Randevu' ? '#3b82f6' : 
-                              customer.status === 'Satıldı' ? '#22c55e' : '#a855f7' }}
+    <TableRow 
+      className="cursor-pointer hover:bg-muted/50"
       onClick={onClick}
     >
-      <CardHeader className="pb-2">
-        <div className="flex justify-between">
-          <CardTitle className="text-lg">{customer.name}</CardTitle>
-          <Badge className={getStatusColor()}>
-            {customer.status}
-          </Badge>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        {/* İletişim Bilgileri */}
-        <div className="text-sm space-y-1">
-          <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            <span>{customer.email}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Phone className="h-4 w-4 text-muted-foreground" />
-            <span>{customer.phone}</span>
+      <TableCell>
+        <div className="flex items-center gap-2">
+          {customer.image && (
+            <div className="w-8 h-8 rounded-full overflow-hidden">
+              <img src={customer.image} alt={customer.name} className="w-full h-full object-cover" />
+            </div>
+          )}
+          <div>
+            <div className="font-medium">{customer.name}</div>
+            <div className="text-xs text-muted-foreground">{customer.email}</div>
           </div>
         </div>
-        
-        {/* Kampanya Bilgisi */}
+      </TableCell>
+      <TableCell>
+        <div className="text-sm">{customer.phone}</div>
+      </TableCell>
+      <TableCell>
+        <div className="flex items-center gap-1">
+          {customer.segment === 'Premium' && <Star className="h-3 w-3 text-amber-500" fill="currentColor" />}
+          {customer.segment}
+        </div>
+      </TableCell>
+      <TableCell>
         <div>
-          <div className="text-xs font-medium text-muted-foreground">Son Kampanya:</div>
-          <div className="text-sm flex justify-between items-center">
-            <span>{lastCampaign?.name || 'Kampanya yok'}</span>
-            {lastCampaign && (
+          {lastCampaign?.name || 'Kampanya yok'}
+          {lastCampaign && (
+            <div className="mt-1">
               <Badge variant="outline" className={
                 lastCampaign.status === 'Tıklandı' ? 'bg-green-100 text-green-800 border-green-200' :
                 lastCampaign.status === 'Açıldı' ? 'bg-blue-100 text-blue-800 border-blue-200' :
@@ -361,56 +351,34 @@ const CustomerCard: React.FC<{ customer: Customer, onClick: () => void }> = ({ c
               }>
                 {lastCampaign.status}
               </Badge>
-            )}
-          </div>
+            </div>
+          )}
           <div className="text-xs text-muted-foreground mt-1">
-            Toplam {customer.campaigns.length} kampanyaya katıldı
+            Toplam {customer.campaigns.length} kampanya
           </div>
         </div>
-        
-        {/* Segment ve Puan Bilgisi */}
-        <div className="flex gap-2">
-          <div className="flex-1 bg-muted rounded-md p-2">
-            <div className="text-xs text-muted-foreground">Segment</div>
-            <div className="font-medium">{customer.segment}</div>
-          </div>
-          <div className="flex-1 bg-muted rounded-md p-2">
-            <div className="text-xs text-muted-foreground">Puanı</div>
-            <div className="font-medium">{customer.points}</div>
-          </div>
+      </TableCell>
+      <TableCell>
+        <div className="flex flex-wrap gap-1">
+          {customer.tags.slice(0, 2).map(tag => (
+            <Badge key={tag.id} variant="outline" className={tag.color}>
+              {tag.name}
+            </Badge>
+          ))}
+          {customer.tags.length > 2 && (
+            <Badge variant="outline">+{customer.tags.length - 2}</Badge>
+          )}
         </div>
-        
-        {/* Etiketler */}
-        <div>
-          <div className="text-xs font-medium text-muted-foreground mb-1">Etiketler:</div>
-          <div className="flex flex-wrap gap-1">
-            {customer.tags.map(tag => (
-              <Badge key={tag.id} variant="outline" className={tag.color}>
-                {tag.name}
-              </Badge>
-            ))}
-          </div>
-        </div>
-        
-        {/* Dahili Notlar (Kısaltılmış) */}
-        <div>
-          <div className="text-xs font-medium text-muted-foreground">Dahili Notlar:</div>
-          <div className="text-sm line-clamp-2">{customer.notes}</div>
-        </div>
-      </CardContent>
-      <CardFooter className="flex justify-between pt-0 border-t mt-2 py-3">
-        <div className="text-xs text-muted-foreground">
-          Son aktivite: {new Date(customer.lastActivity).toLocaleDateString('tr-TR')}
-        </div>
-        <Badge variant="outline" className={
-          getConversionStatus(customer) === 'Başarılı' ? 'bg-green-100 text-green-800' :
-          getConversionStatus(customer) === 'Gönderildi' ? 'bg-blue-100 text-blue-800' :
-          'bg-amber-100 text-amber-800'
-        }>
-          {getConversionStatus(customer)}
+      </TableCell>
+      <TableCell>
+        <Badge className={getStatusColor()}>
+          {customer.status}
         </Badge>
-      </CardFooter>
-    </Card>
+      </TableCell>
+      <TableCell>
+        <div className="text-sm">{customer.points}</div>
+      </TableCell>
+    </TableRow>
   );
 };
 
@@ -652,7 +620,7 @@ const CustomerDetail: React.FC<{
                   .map((campaign) => (
                     <Card key={campaign.id} className="overflow-hidden">
                       <CardHeader className="py-2 px-3 bg-muted">
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between">
                           <h4 className="font-medium text-sm">{campaign.name}</h4>
                           <Badge 
                             variant="outline" 
@@ -894,6 +862,7 @@ const Customers: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [customers, setCustomers] = useState<Customer[]>(mockCustomers);
   const { toast } = useToast();
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   
   // Filtreler
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -952,6 +921,24 @@ const Customers: React.FC = () => {
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Müşteriler</h1>
         <div className="flex gap-2">
+          <div className="flex border rounded-md">
+            <Button 
+              variant={viewMode === 'list' ? 'default' : 'ghost'} 
+              size="sm"
+              className="rounded-none rounded-l-md"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+            <Button 
+              variant={viewMode === 'grid' ? 'default' : 'ghost'} 
+              size="sm"
+              className="rounded-none rounded-r-md"
+              onClick={() => setViewMode('grid')}
+            >
+              <LayoutGrid className="h-4 w-4" />
+            </Button>
+          </div>
           <Button variant="outline" onClick={() => setIsFilterOpen(true)}>
             <Filter className="mr-2 h-4 w-4" />
             Filtrele
@@ -1037,15 +1024,42 @@ const Customers: React.FC = () => {
       )}
       
       {filteredCustomers.length > 0 ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredCustomers.map(customer => (
-            <CustomerCard 
-              key={customer.id} 
-              customer={customer} 
-              onClick={() => handleSelectCustomer(customer)}
-            />
-          ))}
-        </div>
+        viewMode === 'list' ? (
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Müşteri</TableHead>
+                  <TableHead>Telefon</TableHead>
+                  <TableHead>Segment</TableHead>
+                  <TableHead>Son Kampanya</TableHead>
+                  <TableHead>Etiketler</TableHead>
+                  <TableHead>Durum</TableHead>
+                  <TableHead>Puan</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredCustomers.map((customer) => (
+                  <CustomerListItem 
+                    key={customer.id} 
+                    customer={customer} 
+                    onClick={() => handleSelectCustomer(customer)}
+                  />
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredCustomers.map(customer => (
+              <CustomerCard 
+                key={customer.id} 
+                customer={customer} 
+                onClick={() => handleSelectCustomer(customer)}
+              />
+            ))}
+          </div>
+        )
       ) : (
         <div className="flex flex-col items-center justify-center py-12">
           <Users className="h-12 w-12 text-muted-foreground mb-4" />
