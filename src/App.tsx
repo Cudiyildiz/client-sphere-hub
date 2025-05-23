@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,7 @@ import StaffManagement from "@/pages/admin/StaffManagement";
 import BrandManagement from "@/pages/admin/BrandManagement";
 import SubscriptionPlans from "@/pages/admin/SubscriptionPlans";
 import AdminSettings from "@/pages/admin/AdminSettings";
+import AdminProfile from "@/pages/admin/AdminProfile";
 import AdminAnalytics from "@/pages/admin/Analytics";
 import AdminMessages from "@/pages/admin/Messages";
 
@@ -24,6 +26,7 @@ import StaffDashboard from "@/pages/staff/StaffDashboard";
 import StaffBrands from "@/pages/staff/StaffBrands";
 import BrandDetail from "@/pages/staff/BrandDetail";
 import StaffSettings from "@/pages/staff/StaffSettings";
+import StaffProfile from "@/pages/staff/StaffProfile";
 import StaffCampaigns from "@/pages/staff/Campaigns";
 import StaffMessages from "@/pages/staff/Messages";
 import StaffAnalytics from "@/pages/staff/Analytics";
@@ -35,6 +38,7 @@ import Customers from "@/pages/brand/Customers";
 import Campaigns from "@/pages/brand/Campaigns";
 import BrandMessages from "@/pages/brand/Messages";
 import BrandSettings from "@/pages/brand/Settings";
+import BrandProfile from "@/pages/brand/Profile";
 import SocialMediaIntegrations from "@/pages/brand/SocialMediaIntegrations";
 
 // 404 page
@@ -69,6 +73,7 @@ const App = () => (
               <Route path="analytics" element={<AdminAnalytics />} />
               <Route path="messages" element={<AdminMessages />} />
               <Route path="settings" element={<AdminSettings />} />
+              <Route path="profile" element={<AdminProfile />} />
             </Route>
             
             {/* Staff routes */}
@@ -88,6 +93,7 @@ const App = () => (
               <Route path="analytics" element={<StaffAnalytics />} />
               <Route path="api-integrations" element={<ApiIntegrations />} />
               <Route path="settings" element={<StaffSettings />} />
+              <Route path="profile" element={<StaffProfile />} />
             </Route>
             
             {/* Brand routes */}
@@ -105,6 +111,7 @@ const App = () => (
               <Route path="messages" element={<BrandMessages />} />
               <Route path="social-media" element={<SocialMediaIntegrations />} />
               <Route path="settings" element={<BrandSettings />} />
+              <Route path="profile" element={<BrandProfile />} />
             </Route>
             
             {/* Redirect root to login */}

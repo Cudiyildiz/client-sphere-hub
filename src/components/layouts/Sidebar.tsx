@@ -12,7 +12,8 @@ import {
   Calendar,
   Tag,
   Link2,
-  Share2
+  Share2,
+  User
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { cn } from '@/lib/utils';
@@ -33,6 +34,7 @@ const Sidebar: React.FC = () => {
           { path: '/admin/subscription', label: 'Abonelik Planları', icon: <CreditCard size={20} /> },
           { path: '/admin/analytics', label: 'Sistem İstatistikleri', icon: <BarChart size={20} /> },
           { path: '/admin/messages', label: 'Marka Mesajları', icon: <MessageSquare size={20} /> },
+          { path: '/admin/profile', label: 'Profil', icon: <User size={20} /> },
           { path: '/admin/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'staff':
@@ -43,6 +45,7 @@ const Sidebar: React.FC = () => {
           { path: '/staff/api-integrations', label: 'API Entegrasyonları', icon: <Link2 size={20} /> },
           { path: '/staff/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
           { path: '/staff/analytics', label: 'İstatistikler', icon: <BarChart size={20} /> },
+          { path: '/staff/profile', label: 'Profil', icon: <User size={20} /> },
           { path: '/staff/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       case 'brand':
@@ -52,6 +55,7 @@ const Sidebar: React.FC = () => {
           { path: '/brand/campaigns', label: 'Kampanyalar', icon: <Calendar size={20} /> },
           { path: '/brand/social-media', label: 'Platform Entegrasyonları', icon: <Share2 size={20} /> },
           { path: '/brand/messages', label: 'Müşteri Mesajları', icon: <MessageSquare size={20} /> },
+          { path: '/brand/profile', label: 'Profil', icon: <User size={20} /> },
           { path: '/brand/settings', label: 'Ayarlar', icon: <Settings size={20} /> },
         ];
       default:

@@ -45,11 +45,11 @@ const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, showWelcomeToast }) =>
   const handleProfileClick = () => {
     // Navigate to profile page based on user role
     if (user?.role === "brand") {
-      navigate('/brand/settings');
+      navigate('/brand/profile');
     } else if (user?.role === "staff") {
-      navigate('/staff/settings');
+      navigate('/staff/profile');
     } else if (user?.role === "admin") {
-      navigate('/admin/settings');
+      navigate('/admin/profile');
     }
   };
 
@@ -128,7 +128,7 @@ const Topbar: React.FC<TopbarProps> = ({ onToggleSidebar, showWelcomeToast }) =>
                   <p className="text-xs text-muted-foreground capitalize">{user?.role} Hesabım</p>
                 </div>
                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                  {user?.name.charAt(0)}
+                  {user?.name ? user.name.charAt(0) : "U"}
                 </div>
               </div>
             </DropdownMenuTrigger>
