@@ -1,15 +1,10 @@
+
 import React, { useState } from 'react';
-import { Search, MessageSquare, Filter, Check, Send, AlertCircle } from 'lucide-react';
+import { Search, MessageSquare, Calendar, Check, CheckCircle2, AlertCircle, User, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle, 
-  CardFooter 
-} from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   Select,
   SelectContent,
@@ -18,17 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from '@/components/ui/badge';
-import { 
-  Dialog, 
-  DialogContent, 
-  DialogHeader, 
-  DialogTitle, 
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogFooter,
-  DialogDescription
 } from "@/components/ui/dialog";
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import {
+  Card,
+  CardContent,
+} from "@/components/ui/card";
 
 // Mock data
 interface CustomerMessage {
@@ -39,6 +35,7 @@ interface CustomerMessage {
   campaignName: string;
   status: 'new' | 'inProgress' | 'appointment' | 'completed' | 'sold';
   response?: string;
+  initialLetter?: string;
 }
 
 const mockMessages: CustomerMessage[] = [
@@ -49,6 +46,7 @@ const mockMessages: CustomerMessage[] = [
     date: '2025-05-18',
     campaignName: 'Yaz İndirimi 2025',
     status: 'new',
+    initialLetter: 'AY',
   },
   {
     id: 2,
@@ -57,7 +55,8 @@ const mockMessages: CustomerMessage[] = [
     date: '2025-05-17',
     campaignName: 'Premium Üyelik Kampanyası',
     status: 'inProgress',
-    response: 'Merhaba Zeynep Hanım, premium üyelik avantajları hakkında bilgileri paylaştım.'
+    response: 'Merhaba Zeynep Hanım, premium üyelik avantajları hakkında bilgileri paylaştım.',
+    initialLetter: 'ZK',
   },
   {
     id: 3,
@@ -66,6 +65,7 @@ const mockMessages: CustomerMessage[] = [
     date: '2025-05-15',
     campaignName: 'Müşteri Sadakat Programı',
     status: 'appointment',
+    initialLetter: 'MD',
   },
   {
     id: 4,
@@ -74,7 +74,8 @@ const mockMessages: CustomerMessage[] = [
     date: '2025-05-14',
     campaignName: 'Yeni Ürün Lansmanı',
     status: 'completed',
-    response: 'Merhaba Ayşe Hanım, ürün detaylarını paylaştım. İyi günler.'
+    response: 'Merhaba Ayşe Hanım, ürün detaylarını paylaştım. İyi günler.',
+    initialLetter: 'AY',
   },
   {
     id: 5,
@@ -83,39 +84,9 @@ const mockMessages: CustomerMessage[] = [
     date: '2025-05-12',
     campaignName: 'Yaz İndirimi 2025',
     status: 'sold',
+    initialLetter: 'MŞ',
   }
 ];
-
-// Durum kategorileri
-const statusColumns = {
-  new: {
-    id: 'new',
-    title: 'Yeni',
-    color: 'blue'
-  },
-  inProgress: {
-    id: 'inProgress',
-    title: 'İlgileniyor',
-    color: 'yellow'
-  },
-  appointment: {
-    id: 'appointment',
-    title: 'Randevu',
-    color: 'purple'
-  },
-  completed: {
-    id: 'completed',
-    title: 'Tamamlandı',
-    color: 'green'
-  },
-  sold: {
-    id: 'sold',
-    title: 'Satıldı',
-    color: 'emerald'
-  }
-};
-
-type StatusColumnIds = keyof typeof statusColumns;
 
 const BrandMessages: React.FC = () => {
   const [messages, setMessages] = useState<CustomerMessage[]>(mockMessages);
@@ -124,6 +95,7 @@ const BrandMessages: React.FC = () => {
   const [selectedMessage, setSelectedMessage] = useState<CustomerMessage | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [responseText, setResponseText] = useState('');
+  const [activeTab, setActiveTab] = useState<string>('all');
 
   const uniqueCampaigns = [...new Set(messages.map(msg => msg.campaignName))];
 
@@ -133,14 +105,10 @@ const BrandMessages: React.FC = () => {
       message.message.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesCampaign = campaignFilter === 'all' || message.campaignName === campaignFilter;
+    const matchesTab = activeTab === 'all' || message.status === activeTab;
     
-    return matchesSearch && matchesCampaign;
+    return matchesSearch && matchesCampaign && matchesTab;
   });
-
-  // Her durum için ilgili mesajları getirme
-  const getMessagesForStatus = (status: StatusColumnIds) => {
-    return filteredMessages.filter(message => message.status === status);
-  };
 
   // Format date
   const formatDate = (dateString: string) => {
@@ -152,19 +120,14 @@ const BrandMessages: React.FC = () => {
     });
   };
 
-  // İsim başharflerini alma
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('');
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Yeni Mesaj</Badge>;
+        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Yeni</Badge>;
       case 'inProgress':
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">İlgileniliyor</Badge>;
+        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">İlgileniyor</Badge>;
       case 'appointment':
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Randevu Alındı</Badge>;
+        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Randevu</Badge>;
       case 'completed':
         return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Tamamlandı</Badge>;
       case 'sold':
@@ -174,34 +137,11 @@ const BrandMessages: React.FC = () => {
     }
   };
 
-  // Sürükle-bırak olayını işleme
-  const handleDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-
-    // Eğer hedef yoksa veya aynı yere bırakıldıysa bir şey yapma
-    if (!destination) return;
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) return;
-
-    // Mesaj ID'sini alıp mesajı bul
-    const messageId = parseInt(draggableId.replace('message-', ''));
-    const updatedMessages = [...messages];
-    const messageIndex = updatedMessages.findIndex(msg => msg.id === messageId);
-    
-    if (messageIndex !== -1) {
-      // Mesajın durumunu güncelle
-      updatedMessages[messageIndex].status = destination.droppableId as StatusColumnIds;
-      setMessages(updatedMessages);
-    }
-  };
-
   // Mesaj detaylarını görüntüleme
   const handleViewMessage = (message: CustomerMessage) => {
     setSelectedMessage(message);
     setIsDialogOpen(true);
-    setResponseText('');  // Yanıt metnini sıfırla
+    setResponseText(message.response || '');
   };
 
   // Mesaj yanıtlama
@@ -235,15 +175,24 @@ const BrandMessages: React.FC = () => {
     }
   };
 
+  // Get count by status
+  const getCountByStatus = (status: string) => {
+    if (status === 'all') {
+      return messages.length;
+    }
+    return messages.filter(msg => msg.status === status).length;
+  };
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Müşteri Mesajları</h1>
       </div>
 
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[300px] relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      {/* Search and Filters */}
+      <div className="flex flex-col md:flex-row gap-4">
+        <div className="relative flex-1">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Mesajlarda ara..." 
             className="pl-8"
@@ -251,10 +200,10 @@ const BrandMessages: React.FC = () => {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-        <div className="flex flex-wrap gap-2">
+        <div className="flex-shrink-0">
           <Select value={campaignFilter} onValueChange={setCampaignFilter}>
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Kampanya Filtresi" />
+            <SelectTrigger className="w-full md:w-[200px]">
+              <SelectValue placeholder="Tüm Kampanyalar" />
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
@@ -268,85 +217,117 @@ const BrandMessages: React.FC = () => {
         </div>
       </div>
 
-      {/* Sürükle-Bırak Alanı */}
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-          {Object.entries(statusColumns).map(([statusId, column]) => (
-            <div 
-              key={statusId}
-              className="bg-slate-50 rounded-lg p-4 border"
-            >
-              <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full bg-${column.color}-500`}></span>
-                {column.title}
-                <Badge className="ml-auto">{getMessagesForStatus(statusId as StatusColumnIds).length}</Badge>
-              </h3>
-              
-              <Droppable droppableId={statusId}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={`min-h-[200px] transition-colors ${
-                      snapshot.isDraggingOver ? 'bg-slate-100' : 'bg-transparent'
-                    }`}
-                  >
-                    {getMessagesForStatus(statusId as StatusColumnIds).map((message, index) => (
-                      <Draggable 
-                        key={message.id} 
-                        draggableId={`message-${message.id}`} 
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <Card
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`mb-3 cursor-pointer hover:shadow-md transition-shadow ${
-                              snapshot.isDragging ? 'shadow-lg' : ''
-                            }`}
-                            onClick={() => handleViewMessage(message)}
-                          >
-                            <CardHeader className="p-3">
-                              <div className="flex items-center gap-2">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarFallback className="text-xs">
-                                    {getInitials(message.customerName)}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <CardTitle className="text-sm">{message.customerName}</CardTitle>
-                                  <CardDescription className="text-xs">{formatDate(message.date)}</CardDescription>
-                                </div>
-                              </div>
-                            </CardHeader>
-                            <CardContent className="px-3 py-2">
-                              <p className="text-xs line-clamp-2">{message.message}</p>
-                            </CardContent>
-                            <CardFooter className="px-3 py-2 border-t flex justify-between items-center">
-                              <span className="text-xs">{message.campaignName}</span>
-                              {message.response ? (
-                                <Badge variant="outline" className="text-xs">Yanıtlandı</Badge>
-                              ) : null}
-                            </CardFooter>
-                          </Card>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    
-                    {getMessagesForStatus(statusId as StatusColumnIds).length === 0 && (
-                      <div className="flex flex-col items-center justify-center p-4 bg-white/50 rounded border border-dashed">
-                        <p className="text-xs text-muted-foreground">Mesaj yok</p>
+      {/* Status Tabs */}
+      <div className="border rounded-lg overflow-hidden bg-white">
+        <div className="flex overflow-x-auto scrollbar-hide">
+          <Button
+            variant={activeTab === 'all' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('all')}
+          >
+            <MessageSquare className="h-4 w-4" />
+            <span>Tümü</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('all')}</Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'new' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('new')}
+          >
+            <AlertCircle className="h-4 w-4" />
+            <span>Yeni</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('new')}</Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'inProgress' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('inProgress')}
+          >
+            <User className="h-4 w-4" />
+            <span>İlgileniyor</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('inProgress')}</Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'appointment' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('appointment')}
+          >
+            <Calendar className="h-4 w-4" />
+            <span>Randevu</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('appointment')}</Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'completed' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('completed')}
+          >
+            <CheckCircle2 className="h-4 w-4" />
+            <span>Tamamlandı</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('completed')}</Badge>
+          </Button>
+          <Button
+            variant={activeTab === 'sold' ? "default" : "ghost"}
+            className="rounded-none border-b-2 border-transparent px-4 py-2 flex gap-2 items-center"
+            onClick={() => setActiveTab('sold')}
+          >
+            <Check className="h-4 w-4" />
+            <span>Satıldı</span>
+            <Badge variant="outline" className="ml-1">{getCountByStatus('sold')}</Badge>
+          </Button>
+        </div>
+        
+        {/* Message List */}
+        <div className="divide-y">
+          {filteredMessages.length > 0 ? (
+            filteredMessages.map(message => (
+              <div 
+                key={message.id} 
+                className="p-4 hover:bg-slate-50 cursor-pointer flex items-start gap-3"
+                onClick={() => handleViewMessage(message)}
+              >
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {message.initialLetter || message.customerName.substring(0, 2)}
+                  </AvatarFallback>
+                </Avatar>
+                
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-medium">{message.customerName}</h3>
+                      <p className="text-sm text-muted-foreground line-clamp-1">{message.message}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {formatDate(message.date)}
                       </div>
+                      {getStatusBadge(message.status)}
+                    </div>
+                  </div>
+                  
+                  <div className="mt-2 flex justify-between items-center">
+                    <span className="text-xs px-2 py-1 bg-slate-100 rounded-full">
+                      {message.campaignName}
+                    </span>
+                    {message.response && (
+                      <span className="text-xs text-green-600 flex items-center gap-1">
+                        <Check className="w-3 h-3" /> Yanıtlandı
+                      </span>
                     )}
                   </div>
-                )}
-              </Droppable>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="p-8 text-center">
+              <MessageSquare className="mx-auto h-12 w-12 text-muted-foreground/50" />
+              <h3 className="mt-2 text-xl font-medium">Mesaj bulunamadı</h3>
+              <p className="text-muted-foreground">Bu kriterlere uygun mesaj bulunmamaktadır.</p>
             </div>
-          ))}
+          )}
         </div>
-      </DragDropContext>
+      </div>
 
       {/* Mesaj Detay Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -357,14 +338,17 @@ const BrandMessages: React.FC = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback>
-                        {getInitials(selectedMessage.customerName)}
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {selectedMessage.initialLetter || selectedMessage.customerName.substring(0, 2)}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <DialogTitle className="text-lg">{selectedMessage.customerName}</DialogTitle>
-                      <DialogDescription className="text-sm">
-                        {formatDate(selectedMessage.date)} • {selectedMessage.campaignName}
+                      <DialogDescription className="text-sm flex items-center gap-2">
+                        <Clock className="h-3 w-3" />
+                        {formatDate(selectedMessage.date)} 
+                        <span>•</span> 
+                        {selectedMessage.campaignName}
                       </DialogDescription>
                     </div>
                   </div>
@@ -373,17 +357,21 @@ const BrandMessages: React.FC = () => {
               </DialogHeader>
               
               <div className="space-y-4 mt-4">
-                <div className="bg-muted/50 p-4 rounded-md">
-                  <p className="text-sm">{selectedMessage.message}</p>
-                </div>
+                <Card>
+                  <CardContent className="p-4">
+                    <p className="text-sm">{selectedMessage.message}</p>
+                  </CardContent>
+                </Card>
                 
                 {selectedMessage.response ? (
-                  <div className="bg-primary/5 p-4 rounded-md border-l-4 border-primary">
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className="text-sm font-medium">Yanıtınız:</span>
-                    </div>
-                    <p className="text-sm">{selectedMessage.response}</p>
-                  </div>
+                  <Card className="border-l-4 border-primary">
+                    <CardContent className="p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-sm font-medium">Yanıtınız:</span>
+                      </div>
+                      <p className="text-sm">{selectedMessage.response}</p>
+                    </CardContent>
+                  </Card>
                 ) : (
                   <div className="space-y-4">
                     <div className="flex flex-col gap-2">
@@ -423,7 +411,7 @@ const BrandMessages: React.FC = () => {
                 
                 {!selectedMessage.response && (
                   <Button onClick={handleSendResponse} disabled={responseText.trim() === ''}>
-                    <Send className="mr-2 h-4 w-4" /> Yanıtla
+                    Yanıtla
                   </Button>
                 )}
               </DialogFooter>
