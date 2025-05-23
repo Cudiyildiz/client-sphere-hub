@@ -333,7 +333,7 @@ const ApiIntegrations: React.FC = () => {
       }
     }
   }, [selectedBrand, isAddDialogOpen]);
-
+  
   // Filter connections for the selected brand
   const brandConnections = connections.filter(conn => 
     (!selectedBrand || conn.brandId === selectedBrand) &&
@@ -386,14 +386,14 @@ const ApiIntegrations: React.FC = () => {
         // Google Ads için
         if (selectedService === 'google_ads') {
           if (!developerToken || !clientId || !clientSecret || !clientCustomerId) {
-            toast({
+      toast({
               title: "Eksik Bilgi",
               description: "Google Ads bağlantısı için tüm gerekli alanları doldurmalısınız.",
               variant: "destructive"
-            });
-            return;
-          }
-          
+      });
+      return;
+    }
+    
           apiData = {
             ...apiData,
             developerToken,
@@ -411,7 +411,7 @@ const ApiIntegrations: React.FC = () => {
           });
           
           // OAuth yönlendirme simülasyonu
-          setTimeout(() => {
+    setTimeout(() => {
             window.open('https://developers.google.com/google-ads/api/docs/oauth/overview', '_blank');
           }, 1000);
         }
@@ -450,7 +450,7 @@ const ApiIntegrations: React.FC = () => {
       case 'tcimaxAuth':
         // TCimax için
         if (!apiKey || !apiSecret || !supplierId) {
-          toast({
+      toast({
             title: "Eksik Bilgi",
             description: "TCimax API bağlantısı için API Key, API Secret ve Şirket ID alanları gereklidir.",
             variant: "destructive"
@@ -668,11 +668,11 @@ const ApiIntegrations: React.FC = () => {
   // Reset form function update
   const resetForm = () => {
     setSelectedBrand('');
-    setSelectedService('');
-    setApiKey('');
+            setSelectedService('');
+            setApiKey('');
     setApiSecret('');
     setSupplierId('');
-    setWebhookUrl('');
+            setWebhookUrl('');
     setAutoSync(true);
     setSyncInterval('daily');
     setSelectedEndpoints([]);
@@ -782,14 +782,14 @@ const ApiIntegrations: React.FC = () => {
               
               <div className="mt-4">
                 <Button 
-                  variant="outline" 
+          variant="outline"
                   size="sm" 
                   className="text-xs"
                   onClick={() => window.open('https://developers.google.com/google-ads/api/docs/oauth/overview', '_blank')}
-                >
+        >
                   OAuth 2.0 Dokümantasyonu
-                </Button>
-              </div>
+        </Button>
+      </div>
             </div>
           );
         } else if (selectedService === 'google_analytics') {
@@ -820,7 +820,7 @@ const ApiIntegrations: React.FC = () => {
                 />
               </div>
               
-              <div className="space-y-2">
+                <div className="space-y-2">
                 <Label htmlFor="clientSecret">Client Secret</Label>
                 <Input
                   id="clientSecret"
@@ -851,16 +851,16 @@ const ApiIntegrations: React.FC = () => {
                 >
                   Google Analytics API Dokümantasyonu
                 </Button>
-              </div>
-            </div>
+                          </div>
+                </div>
           );
         }
         break;
-      
+              
       case 'tcimaxAuth':
         // TCimax için kimlik doğrulama alanları
         return (
-          <div className="space-y-4 border rounded-md p-4 bg-slate-50">
+                <div className="space-y-4 border rounded-md p-4 bg-slate-50">
             <h3 className="font-medium text-sm">TCimax API Yapılandırması</h3>
             
             <div className="space-y-2">
@@ -873,8 +873,8 @@ const ApiIntegrations: React.FC = () => {
               />
               <p className="text-xs text-muted-foreground">
                 TCimax yönetim panelinden alacağınız API anahtarı
-              </p>
-            </div>
+                      </p>
+                    </div>
             
             <div className="space-y-2">
               <Label htmlFor="apiSecret">API Gizli Anahtarı</Label>
@@ -885,11 +885,11 @@ const ApiIntegrations: React.FC = () => {
                 placeholder="API gizli anahtarınızı girin"
                 type="password"
               />
-            </div>
-            
-            <div className="space-y-2">
+                  </div>
+                  
+                  <div className="space-y-2">
               <Label htmlFor="supplierId">Şirket ID</Label>
-              <Input
+                    <Input
                 id="supplierId"
                 value={supplierId}
                 onChange={(e) => setSupplierId(e.target.value)}
@@ -961,7 +961,7 @@ const ApiIntegrations: React.FC = () => {
                 value={apiSecret}
                 onChange={(e) => setApiSecret(e.target.value)}
                 placeholder="API gizli anahtarınızı girin"
-                type="password"
+                      type="password"
               />
             </div>
             
@@ -989,16 +989,16 @@ const ApiIntegrations: React.FC = () => {
               <Label htmlFor="apiKey">API Anahtarı</Label>
               <Input
                 id="apiKey"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
+                      value={apiKey}
+                      onChange={(e) => setApiKey(e.target.value)}
                 placeholder="API anahtarınızı girin"
-              />
-            </div>
-            
+                    />
+                  </div>
+                  
             {isHepsiburada && (
-              <div className="space-y-2">
+                    <div className="space-y-2">
                 <Label htmlFor="merchantId">Satıcı ID</Label>
-                <Input
+                      <Input
                   id="merchantId"
                   value={supplierId}
                   onChange={(e) => setSupplierId(e.target.value)}
@@ -1024,11 +1024,11 @@ const ApiIntegrations: React.FC = () => {
               <Label htmlFor="webhookUrl">Webhook URL (isteğe bağlı)</Label>
               <Input
                 id="webhookUrl"
-                value={webhookUrl}
-                onChange={(e) => setWebhookUrl(e.target.value)}
+                        value={webhookUrl}
+                        onChange={(e) => setWebhookUrl(e.target.value)}
                 placeholder="Örn: https://example.com/webhook"
-              />
-            </div>
+                      />
+                    </div>
             
             <div className="mt-2">
               <Alert variant="outline" className="bg-blue-50 border-blue-200 text-blue-800 text-sm">
@@ -1304,10 +1304,10 @@ const ApiIntegrations: React.FC = () => {
 
           {/* İKAS API'si için özel açıklama kartı */}
           {selectedService === 'ikas' && (
-            <Alert className="bg-green-50 border-green-200">
+                    <Alert className="bg-green-50 border-green-200">
               <AlertCircle className="h-4 w-4 text-green-600" />
               <AlertTitle>İKAS API Entegrasyonu</AlertTitle>
-              <AlertDescription>
+                      <AlertDescription>
                 <p className="mb-2">
                   İKAS API entegrasyonu için gerekli bilgiler:
                 </p>
@@ -1321,16 +1321,16 @@ const ApiIntegrations: React.FC = () => {
                 <p>
                   Webhook URL, İKAS'tan gelecek bildirimler (sipariş, ürün güncelleme vb.) için kullanılacaktır.
                 </p>
-              </AlertDescription>
-            </Alert>
-          )}
-
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
           {/* Google Analytics API'si için özel açıklama kartı */}
           {selectedService === 'google_analytics' && (
             <Alert className="bg-blue-50 border-blue-200">
               <AlertCircle className="h-4 w-4 text-blue-600" />
               <AlertTitle>Google Analytics API Entegrasyonu</AlertTitle>
-              <AlertDescription>
+                      <AlertDescription>
                 <p className="mb-2">
                   Google Analytics API entegrasyonu için gerekli adımlar:
                 </p>
@@ -1347,10 +1347,10 @@ const ApiIntegrations: React.FC = () => {
                 <p>
                   Daha fazla bilgi için <a href="https://developers.google.com/analytics/devguides/reporting/core/v4" target="_blank" rel="noopener noreferrer" className="text-primary underline">Google Analytics API Dökümanları</a>'nı inceleyebilirsiniz.
                 </p>
-              </AlertDescription>
-            </Alert>
-          )}
-
+                      </AlertDescription>
+                    </Alert>
+                  )}
+                  
           {/* WooCommerce API'si için özel açıklama kartı */}
           {selectedService === 'woocommerce' && (
             <Alert className="bg-green-50 border-green-200">
@@ -1456,23 +1456,23 @@ const ApiIntegrations: React.FC = () => {
                       <span className="text-sm text-muted-foreground">API Anahtarı:</span>
                       <div className="flex items-center">
                         <span className="font-mono text-xs">•••••••••••••</span>
-                        <Button 
+                  <Button 
                           variant="ghost" 
                           size="icon" 
                           className="h-8 w-8"
                           onClick={() => handleCopyApiKey(connection.apiKey || '')}
                         >
                           <Copy className="h-3 w-3" />
-                        </Button>
-                      </div>
+                  </Button>
+                </div>
                     </div>
                     
                     {connection.serviceId === 'google_ads' && (
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-muted-foreground">Müşteri ID:</span>
                         <span className="text-xs font-mono">{connection.brandId}-ads</span>
-                      </div>
-                    )}
+                </div>
+              )}
                     
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">Senkronizasyon:</span>
@@ -1496,7 +1496,7 @@ const ApiIntegrations: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                </CardContent>
+            </CardContent>
                 <CardFooter className="flex justify-between">
                   <Button 
                     variant="outline" 
@@ -1521,7 +1521,7 @@ const ApiIntegrations: React.FC = () => {
                     </Button>
                   </div>
                 </CardFooter>
-              </Card>
+          </Card>
             ))}
           </div>
         </TabsContent>
@@ -1544,26 +1544,26 @@ const ApiIntegrations: React.FC = () => {
                   <span className="bg-primary/10 p-1 rounded-md mr-2">🏢</span>
                   Bağlantı Bilgileri
                 </h3>
-                <div className="space-y-4">
-                  <div className="space-y-2">
+              <div className="space-y-4">
+                <div className="space-y-2">
                     <Label htmlFor="brandSelect">Marka Seçin</Label>
-                    <Select 
-                      value={selectedBrand} 
-                      onValueChange={setSelectedBrand}
-                    >
+                  <Select
+                    value={selectedBrand}
+                    onValueChange={setSelectedBrand}
+                  >
                       <SelectTrigger id="brandSelect" className="h-10">
-                        <SelectValue placeholder="Marka seçin" />
-                      </SelectTrigger>
-                      <SelectContent>
+                      <SelectValue placeholder="Marka seçin" />
+                    </SelectTrigger>
+                    <SelectContent>
                         {brands.map(brand => (
-                          <SelectItem key={brand.id} value={brand.id}>
-                            {brand.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
+                        <SelectItem key={brand.id} value={brand.id}>
+                          {brand.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
                   <div className="space-y-2">
                     <Label htmlFor="serviceSelect">API Servisi</Label>
                     <Select 
@@ -1592,13 +1592,13 @@ const ApiIntegrations: React.FC = () => {
                             <div className="flex items-center">
                               <span className="mr-2">{service.icon}</span>
                               {service.name}
-                            </div>
+                                  </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
+                                </div>
+                                  </div>
                 
                 {selectedService && (
                   <div className="mt-6 space-y-4">
@@ -1613,8 +1613,8 @@ const ApiIntegrations: React.FC = () => {
                         checked={autoSync}
                         onCheckedChange={setAutoSync}
                       />
-                    </div>
-                    
+                                  </div>
+                                  
                     {autoSync && (
                       <div className="space-y-2">
                         <Label htmlFor="syncInterval">Senkronizasyon Aralığı</Label>
@@ -1632,11 +1632,11 @@ const ApiIntegrations: React.FC = () => {
                             <SelectItem value="monthly">Aylık</SelectItem>
                           </SelectContent>
                         </Select>
-                      </div>
+                                  </div>
                     )}
-                  </div>
+                                </div>
                 )}
-              </div>
+                      </div>
               
               <div>
                 {/* API servisine özel alanlar */}
@@ -1673,8 +1673,8 @@ const ApiIntegrations: React.FC = () => {
                             <p className="text-xs text-muted-foreground">
                               {endpoint.description}
                             </p>
-                          </div>
-                        </div>
+                    </div>
+                    </div>
                       ))}
                     </div>
                     
