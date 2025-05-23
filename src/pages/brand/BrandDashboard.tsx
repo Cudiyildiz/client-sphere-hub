@@ -9,57 +9,56 @@ const BrandDashboard: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Brand Dashboard</h1>
-        <Button>Create New Campaign</Button>
+        <h1 className="text-2xl font-bold tracking-tight">Marka Paneli</h1>
       </div>
       
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Campaigns</CardTitle>
+            <CardTitle className="text-sm font-medium">Aktif Kampanyalar</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">8</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3 text-green-500" />
-              <span className="text-green-500">12%</span> increase
+              <span className="text-green-500">12%</span> artış
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
+            <CardTitle className="text-sm font-medium">Toplam Müşteriler</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">1,204</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3 text-green-500" />
-              <span className="text-green-500">8.2%</span> increase
+              <span className="text-green-500">8.2%</span> artış
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">New Messages</CardTitle>
+            <CardTitle className="text-sm font-medium">Yeni Mesajlar</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">34</div>
-            <p className="text-xs text-muted-foreground">12 unread</p>
+            <p className="text-xs text-muted-foreground">12 okunmamış</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Response Rate</CardTitle>
+            <CardTitle className="text-sm font-medium">Yanıt Oranı</CardTitle>
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">96%</div>
             <p className="text-xs text-muted-foreground flex items-center gap-1">
               <ArrowUpRight className="h-3 w-3 text-green-500" />
-              <span className="text-green-500">2%</span> increase
+              <span className="text-green-500">2%</span> artış
             </p>
           </CardContent>
         </Card>
@@ -67,14 +66,14 @@ const BrandDashboard: React.FC = () => {
       
       <Tabs defaultValue="campaigns">
         <TabsList>
-          <TabsTrigger value="campaigns">Active Campaigns</TabsTrigger>
-          <TabsTrigger value="messages">Recent Messages</TabsTrigger>
+          <TabsTrigger value="campaigns">Aktif Kampanyalar</TabsTrigger>
+          <TabsTrigger value="messages">Son Mesajlar</TabsTrigger>
         </TabsList>
         <TabsContent value="campaigns">
           <Card>
             <CardHeader>
-              <CardTitle>Active Campaigns</CardTitle>
-              <CardDescription>Overview of your ongoing marketing campaigns</CardDescription>
+              <CardTitle>Aktif Kampanyalar</CardTitle>
+              <CardDescription>Markanızın devam eden pazarlama kampanyalarının genel bakışı</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -101,7 +100,7 @@ const BrandDashboard: React.FC = () => {
                         </span>
                       </div>
                     </div>
-                    <Button size="sm" variant="outline">View</Button>
+                    <Button size="sm" variant="outline">Görüntüle</Button>
                   </div>
                 ))}
               </div>
@@ -111,8 +110,8 @@ const BrandDashboard: React.FC = () => {
         <TabsContent value="messages">
           <Card>
             <CardHeader>
-              <CardTitle>Recent Customer Messages</CardTitle>
-              <CardDescription>Latest interactions from your campaigns</CardDescription>
+              <CardTitle>Son Müşteri Mesajları</CardTitle>
+              <CardDescription>Kampanyalarınızla ilgili en son etkileşimler</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
@@ -136,7 +135,7 @@ const BrandDashboard: React.FC = () => {
                         <span className="text-xs text-muted-foreground">
                           Campaign: {message.campaign}
                         </span>
-                        <Button size="sm" variant="outline">Reply</Button>
+                        <Button size="sm" variant="outline">Yanıtla</Button>
                       </div>
                     </div>
                   </div>
