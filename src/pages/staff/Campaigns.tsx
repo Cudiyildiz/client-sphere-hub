@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, Calendar, Filter, ChevronRight } from 'lucide-react';
+import { Search, Calendar, Filter, ChevronRight, Plus } from 'lucide-react';
 import { 
   Card, 
   CardContent, 
@@ -31,7 +30,20 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/hooks/use-toast";
 
 // Types
 interface Campaign {
@@ -47,6 +59,7 @@ interface Campaign {
   responses: number;
   sales: number;
   targetAudience: number;
+  description?: string;
 }
 
 const mockCampaigns: Campaign[] = [
@@ -135,6 +148,19 @@ const mockCampaigns: Campaign[] = [
     targetAudience: 5000
   }
 ];
+
+// Form schema
+const campaignFormSchema = z.object({
+  name: z.string().min(2, { message: 'İsim en az 2 karakter olmalıdır' }),
+  brand: z.string().min(1, { message: 'Marka seçilmesi zorunludur' }),
+  description: z.string().min(10, { message: 'Açıklama en az 10 karakter olmalıdır' }),
+  status: z.enum(['active', 'scheduled', 'completed', 'draft']),
+  startDate: z.string().min(1, { message: 'Başlangıç tarihi gereklidir' }),
+  endDate: z.string().min(1, { message: 'Bitiş tarihi gereklidir' }),
+  targetAudience: z.number().min(1, { message: 'Hedef kitle sayısı gereklidir' }),
+});
+
+type CampaignFormValues = z.infer<typeof campaignFormSchema>;
 
 const CampaignCard: React.FC<{ campaign: Campaign; onClick: () => void }> = ({ campaign, onClick }) => {
   const getStatusBadge = (status: string) => {
@@ -355,12 +381,195 @@ const CampaignDetail: React.FC<{ campaign: Campaign, onClose: () => void }> = ({
   );
 };
 
+// New Create Campaign Form Dialog
+interface CreateCampaignDialogProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  onSave: (values: CampaignFormValues) => void;
+}
+
+const CreateCampaignDialog: React.FC<CreateCampaignDialogProps> = ({ isOpen, setIsOpen, onSave }) => {
+  const form = useForm<CampaignFormValues>({
+    resolver: zodResolver(campaignFormSchema),
+    defaultValues: {
+      name: '',
+      brand: '',
+      description: '',
+      status: 'draft',
+      startDate: '',
+      endDate: '',
+      targetAudience: 1000,
+    }
+  });
+
+  const handleSubmit = (data: CampaignFormValues) => {
+    onSave(data);
+    setIsOpen(false);
+    form.reset();
+  };
+
+  // Unique brands from the mock campaigns
+  const uniqueBrands = [...new Set(mockCampaigns.map(campaign => campaign.brand))];
+
+  return (
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Yeni Kampanya Oluştur</DialogTitle>
+          <DialogDescription>
+            Yeni bir kampanya oluşturmak için aşağıdaki alanları doldurun.
+          </DialogDescription>
+        </DialogHeader>
+        
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Kampanya Adı</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Kampanya adını girin" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="brand"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Marka</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Marka seçin" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {uniqueBrands.map(brand => (
+                        <SelectItem key={brand} value={brand}>{brand}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Açıklama</FormLabel>
+                  <FormControl>
+                    <Textarea 
+                      placeholder="Kampanyanın amacını ve hedeflerini açıklayın" 
+                      className="min-h-[100px]"
+                      {...field} 
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Başlangıç Tarihi</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bitiş Tarihi</FormLabel>
+                    <FormControl>
+                      <Input type="date" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Durum</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Durum seçin" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="draft">Taslak</SelectItem>
+                        <SelectItem value="scheduled">Planlandı</SelectItem>
+                        <SelectItem value="active">Aktif</SelectItem>
+                        <SelectItem value="completed">Tamamlandı</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="targetAudience"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Hedef Kitle Sayısı</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        min={1} 
+                        {...field} 
+                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)} 
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <DialogFooter>
+              <Button type="submit">Kampanya Oluştur</Button>
+            </DialogFooter>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
 const Campaigns: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [brandFilter, setBrandFilter] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
   const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [showCreateDialog, setShowCreateDialog] = useState<boolean>(false);
+  const { toast } = useToast();
 
   // Extract unique brands for filter
   const uniqueBrands = [...new Set(mockCampaigns.map(campaign => campaign.brand))];
@@ -368,27 +577,87 @@ const Campaigns: React.FC = () => {
   // Filter campaigns based on search and filters
   const filteredCampaigns = mockCampaigns.filter(campaign => {
     const matchesSearch = campaign.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          campaign.brand.toLowerCase().includes(searchTerm.toLowerCase());
+                          campaign.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (campaign.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     const matchesBrand = brandFilter === 'all' || campaign.brand === brandFilter;
     const matchesStatus = statusFilter === 'all' || campaign.status === statusFilter;
     
-    return matchesSearch && matchesBrand && matchesStatus;
+    // Date filtering
+    let matchesDate = true;
+    const now = new Date();
+    const start = new Date(campaign.startDate);
+    const end = new Date(campaign.endDate);
+    
+    if (dateFilter === 'thisMonth') {
+      const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+      const thisMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+      matchesDate = (start >= thisMonthStart && start <= thisMonthEnd) || 
+                   (end >= thisMonthStart && end <= thisMonthEnd) ||
+                   (start <= thisMonthStart && end >= thisMonthEnd);
+    } else if (dateFilter === 'lastMonth') {
+      const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+      matchesDate = (start >= lastMonthStart && start <= lastMonthEnd) || 
+                   (end >= lastMonthStart && end <= lastMonthEnd) ||
+                   (start <= lastMonthStart && end >= lastMonthEnd);
+    } else if (dateFilter === 'nextMonth') {
+      const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const nextMonthEnd = new Date(now.getFullYear(), now.getMonth() + 2, 0);
+      matchesDate = (start >= nextMonthStart && start <= nextMonthEnd) || 
+                   (end >= nextMonthStart && end <= nextMonthEnd) ||
+                   (start <= nextMonthStart && end >= nextMonthEnd);
+    }
+    
+    return matchesSearch && matchesBrand && matchesStatus && matchesDate;
   });
 
   const handleCampaignClick = (campaign: Campaign) => {
     setSelectedCampaign(campaign);
     setShowDetail(true);
   };
+  
+  const handleCreateCampaign = (values: CampaignFormValues) => {
+    // Create a new campaign object
+    const newCampaign: Campaign = {
+      id: mockCampaigns.length + 1,
+      name: values.name,
+      brand: values.brand,
+      startDate: values.startDate,
+      endDate: values.endDate,
+      status: values.status,
+      customerReached: 0,
+      messagesSent: 0,
+      messagesOpened: 0,
+      responses: 0,
+      sales: 0,
+      targetAudience: values.targetAudience,
+      description: values.description,
+    };
+    
+    // This would normally add to the database
+    // For now we'll just show a success toast
+    toast({
+      title: "Kampanya oluşturuldu",
+      description: `"${values.name}" kampanyası başarıyla oluşturuldu.`,
+    });
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Kampanyalar</h1>
-        <Button disabled>
-          <Calendar className="mr-2 h-4 w-4" />
+        <Button onClick={() => setShowCreateDialog(true)}>
+          <Plus className="mr-2 h-4 w-4" />
           Yeni Kampanya
         </Button>
       </div>
+      
+      {/* Create Campaign Dialog */}
+      <CreateCampaignDialog 
+        isOpen={showCreateDialog}
+        setIsOpen={setShowCreateDialog}
+        onSave={handleCreateCampaign}
+      />
 
       {!showDetail ? (
         <>
@@ -430,6 +699,20 @@ const Campaigns: React.FC = () => {
                     <SelectItem value="scheduled">Planlandı</SelectItem>
                     <SelectItem value="completed">Tamamlandı</SelectItem>
                     <SelectItem value="draft">Taslak</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              
+              <Select value={dateFilter} onValueChange={setDateFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Tarih Filtresi" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="all">Tüm Tarihler</SelectItem>
+                    <SelectItem value="thisMonth">Bu Ay</SelectItem>
+                    <SelectItem value="lastMonth">Geçen Ay</SelectItem>
+                    <SelectItem value="nextMonth">Gelecek Ay</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
