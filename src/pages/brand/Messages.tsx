@@ -289,11 +289,11 @@ const BrandMessages: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto p-4 lg:p-6">
-        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+      <div className="max-w-full mx-auto p-3 sm:p-4 lg:p-6">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-4 sm:mb-6">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
-            <p className="text-slate-600 mt-1">Müşterilerinizle iletişimi yönetin</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
+            <p className="text-slate-600 mt-1 text-sm sm:text-base">Müşterilerinizle iletişimi yönetin</p>
           </div>
         </div>
 
@@ -315,7 +315,7 @@ const BrandMessages: React.FC = () => {
 
         {/* Drag and Drop Area */}
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+          <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-4 min-h-[400px]">
             {Object.entries(statusColumns).map(([statusId, column]) => (
               <StatusColumn
                 key={statusId}
