@@ -361,458 +361,449 @@ const BrandMessages: React.FC = () => {
   };
 
   return (
-    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
-      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
-          <p className="text-slate-600 mt-1 text-sm sm:text-base">Müşterilerinizle iletişimi yönetin</p>
+    <div className="min-h-screen bg-slate-50">
+      <div className="max-w-7xl mx-auto p-4 lg:p-6">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4 mb-6">
+          <div>
+            <h1 className="text-2xl lg:text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
+            <p className="text-slate-600 mt-1">Müşterilerinizle iletişimi yönetin</p>
+          </div>
         </div>
-      </div>
 
-      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
-        <div className="flex-1 min-w-0 relative">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input 
-            placeholder="Mesajlarda ara..." 
-            className="pl-8"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-        <Popover open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
-          <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2 w-full sm:w-auto">
-              <Filter className="h-4 w-4" />
-              <span className="hidden sm:inline">Filtreler</span>
-              <Badge className="ml-1 bg-primary/20 text-primary hover:bg-primary/20">
-                {(campaignFilter !== 'all' ? 1 : 0) + 
-                 (dateRangeFilter !== 'all' ? 1 : 0) + 
-                 (tagFilter !== 'all' ? 1 : 0)}
-              </Badge>
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80" align="end">
-            <div className="space-y-4">
-              <h4 className="font-medium">Filtreleme Seçenekleri</h4>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="campaign-filter">
-                  Kampanya
-                </label>
-                <Select value={campaignFilter} onValueChange={setCampaignFilter}>
-                  <SelectTrigger className="w-full" id="campaign-filter">
-                    <SelectValue placeholder="Kampanya Filtresi" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="all">Tüm Kampanyalar</SelectItem>
-                      {uniqueCampaigns.map(campaign => (
-                        <SelectItem key={campaign} value={campaign}>{campaign}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="date-filter">
-                  Tarih Aralığı
-                </label>
-                <Select value={dateRangeFilter} onValueChange={setDateRangeFilter}>
-                  <SelectTrigger className="w-full" id="date-filter">
-                    <SelectValue placeholder="Tarih Aralığı" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {dateRangeOptions.map(option => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="space-y-2">
-                <label className="text-sm font-medium" htmlFor="tag-filter">
-                  Müşteri Etiketi
-                </label>
-                <Select value={tagFilter} onValueChange={setTagFilter}>
-                  <SelectTrigger className="w-full" id="tag-filter">
-                    <SelectValue placeholder="Müşteri Etiketi" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="all">Tüm Etiketler</SelectItem>
-                      {uniqueTags.map(tag => (
-                        <SelectItem key={tag} value={tag}>{tag}</SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="flex items-center justify-between pt-2">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => {
-                    setCampaignFilter('all');
-                    setDateRangeFilter('all');
-                    setTagFilter('all');
-                  }}
-                >
-                  <RefreshCw className="h-3 w-3 mr-2" />
-                  Filtreleri Sıfırla
-                </Button>
-                <Button 
-                  size="sm"
-                  onClick={() => setIsFiltersOpen(false)}
-                >
-                  Uygula
-                </Button>
-              </div>
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      {/* Aktif filtre bilgisi */}
-      {(campaignFilter !== 'all' || dateRangeFilter !== 'all' || tagFilter !== 'all') && (
-        <div className="flex flex-wrap gap-2 items-center">
-          <span className="text-sm text-muted-foreground">Aktif filtreler:</span>
+        <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center mb-6">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input 
+              placeholder="Mesajlarda ara..." 
+              className="pl-10 bg-white border-slate-200"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
           
-          {campaignFilter !== 'all' && (
-            <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1">
-              <span>{campaignFilter}</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                onClick={() => setCampaignFilter('all')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {dateRangeFilter !== 'all' && (
-            <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1">
-              <span>{dateRangeOptions.find(o => o.value === dateRangeFilter)?.label}</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                onClick={() => setDateRangeFilter('all')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-          
-          {tagFilter !== 'all' && (
-            <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1">
-              <Tag className="h-3 w-3 mr-1" />
-              <span>{tagFilter}</span>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
-                onClick={() => setTagFilter('all')}
-              >
-                <X className="h-3 w-3" />
-              </Button>
-            </Badge>
-          )}
-        </div>
-      )}
-
-      {/* Sürükle-Bırak Alanı */}
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-          {Object.entries(statusColumns).map(([statusId, column]) => (
-            <div 
-              key={statusId}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200"
-            >
-              <div className="flex items-center justify-between mb-4 sm:mb-6">
-                <h3 className="text-sm sm:text-base font-semibold text-slate-800 flex items-center gap-2 sm:gap-3">
-                  <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-${column.color}-500 ring-2 ring-${column.color}-100`}></div>
-                  <span className="truncate">{column.title}</span>
-                </h3>
-                <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs">
-                  {getMessagesForStatus(statusId as StatusColumnIds).length}
+          <Popover open={isFiltersOpen} onValueChange={setIsFiltersOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="gap-2 bg-white border-slate-200">
+                <Filter className="h-4 w-4" />
+                <span>Filtreler</span>
+                <Badge className="ml-1 bg-primary/10 text-primary">
+                  {(campaignFilter !== 'all' ? 1 : 0) + 
+                   (dateRangeFilter !== 'all' ? 1 : 0) + 
+                   (tagFilter !== 'all' ? 1 : 0)}
                 </Badge>
-              </div>
-              
-              <Droppable droppableId={statusId}>
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    className={`min-h-[200px] sm:min-h-[300px] transition-all duration-200 ${
-                      snapshot.isDraggingOver ? 'bg-slate-50 rounded-xl' : ''
-                    }`}
-                  >
-                    {getMessagesForStatus(statusId as StatusColumnIds).map((message, index) => (
-                      <Draggable 
-                        key={message.id} 
-                        draggableId={`message-${message.id}`} 
-                        index={index}
-                      >
-                        {(provided, snapshot) => (
-                          <Card
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`mb-3 sm:mb-4 cursor-pointer group transition-all duration-200 hover:shadow-lg hover:-translate-y-1 border-0 shadow-sm bg-white/90 backdrop-blur-sm ${
-                              snapshot.isDragging ? 'shadow-xl scale-105 rotate-2' : ''
-                            }`}
-                            onClick={() => handleViewMessage(message)}
-                          >
-                            <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4">
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
-                                  <div className="relative flex-shrink-0">
-                                    <Avatar className="h-8 w-8 sm:h-11 sm:w-11 border-2 border-white shadow-md ring-2 ring-slate-100">
-                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-xs sm:text-sm">
-                                        {getInitials(message.customerName)}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    {message.status === 'new' && (
-                                      <div className="absolute -top-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full border-2 border-white"></div>
-                                    )}
-                                  </div>
-                                  <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-slate-900 text-xs sm:text-sm truncate">
-                                      {message.customerName}
-                                    </h4>
-                                    <div className="flex items-center gap-1 sm:gap-2 text-xs text-slate-500 mt-0.5 sm:mt-1">
-                                      <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
-                                      <span className="truncate">{formatDate(message.date)}</span>
-                                    </div>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex flex-col gap-1 sm:gap-2 items-end flex-shrink-0">
-                                  <div className="scale-75 sm:scale-100 origin-top-right">
-                                    {getStatusBadge(message.status)}
-                                  </div>
-                                  {message.responses && message.responses.length > 0 && (
-                                    <div className="flex items-center gap-1 text-xs text-slate-500 bg-slate-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
-                                      <Reply className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                                      <span>{message.responses.length}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-                            </CardHeader>
-                            
-                            <CardContent className="pt-0 pb-2 sm:pb-3 px-3 sm:px-4">
-                              <p className="text-xs sm:text-sm text-slate-700 line-clamp-2 sm:line-clamp-3 leading-relaxed">
-                                {message.message}
-                              </p>
-                            </CardContent>
-                            
-                            <CardFooter className="pt-0 border-t border-slate-100 bg-slate-50/50 px-3 sm:px-4 py-2 sm:py-3">
-                              <div className="w-full space-y-2 sm:space-y-3">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-xs font-medium text-slate-600 bg-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border truncate max-w-[120px] sm:max-w-none">
-                                    {message.campaignName}
-                                  </span>
-                                  <Button variant="ghost" size="icon" className="h-5 w-5 sm:h-6 sm:w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-                                    <MoreVertical className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
-                                  </Button>
-                                </div>
-                                
-                                {message.tags && message.tags.length > 0 && (
-                                  <div className="flex flex-wrap gap-1">
-                                    {message.tags.slice(0, window.innerWidth < 640 ? 1 : 2).map(tag => (
-                                      <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 sm:px-2 bg-white/80 border-slate-200">
-                                        <Tag className="h-2 w-2 sm:h-2.5 sm:w-2.5 mr-0.5 sm:mr-1" />
-                                        <span className="truncate max-w-[60px] sm:max-w-none">{tag}</span>
-                                      </Badge>
-                                    ))}
-                                    {message.tags.length > (window.innerWidth < 640 ? 1 : 2) && (
-                                      <Badge variant="outline" className="text-xs px-1.5 py-0.5 sm:px-2 bg-white/80 border-slate-200">
-                                        +{message.tags.length - (window.innerWidth < 640 ? 1 : 2)}
-                                      </Badge>
-                                    )}
-                                  </div>
-                                )}
-                              </div>
-                            </CardFooter>
-                          </Card>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                    
-                    {getMessagesForStatus(statusId as StatusColumnIds).length === 0 && (
-                      <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200">
-                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-slate-100 rounded-full flex items-center justify-center mb-2 sm:mb-3">
-                          <MessageSquare className="h-4 w-4 sm:h-6 sm:w-6 text-slate-400" />
-                        </div>
-                        <p className="text-xs sm:text-sm text-slate-500 font-medium">Mesaj yok</p>
-                        <p className="text-xs text-slate-400 mt-1 text-center">Bu durumda mesaj bulunmuyor</p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </Droppable>
-            </div>
-          ))}
-        </div>
-      </DragDropContext>
-
-      {/* Mesaj Detay Dialog */}
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-xs sm:max-w-xl mx-4 sm:mx-auto">
-          {selectedMessage && (
-            <>
-              <DialogHeader>
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 border-2 border-primary/10">
-                      <AvatarFallback className="bg-primary/10 text-primary">
-                        {getInitials(selectedMessage.customerName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="min-w-0 flex-1">
-                      <DialogTitle className="text-base sm:text-lg truncate">{selectedMessage.customerName}</DialogTitle>
-                      <DialogDescription className="text-xs sm:text-sm flex items-center gap-2 flex-wrap">
-                        <Calendar className="h-3.5 w-3.5" />
-                        {formatDate(selectedMessage.date)} 
-                        <span className="text-muted-foreground mx-1">•</span>
-                        <span className="truncate">{selectedMessage.campaignName}</span>
-                      </DialogDescription>
-                    </div>
-                  </div>
-                  <div className="flex-shrink-0">
-                    {getStatusBadge(selectedMessage.status)}
-                  </div>
-                </div>
-              </DialogHeader>
-              
-              <div className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto">
-                <div className="bg-muted/50 p-4 rounded-md">
-                  <div className="flex items-center gap-2 mb-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm font-medium">Müşteri Mesajı:</span>
-                    <span className="ml-auto text-xs text-muted-foreground">{formatDate(selectedMessage.date)}</span>
-                  </div>
-                  <p className="text-base">{selectedMessage.message}</p>
-                </div>
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <div className="space-y-4">
+                <h4 className="font-medium">Filtreleme Seçenekleri</h4>
                 
-                {/* Etiketler */}
                 <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-medium flex items-center gap-2">
-                      <Tag className="h-4 w-4" />
-                      Müşteri Etiketleri
-                    </h4>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {availableTags.map(tag => (
-                      <Badge 
-                        key={tag}
-                        variant={selectedMessage.tags?.includes(tag) ? "default" : "outline"}
-                        className="cursor-pointer hover:opacity-80 flex items-center gap-1"
-                        onClick={() => toggleCustomerTag(selectedMessage.id, tag)}
-                      >
-                        {selectedMessage.tags?.includes(tag) && <Check className="h-3 w-3 mr-1" />}
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-                
-                {/* Yanıtlar */}
-                {selectedMessage.responses && selectedMessage.responses.length > 0 && (
-                  <Accordion type="single" collapsible className="bg-primary/5 rounded-md border">
-                    <AccordionItem value="responses" className="border-0">
-                      <AccordionTrigger className="px-4 py-2">
-                        <span className="flex items-center gap-2">
-                          <MessageSquare className="h-4 w-4" />
-                          Yanıtlar ({selectedMessage.responses.length})
-                        </span>
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4 pb-4">
-                        <div className="space-y-3">
-                          {selectedMessage.responses.map((response, index) => (
-                            <div key={index} className="bg-white p-3 rounded-md border">
-                              <div className="flex items-center gap-2 mb-1">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                    MRK
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span className="text-xs text-muted-foreground">
-                                  {index === 0 ? 'İlk yanıt' : `${index + 1}. yanıt`}
-                                </span>
-                              </div>
-                              <p className="text-sm">{response}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                )}
-                
-                {/* Yeni Yanıt Girişi */}
-                <div className="space-y-4">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-sm font-medium flex items-center gap-2">
-                      <MessageSquare className="h-4 w-4" />
-                      Yeni Yanıt Ekle
-                    </label>
-                    <Input
-                      placeholder="Yanıtınızı yazın..."
-                      className="min-h-[80px] py-2"
-                      value={responseText}
-                      onChange={(e) => setResponseText(e.target.value)}
-                    />
-                  </div>
-                </div>
-              </div>
-              
-              <DialogFooter className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between space-y-2 sm:space-y-0 gap-2">
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Select 
-                    value={selectedMessage.status} 
-                    onValueChange={(value) => changeMessageStatus(
-                      selectedMessage.id, 
-                      value as CustomerMessage['status']
-                    )}
-                  >
-                    <SelectTrigger className="w-full sm:w-[140px]">
-                      <SelectValue placeholder="Durum" />
+                  <label className="text-sm font-medium">Kampanya</label>
+                  <Select value={campaignFilter} onValueChange={setCampaignFilter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Kampanya Filtresi" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="new">Yeni</SelectItem>
-                      <SelectItem value="inProgress">İlgileniyor</SelectItem>
-                      <SelectItem value="appointment">Randevu</SelectItem>
-                      <SelectItem value="completed">Tamamlandı</SelectItem>
-                      <SelectItem value="sold">Satıldı</SelectItem>
+                      <SelectGroup>
+                        <SelectItem value="all">Tüm Kampanyalar</SelectItem>
+                        {uniqueCampaigns.map(campaign => (
+                          <SelectItem key={campaign} value={campaign}>{campaign}</SelectItem>
+                        ))}
+                      </SelectGroup>
                     </SelectContent>
                   </Select>
                 </div>
                 
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Tarih Aralığı</label>
+                  <Select value={dateRangeFilter} onValueChange={setDateRangeFilter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Tarih Aralığı" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {dateRangeOptions.map(option => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Müşteri Etiketi</label>
+                  <Select value={tagFilter} onValueChange={setTagFilter}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Müşteri Etiketi" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="all">Tüm Etiketler</SelectItem>
+                        {uniqueTags.map(tag => (
+                          <SelectItem key={tag} value={tag}>{tag}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="flex items-center justify-between pt-2">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      setCampaignFilter('all');
+                      setDateRangeFilter('all');
+                      setTagFilter('all');
+                    }}
+                  >
+                    <RefreshCw className="h-3 w-3 mr-2" />
+                    Filtreleri Sıfırla
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={() => setIsFiltersOpen(false)}
+                  >
+                    Uygula
+                  </Button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        </div>
+
+        {/* Aktif filtre bilgisi */}
+        {(campaignFilter !== 'all' || dateRangeFilter !== 'all' || tagFilter !== 'all') && (
+          <div className="flex flex-wrap gap-2 items-center mb-6">
+            <span className="text-sm text-slate-600">Aktif filtreler:</span>
+            
+            {campaignFilter !== 'all' && (
+              <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1 bg-white">
+                <span>{campaignFilter}</span>
                 <Button 
-                  onClick={handleSendResponse} 
-                  disabled={responseText.trim() === ''}
-                  className="gap-2 w-full sm:w-auto"
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
+                  onClick={() => setCampaignFilter('all')}
                 >
-                  <Send className="h-4 w-4" />
-                  Yanıt Gönder
+                  <X className="h-3 w-3" />
                 </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+              </Badge>
+            )}
+            
+            {dateRangeFilter !== 'all' && (
+              <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1 bg-white">
+                <span>{dateRangeOptions.find(o => o.value === dateRangeFilter)?.label}</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
+                  onClick={() => setDateRangeFilter('all')}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
+            
+            {tagFilter !== 'all' && (
+              <Badge variant="outline" className="pl-2 pr-1 py-1 flex items-center gap-1 bg-white">
+                <Tag className="h-3 w-3 mr-1" />
+                <span>{tagFilter}</span>
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-4 w-4 p-0 ml-1 hover:bg-transparent"
+                  onClick={() => setTagFilter('all')}
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              </Badge>
+            )}
+          </div>
+        )}
+
+        {/* Sürükle-Bırak Alanı */}
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            {Object.entries(statusColumns).map(([statusId, column]) => (
+              <div 
+                key={statusId}
+                className="bg-white rounded-lg border border-slate-200 p-4"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full bg-${column.color}-500`}></div>
+                    <span>{column.title}</span>
+                  </h3>
+                  <Badge variant="secondary" className="bg-slate-100 text-slate-700 text-xs px-2 py-1">
+                    {getMessagesForStatus(statusId as StatusColumnIds).length}
+                  </Badge>
+                </div>
+                
+                <Droppable droppableId={statusId}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={`min-h-[400px] space-y-3 transition-colors duration-200 ${
+                        snapshot.isDraggingOver ? 'bg-slate-50 rounded-lg p-2' : ''
+                      }`}
+                    >
+                      {getMessagesForStatus(statusId as StatusColumnIds).map((message, index) => (
+                        <Draggable 
+                          key={message.id} 
+                          draggableId={`message-${message.id}`} 
+                          index={index}
+                        >
+                          {(provided, snapshot) => (
+                            <Card
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`cursor-pointer transition-all duration-200 hover:shadow-md border-slate-200 ${
+                                snapshot.isDragging ? 'shadow-lg scale-105 rotate-2' : ''
+                              }`}
+                              onClick={() => handleViewMessage(message)}
+                            >
+                              <CardHeader className="pb-3">
+                                <div className="flex items-start gap-3">
+                                  <div className="relative">
+                                    <Avatar className="h-10 w-10 border-2 border-white shadow-sm">
+                                      <AvatarFallback className="bg-blue-500 text-white text-sm font-medium">
+                                        {getInitials(message.customerName)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    {message.status === 'new' && (
+                                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-medium text-slate-900 text-sm truncate">
+                                      {message.customerName}
+                                    </h4>
+                                    <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
+                                      <Calendar className="w-3 h-3" />
+                                      <span>{formatDate(message.date)}</span>
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col items-end gap-1">
+                                    <div className="scale-75 origin-top-right">
+                                      {getStatusBadge(message.status)}
+                                    </div>
+                                    {message.responses && message.responses.length > 0 && (
+                                      <div className="flex items-center gap-1 text-xs text-slate-500">
+                                        <Reply className="h-3 w-3" />
+                                        <span>{message.responses.length}</span>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              </CardHeader>
+                              
+                              <CardContent className="pt-0 pb-3">
+                                <p className="text-sm text-slate-700 line-clamp-2 leading-relaxed">
+                                  {message.message}
+                                </p>
+                              </CardContent>
+                              
+                              <CardFooter className="pt-0 border-t border-slate-100 bg-slate-50/50 py-3">
+                                <div className="w-full space-y-2">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-xs font-medium text-slate-600 bg-white px-2 py-1 rounded border truncate">
+                                      {message.campaignName}
+                                    </span>
+                                  </div>
+                                  
+                                  {message.tags && message.tags.length > 0 && (
+                                    <div className="flex flex-wrap gap-1">
+                                      {message.tags.slice(0, 2).map(tag => (
+                                        <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 bg-white/80 border-slate-200">
+                                          <Tag className="h-2.5 w-2.5 mr-1" />
+                                          <span className="truncate">{tag}</span>
+                                        </Badge>
+                                      ))}
+                                      {message.tags.length > 2 && (
+                                        <Badge variant="outline" className="text-xs px-1.5 py-0.5 bg-white/80 border-slate-200">
+                                          +{message.tags.length - 2}
+                                        </Badge>
+                                      )}
+                                    </div>
+                                  )}
+                                </div>
+                              </CardFooter>
+                            </Card>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                      
+                      {getMessagesForStatus(statusId as StatusColumnIds).length === 0 && (
+                        <div className="flex flex-col items-center justify-center p-8 bg-slate-50 rounded-lg border-2 border-dashed border-slate-200">
+                          <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                            <MessageSquare className="h-6 w-6 text-slate-400" />
+                          </div>
+                          <p className="text-sm text-slate-500 font-medium">Mesaj yok</p>
+                          <p className="text-xs text-slate-400 mt-1 text-center">Bu durumda mesaj bulunmuyor</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Droppable>
+              </div>
+            ))}
+          </div>
+        </DragDropContext>
+
+        {/* Mesaj Detay Dialog */}
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="max-w-2xl">
+            {selectedMessage && (
+              <>
+                <DialogHeader>
+                  <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12 border-2 border-primary/10">
+                        <AvatarFallback className="bg-primary/10 text-primary">
+                          {getInitials(selectedMessage.customerName)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <DialogTitle className="text-lg">{selectedMessage.customerName}</DialogTitle>
+                        <DialogDescription className="text-sm flex items-center gap-2 flex-wrap">
+                          <Calendar className="h-4 w-4" />
+                          {formatDate(selectedMessage.date)} 
+                          <span className="text-muted-foreground mx-1">•</span>
+                          <span className="truncate">{selectedMessage.campaignName}</span>
+                        </DialogDescription>
+                      </div>
+                    </div>
+                    <div className="flex-shrink-0">
+                      {getStatusBadge(selectedMessage.status)}
+                    </div>
+                  </div>
+                </DialogHeader>
+                
+                <div className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto">
+                  <div className="bg-slate-50 p-4 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <User className="h-4 w-4 text-slate-600" />
+                      <span className="text-sm font-medium">Müşteri Mesajı:</span>
+                      <span className="ml-auto text-xs text-slate-500">{formatDate(selectedMessage.date)}</span>
+                    </div>
+                    <p className="text-base">{selectedMessage.message}</p>
+                  </div>
+                  
+                  {/* Etiketler */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-sm font-medium flex items-center gap-2">
+                        <Tag className="h-4 w-4" />
+                        Müşteri Etiketleri
+                      </h4>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {availableTags.map(tag => (
+                        <Badge 
+                          key={tag}
+                          variant={selectedMessage.tags?.includes(tag) ? "default" : "outline"}
+                          className="cursor-pointer hover:opacity-80 flex items-center gap-1"
+                          onClick={() => toggleCustomerTag(selectedMessage.id, tag)}
+                        >
+                          {selectedMessage.tags?.includes(tag) && <Check className="h-3 w-3 mr-1" />}
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  {/* Yanıtlar */}
+                  {selectedMessage.responses && selectedMessage.responses.length > 0 && (
+                    <Accordion type="single" collapsible className="bg-primary/5 rounded-lg border">
+                      <AccordionItem value="responses" className="border-0">
+                        <AccordionTrigger className="px-4 py-2">
+                          <span className="flex items-center gap-2">
+                            <MessageSquare className="h-4 w-4" />
+                            Yanıtlar ({selectedMessage.responses.length})
+                          </span>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4 pb-4">
+                          <div className="space-y-3">
+                            {selectedMessage.responses.map((response, index) => (
+                              <div key={index} className="bg-white p-3 rounded-lg border">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Avatar className="h-6 w-6">
+                                    <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                      MRK
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <span className="text-xs text-slate-500">
+                                    {index === 0 ? 'İlk yanıt' : `${index + 1}. yanıt`}
+                                  </span>
+                                </div>
+                                <p className="text-sm">{response}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  )}
+                  
+                  {/* Yeni Yanıt Girişi */}
+                  <div className="space-y-4">
+                    <div className="flex flex-col gap-2">
+                      <label className="text-sm font-medium flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        Yeni Yanıt Ekle
+                      </label>
+                      <Input
+                        placeholder="Yanıtınızı yazın..."
+                        className="min-h-[80px] py-2"
+                        value={responseText}
+                        onChange={(e) => setResponseText(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
+                <DialogFooter className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between space-y-2 lg:space-y-0 gap-2">
+                  <div className="flex items-center gap-2 w-full lg:w-auto">
+                    <Select 
+                      value={selectedMessage.status} 
+                      onValueChange={(value) => changeMessageStatus(
+                        selectedMessage.id, 
+                        value as CustomerMessage['status']
+                      )}
+                    >
+                      <SelectTrigger className="w-full lg:w-[140px]">
+                        <SelectValue placeholder="Durum" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="new">Yeni</SelectItem>
+                        <SelectItem value="inProgress">İlgileniyor</SelectItem>
+                        <SelectItem value="appointment">Randevu</SelectItem>
+                        <SelectItem value="completed">Tamamlandı</SelectItem>
+                        <SelectItem value="sold">Satıldı</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <Button 
+                    onClick={handleSendResponse} 
+                    disabled={responseText.trim() === ''}
+                    className="gap-2 w-full lg:w-auto"
+                  >
+                    <Send className="h-4 w-4" />
+                    Yanıt Gönder
+                  </Button>
+                </DialogFooter>
+              </>
+            )}
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };
