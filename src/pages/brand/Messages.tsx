@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { Search, MessageSquare, Filter, Check, Send, AlertCircle, Calendar, Clock, Tag, ChevronDown, RefreshCw, X, User } from 'lucide-react';
+import { Search, MessageSquare, Filter, Check, Send, AlertCircle, Calendar, Clock, Tag, ChevronDown, RefreshCw, X, User, Reply, MoreVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { 
@@ -248,15 +247,15 @@ const BrandMessages: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'new':
-        return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">Yeni Mesaj</Badge>;
+        return <Badge className="bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-50 font-medium">Yeni Mesaj</Badge>;
       case 'inProgress':
-        return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-100">İlgileniliyor</Badge>;
+        return <Badge className="bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-50 font-medium">İlgileniliyor</Badge>;
       case 'appointment':
-        return <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100">Randevu Alındı</Badge>;
+        return <Badge className="bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-50 font-medium">Randevu Alındı</Badge>;
       case 'completed':
-        return <Badge className="bg-green-100 text-green-800 hover:bg-green-100">Tamamlandı</Badge>;
+        return <Badge className="bg-green-50 text-green-700 border-green-200 hover:bg-green-50 font-medium">Tamamlandı</Badge>;
       case 'sold':
-        return <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">Satıldı</Badge>;
+        return <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-50 font-medium">Satıldı</Badge>;
       default:
         return <Badge>Bilinmiyor</Badge>;
     }
@@ -362,9 +361,12 @@ const BrandMessages: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Müşteri Mesajları</h1>
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
+          <p className="text-slate-600 mt-1">Müşterilerinizle iletişimi yönetin</p>
+        </div>
       </div>
 
       <div className="flex flex-wrap gap-4 items-center">
@@ -528,27 +530,29 @@ const BrandMessages: React.FC = () => {
 
       {/* Sürükle-Bırak Alanı */}
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
           {Object.entries(statusColumns).map(([statusId, column]) => (
             <div 
               key={statusId}
-              className="bg-slate-50 rounded-lg p-4 border"
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <h3 className="text-sm font-medium mb-4 flex items-center gap-2">
-                <span className={`w-2 h-2 rounded-full bg-${column.color}-500`}></span>
-                {column.title}
-                <Badge variant="outline" className="ml-auto">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-base font-semibold text-slate-800 flex items-center gap-3">
+                  <div className={`w-3 h-3 rounded-full bg-${column.color}-500 ring-2 ring-${column.color}-100`}></div>
+                  {column.title}
+                </h3>
+                <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium px-2 py-1">
                   {getMessagesForStatus(statusId as StatusColumnIds).length}
                 </Badge>
-              </h3>
+              </div>
               
               <Droppable droppableId={statusId}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`min-h-[200px] transition-colors ${
-                      snapshot.isDraggingOver ? 'bg-slate-100' : 'bg-transparent'
+                    className={`min-h-[300px] transition-all duration-200 ${
+                      snapshot.isDraggingOver ? 'bg-slate-50 rounded-xl' : ''
                     }`}
                   >
                     {getMessagesForStatus(statusId as StatusColumnIds).map((message, index) => (
@@ -562,54 +566,80 @@ const BrandMessages: React.FC = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`mb-3 cursor-pointer hover:shadow-md transition-shadow ${
-                              snapshot.isDragging ? 'shadow-lg' : ''
+                            className={`mb-4 cursor-pointer group transition-all duration-200 hover:shadow-lg hover:-translate-y-1 border-0 shadow-sm bg-white/90 backdrop-blur-sm ${
+                              snapshot.isDragging ? 'shadow-xl scale-105 rotate-2' : ''
                             }`}
                             onClick={() => handleViewMessage(message)}
                           >
-                            <CardHeader className="p-3">
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2 flex-grow">
-                                  <Avatar className="h-8 w-8 border-2 border-white shadow-sm">
-                                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                      {getInitials(message.customerName)}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <CardTitle className="text-sm font-bold">{message.customerName}</CardTitle>
-                                    <CardDescription className="text-xs flex items-center gap-1">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-3 flex-1">
+                                  <div className="relative">
+                                    <Avatar className="h-11 w-11 border-2 border-white shadow-md ring-2 ring-slate-100">
+                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                                        {getInitials(message.customerName)}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    {message.status === 'new' && (
+                                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <h4 className="font-semibold text-slate-900 text-sm truncate">
+                                      {message.customerName}
+                                    </h4>
+                                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
                                       <Calendar className="w-3 h-3" />
-                                      {formatDate(message.date)}
-                                    </CardDescription>
+                                      <span>{formatDate(message.date)}</span>
+                                    </div>
                                   </div>
                                 </div>
-                                {message.responses && message.responses.length > 0 && (
-                                  <Badge variant="outline" className="text-xs flex items-center gap-1">
-                                    <MessageSquare className="h-3 w-3" />
-                                    {message.responses.length}
-                                  </Badge>
-                                )}
+                                
+                                <div className="flex flex-col gap-2 items-end">
+                                  {getStatusBadge(message.status)}
+                                  {message.responses && message.responses.length > 0 && (
+                                    <div className="flex items-center gap-1 text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded-full">
+                                      <Reply className="h-3 w-3" />
+                                      <span>{message.responses.length}</span>
+                                    </div>
+                                  )}
+                                </div>
                               </div>
                             </CardHeader>
-                            <CardContent className="px-3 py-2">
-                              <p className="text-sm line-clamp-2 font-medium">{message.message}</p>
+                            
+                            <CardContent className="pt-0 pb-3">
+                              <p className="text-sm text-slate-700 line-clamp-3 leading-relaxed">
+                                {message.message}
+                              </p>
                             </CardContent>
-                            <CardFooter className="px-3 py-2 border-t flex flex-col gap-2">
-                              <div className="w-full flex justify-between items-center">
-                                <span className="text-xs font-medium">{message.campaignName}</span>
-                                {getStatusBadge(message.status)}
-                              </div>
-                              
-                              {message.tags && message.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-1">
-                                  {message.tags.map(tag => (
-                                    <Badge key={tag} variant="secondary" className="text-xs px-2 py-0">
-                                      <Tag className="h-2.5 w-2.5 mr-1" />
-                                      {tag}
-                                    </Badge>
-                                  ))}
+                            
+                            <CardFooter className="pt-0 border-t border-slate-100 bg-slate-50/50">
+                              <div className="w-full space-y-3">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-xs font-medium text-slate-600 bg-white px-2 py-1 rounded-md border">
+                                    {message.campaignName}
+                                  </span>
+                                  <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <MoreVertical className="h-3 w-3" />
+                                  </Button>
                                 </div>
-                              )}
+                                
+                                {message.tags && message.tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-1">
+                                    {message.tags.slice(0, 2).map(tag => (
+                                      <Badge key={tag} variant="outline" className="text-xs px-2 py-0.5 bg-white/80 border-slate-200">
+                                        <Tag className="h-2.5 w-2.5 mr-1" />
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                    {message.tags.length > 2 && (
+                                      <Badge variant="outline" className="text-xs px-2 py-0.5 bg-white/80 border-slate-200">
+                                        +{message.tags.length - 2}
+                                      </Badge>
+                                    )}
+                                  </div>
+                                )}
+                              </div>
                             </CardFooter>
                           </Card>
                         )}
@@ -618,8 +648,12 @@ const BrandMessages: React.FC = () => {
                     {provided.placeholder}
                     
                     {getMessagesForStatus(statusId as StatusColumnIds).length === 0 && (
-                      <div className="flex flex-col items-center justify-center p-4 bg-white/50 rounded border border-dashed">
-                        <p className="text-xs text-muted-foreground">Mesaj yok</p>
+                      <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200">
+                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
+                          <MessageSquare className="h-6 w-6 text-slate-400" />
+                        </div>
+                        <p className="text-sm text-slate-500 font-medium">Mesaj yok</p>
+                        <p className="text-xs text-slate-400 mt-1">Bu durumda mesaj bulunmuyor</p>
                       </div>
                     )}
                   </div>
@@ -780,4 +814,3 @@ const BrandMessages: React.FC = () => {
 };
 
 export default BrandMessages;
-
