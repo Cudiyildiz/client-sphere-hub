@@ -361,16 +361,16 @@ const BrandMessages: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6 p-3 sm:p-6 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
-          <p className="text-slate-600 mt-1">Müşterilerinizle iletişimi yönetin</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Müşteri Mesajları</h1>
+          <p className="text-slate-600 mt-1 text-sm sm:text-base">Müşterilerinizle iletişimi yönetin</p>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="flex-1 min-w-[300px] relative">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center">
+        <div className="flex-1 min-w-0 relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input 
             placeholder="Mesajlarda ara..." 
@@ -381,9 +381,9 @@ const BrandMessages: React.FC = () => {
         </div>
         <Popover open={isFiltersOpen} onOpenChange={setIsFiltersOpen}>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2 w-full sm:w-auto">
               <Filter className="h-4 w-4" />
-              Filtreler
+              <span className="hidden sm:inline">Filtreler</span>
               <Badge className="ml-1 bg-primary/20 text-primary hover:bg-primary/20">
                 {(campaignFilter !== 'all' ? 1 : 0) + 
                  (dateRangeFilter !== 'all' ? 1 : 0) + 
@@ -530,18 +530,18 @@ const BrandMessages: React.FC = () => {
 
       {/* Sürükle-Bırak Alanı */}
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
           {Object.entries(statusColumns).map(([statusId, column]) => (
             <div 
               key={statusId}
-              className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200"
+              className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-5 border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200"
             >
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-base font-semibold text-slate-800 flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full bg-${column.color}-500 ring-2 ring-${column.color}-100`}></div>
-                  {column.title}
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h3 className="text-sm sm:text-base font-semibold text-slate-800 flex items-center gap-2 sm:gap-3">
+                  <div className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-${column.color}-500 ring-2 ring-${column.color}-100`}></div>
+                  <span className="truncate">{column.title}</span>
                 </h3>
-                <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium px-2 py-1">
+                <Badge variant="secondary" className="bg-slate-100 text-slate-700 font-medium px-1.5 py-0.5 sm:px-2 sm:py-1 text-xs">
                   {getMessagesForStatus(statusId as StatusColumnIds).length}
                 </Badge>
               </div>
@@ -551,7 +551,7 @@ const BrandMessages: React.FC = () => {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`min-h-[300px] transition-all duration-200 ${
+                    className={`min-h-[200px] sm:min-h-[300px] transition-all duration-200 ${
                       snapshot.isDraggingOver ? 'bg-slate-50 rounded-xl' : ''
                     }`}
                   >
@@ -566,40 +566,42 @@ const BrandMessages: React.FC = () => {
                             ref={provided.innerRef}
                             {...provided.draggableProps}
                             {...provided.dragHandleProps}
-                            className={`mb-4 cursor-pointer group transition-all duration-200 hover:shadow-lg hover:-translate-y-1 border-0 shadow-sm bg-white/90 backdrop-blur-sm ${
+                            className={`mb-3 sm:mb-4 cursor-pointer group transition-all duration-200 hover:shadow-lg hover:-translate-y-1 border-0 shadow-sm bg-white/90 backdrop-blur-sm ${
                               snapshot.isDragging ? 'shadow-xl scale-105 rotate-2' : ''
                             }`}
                             onClick={() => handleViewMessage(message)}
                           >
-                            <CardHeader className="pb-3">
-                              <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-3 flex-1">
-                                  <div className="relative">
-                                    <Avatar className="h-11 w-11 border-2 border-white shadow-md ring-2 ring-slate-100">
-                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-sm">
+                            <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4">
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                                  <div className="relative flex-shrink-0">
+                                    <Avatar className="h-8 w-8 sm:h-11 sm:w-11 border-2 border-white shadow-md ring-2 ring-slate-100">
+                                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold text-xs sm:text-sm">
                                         {getInitials(message.customerName)}
                                       </AvatarFallback>
                                     </Avatar>
                                     {message.status === 'new' && (
-                                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white"></div>
+                                      <div className="absolute -top-0.5 -right-0.5 w-3 h-3 sm:w-4 sm:h-4 bg-red-500 rounded-full border-2 border-white"></div>
                                     )}
                                   </div>
                                   <div className="flex-1 min-w-0">
-                                    <h4 className="font-semibold text-slate-900 text-sm truncate">
+                                    <h4 className="font-semibold text-slate-900 text-xs sm:text-sm truncate">
                                       {message.customerName}
                                     </h4>
-                                    <div className="flex items-center gap-2 text-xs text-slate-500 mt-1">
-                                      <Calendar className="w-3 h-3" />
-                                      <span>{formatDate(message.date)}</span>
+                                    <div className="flex items-center gap-1 sm:gap-2 text-xs text-slate-500 mt-0.5 sm:mt-1">
+                                      <Calendar className="w-2.5 h-2.5 sm:w-3 sm:h-3 flex-shrink-0" />
+                                      <span className="truncate">{formatDate(message.date)}</span>
                                     </div>
                                   </div>
                                 </div>
                                 
-                                <div className="flex flex-col gap-2 items-end">
-                                  {getStatusBadge(message.status)}
+                                <div className="flex flex-col gap-1 sm:gap-2 items-end flex-shrink-0">
+                                  <div className="scale-75 sm:scale-100 origin-top-right">
+                                    {getStatusBadge(message.status)}
+                                  </div>
                                   {message.responses && message.responses.length > 0 && (
-                                    <div className="flex items-center gap-1 text-xs text-slate-500 bg-slate-50 px-2 py-1 rounded-full">
-                                      <Reply className="h-3 w-3" />
+                                    <div className="flex items-center gap-1 text-xs text-slate-500 bg-slate-50 px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full">
+                                      <Reply className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                       <span>{message.responses.length}</span>
                                     </div>
                                   )}
@@ -607,34 +609,34 @@ const BrandMessages: React.FC = () => {
                               </div>
                             </CardHeader>
                             
-                            <CardContent className="pt-0 pb-3">
-                              <p className="text-sm text-slate-700 line-clamp-3 leading-relaxed">
+                            <CardContent className="pt-0 pb-2 sm:pb-3 px-3 sm:px-4">
+                              <p className="text-xs sm:text-sm text-slate-700 line-clamp-2 sm:line-clamp-3 leading-relaxed">
                                 {message.message}
                               </p>
                             </CardContent>
                             
-                            <CardFooter className="pt-0 border-t border-slate-100 bg-slate-50/50">
-                              <div className="w-full space-y-3">
+                            <CardFooter className="pt-0 border-t border-slate-100 bg-slate-50/50 px-3 sm:px-4 py-2 sm:py-3">
+                              <div className="w-full space-y-2 sm:space-y-3">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-xs font-medium text-slate-600 bg-white px-2 py-1 rounded-md border">
+                                  <span className="text-xs font-medium text-slate-600 bg-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-md border truncate max-w-[120px] sm:max-w-none">
                                     {message.campaignName}
                                   </span>
-                                  <Button variant="ghost" size="icon" className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <MoreVertical className="h-3 w-3" />
+                                  <Button variant="ghost" size="icon" className="h-5 w-5 sm:h-6 sm:w-6 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+                                    <MoreVertical className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                                   </Button>
                                 </div>
                                 
                                 {message.tags && message.tags.length > 0 && (
                                   <div className="flex flex-wrap gap-1">
-                                    {message.tags.slice(0, 2).map(tag => (
-                                      <Badge key={tag} variant="outline" className="text-xs px-2 py-0.5 bg-white/80 border-slate-200">
-                                        <Tag className="h-2.5 w-2.5 mr-1" />
-                                        {tag}
+                                    {message.tags.slice(0, window.innerWidth < 640 ? 1 : 2).map(tag => (
+                                      <Badge key={tag} variant="outline" className="text-xs px-1.5 py-0.5 sm:px-2 bg-white/80 border-slate-200">
+                                        <Tag className="h-2 w-2 sm:h-2.5 sm:w-2.5 mr-0.5 sm:mr-1" />
+                                        <span className="truncate max-w-[60px] sm:max-w-none">{tag}</span>
                                       </Badge>
                                     ))}
-                                    {message.tags.length > 2 && (
-                                      <Badge variant="outline" className="text-xs px-2 py-0.5 bg-white/80 border-slate-200">
-                                        +{message.tags.length - 2}
+                                    {message.tags.length > (window.innerWidth < 640 ? 1 : 2) && (
+                                      <Badge variant="outline" className="text-xs px-1.5 py-0.5 sm:px-2 bg-white/80 border-slate-200">
+                                        +{message.tags.length - (window.innerWidth < 640 ? 1 : 2)}
                                       </Badge>
                                     )}
                                   </div>
@@ -648,12 +650,12 @@ const BrandMessages: React.FC = () => {
                     {provided.placeholder}
                     
                     {getMessagesForStatus(statusId as StatusColumnIds).length === 0 && (
-                      <div className="flex flex-col items-center justify-center p-8 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200">
-                        <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3">
-                          <MessageSquare className="h-6 w-6 text-slate-400" />
+                      <div className="flex flex-col items-center justify-center p-4 sm:p-8 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200">
+                        <div className="w-8 h-8 sm:w-12 sm:h-12 bg-slate-100 rounded-full flex items-center justify-center mb-2 sm:mb-3">
+                          <MessageSquare className="h-4 w-4 sm:h-6 sm:w-6 text-slate-400" />
                         </div>
-                        <p className="text-sm text-slate-500 font-medium">Mesaj yok</p>
-                        <p className="text-xs text-slate-400 mt-1">Bu durumda mesaj bulunmuyor</p>
+                        <p className="text-xs sm:text-sm text-slate-500 font-medium">Mesaj yok</p>
+                        <p className="text-xs text-slate-400 mt-1 text-center">Bu durumda mesaj bulunmuyor</p>
                       </div>
                     )}
                   </div>
@@ -666,32 +668,34 @@ const BrandMessages: React.FC = () => {
 
       {/* Mesaj Detay Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="max-w-xl">
+        <DialogContent className="max-w-xs sm:max-w-xl mx-4 sm:mx-auto">
           {selectedMessage && (
             <>
               <DialogHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 border-2 border-primary/10">
                       <AvatarFallback className="bg-primary/10 text-primary">
                         {getInitials(selectedMessage.customerName)}
                       </AvatarFallback>
                     </Avatar>
-                    <div>
-                      <DialogTitle className="text-lg">{selectedMessage.customerName}</DialogTitle>
-                      <DialogDescription className="text-sm flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <DialogTitle className="text-base sm:text-lg truncate">{selectedMessage.customerName}</DialogTitle>
+                      <DialogDescription className="text-xs sm:text-sm flex items-center gap-2 flex-wrap">
                         <Calendar className="h-3.5 w-3.5" />
                         {formatDate(selectedMessage.date)} 
                         <span className="text-muted-foreground mx-1">•</span>
-                        <span>{selectedMessage.campaignName}</span>
+                        <span className="truncate">{selectedMessage.campaignName}</span>
                       </DialogDescription>
                     </div>
                   </div>
-                  {getStatusBadge(selectedMessage.status)}
+                  <div className="flex-shrink-0">
+                    {getStatusBadge(selectedMessage.status)}
+                  </div>
                 </div>
               </DialogHeader>
               
-              <div className="space-y-4 mt-4">
+              <div className="space-y-4 mt-4 max-h-[60vh] overflow-y-auto">
                 <div className="bg-muted/50 p-4 rounded-md">
                   <div className="flex items-center gap-2 mb-2">
                     <User className="h-4 w-4 text-muted-foreground" />
@@ -774,8 +778,8 @@ const BrandMessages: React.FC = () => {
                 </div>
               </div>
               
-              <DialogFooter className="flex items-center justify-between space-y-2 sm:space-y-0">
-                <div className="flex items-center gap-2">
+              <DialogFooter className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between space-y-2 sm:space-y-0 gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                   <Select 
                     value={selectedMessage.status} 
                     onValueChange={(value) => changeMessageStatus(
@@ -783,7 +787,7 @@ const BrandMessages: React.FC = () => {
                       value as CustomerMessage['status']
                     )}
                   >
-                    <SelectTrigger className="w-[140px]">
+                    <SelectTrigger className="w-full sm:w-[140px]">
                       <SelectValue placeholder="Durum" />
                     </SelectTrigger>
                     <SelectContent>
@@ -799,7 +803,7 @@ const BrandMessages: React.FC = () => {
                 <Button 
                   onClick={handleSendResponse} 
                   disabled={responseText.trim() === ''}
-                  className="gap-2"
+                  className="gap-2 w-full sm:w-auto"
                 >
                   <Send className="h-4 w-4" />
                   Yanıt Gönder
