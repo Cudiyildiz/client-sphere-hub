@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { DragDropContext, DropResult } from 'react-beautiful-dnd';
 import FilterPanel from './components/FilterPanel';
@@ -220,7 +219,7 @@ const BrandMessages: React.FC = () => {
     setResponseText('');
   };
 
-  // Send response
+  // Send response - Fixed to prevent duplicate responses
   const handleSendResponse = () => {
     if (!selectedMessage || responseText.trim() === '') return;
 
@@ -236,11 +235,9 @@ const BrandMessages: React.FC = () => {
       updatedMessages[messageIndex].status = 'inProgress';
       
       setMessages(updatedMessages);
-      setSelectedMessage({
-        ...selectedMessage,
-        responses: [...(selectedMessage.responses || []), responseText],
-        status: 'inProgress'
-      });
+      
+      // Update selectedMessage with the updated message from the array
+      setSelectedMessage(updatedMessages[messageIndex]);
       setResponseText('');
     }
   };
