@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
@@ -29,6 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from 'react-router-dom';
 
 // Mock data for payment history
 const paymentHistory = [
@@ -76,6 +76,7 @@ const paymentHistory = [
 
 const BrandProfile: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock brand data (in a real app, this would come from API/context)
   const brandData = {
@@ -105,7 +106,7 @@ const BrandProfile: React.FC = () => {
             Hesap bilgileriniz ve ödeme geçmişiniz
           </p>
         </div>
-        <Button variant="outline" onClick={() => window.location.href = "/brand/settings"}>
+        <Button variant="outline" onClick={() => navigate("/brand/settings")}>
           Ayarları Düzenle
         </Button>
       </div>

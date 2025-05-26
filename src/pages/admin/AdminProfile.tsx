@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
@@ -30,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from 'react-router-dom';
 
 // Mock data for system activity
 const systemActivity = [
@@ -77,6 +77,7 @@ const permissions = [
 
 const AdminProfile: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock admin data
   const adminData = {
@@ -101,7 +102,7 @@ const AdminProfile: React.FC = () => {
             Hesap bilgileriniz ve sistem erişim yetkileri
           </p>
         </div>
-        <Button variant="outline" onClick={() => window.location.href = "/admin/settings"}>
+        <Button variant="outline" onClick={() => navigate("/admin/settings")}>
           Ayarları Düzenle
         </Button>
       </div>

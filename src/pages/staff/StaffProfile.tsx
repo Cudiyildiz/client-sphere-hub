@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
@@ -27,6 +26,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useNavigate } from 'react-router-dom';
 
 // Mock data for assigned brands
 const assignedBrands = [
@@ -90,6 +90,7 @@ const recentActivity = [
 
 const StaffProfile: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Mock staff data
   const staffData = {
@@ -114,7 +115,7 @@ const StaffProfile: React.FC = () => {
             Hesap bilgileriniz ve çalışma performansınız
           </p>
         </div>
-        <Button variant="outline" onClick={() => window.location.href = "/staff/settings"}>
+        <Button variant="outline" onClick={() => navigate("/staff/settings")}>
           Ayarları Düzenle
         </Button>
       </div>
